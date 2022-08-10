@@ -1,0 +1,47 @@
+version: '3.9'
+services:
+  app:
+    build: .
+    image: microcentral:latest
+    restart: always
+    command: uvicorn app.main:app --host 0.0.0.0 --port 8000
+    volumes:
+      - .:/app/
+    networks:
+      - backend
+    depends_on:
+      - database
+    environment:
+      - PROJECT_NAME=microcentral
+      - BACKEND_CORS_ORIGINS=["http://localhost:8000","https://localhost:8000","http://localhost","https://localhost"]
+      - MYSQL_ROOT_PASSWORD=super_secret_password
+      - MYSQL_DATABASE=microcentral
+      - MYSQL_USER=ahmed
+      - MYSQL_PASSWORD=super_secret_password
+      - MYSQL_PORT=3306
+      - MYSQL_HOST=database
+    ports:
+      - "8000:8000"
+
+  database:
+    image: mysql:8.0
+    restart: always
+    command: --default-authentication-plugin=mysql_native_password
+
+    networks:
+      - backend
+    environment:
+      MYSQL_ROOT_PASSWORD: super_secret_password
+      MYSQL_DATABASE: microcentral
+      MYSQL_USER: ahmed
+      MYSQL_PASSWORD: super_secret_password
+    healthcheck:
+      test: [ "CMD", "mysqladmin", "ping", "-h", "localhost" ]
+      timeout: 5s
+      retries: 20
+    ports:
+      - "3306:3306"
+
+networks:
+  backend:
+    driver: bridge
