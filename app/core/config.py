@@ -22,6 +22,9 @@ class Settings(BaseSettings):
     MYSQL_DATABASE: str
     DATABASE_URI: Optional[str] = None
 
+    SHOULD_SEED_THE_DB: Optional[bool] = False
+
+
     @validator("DATABASE_URI", pre=True)
     def assemble_db_connection(cls, v: Optional[str], values: Dict[str, Any]) -> Any:
         if isinstance(v, str):
