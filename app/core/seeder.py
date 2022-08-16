@@ -8,14 +8,14 @@ class Seeder:
     def __init__(self, db: Session):
         self.db = db
         self.meta = MetaData(bind=engine)
+        self.meta.reflect(bind=engine)
 
     def create_tables(self):
-        User.__table__.create(bind=engine)
+        self.meta.create_all(bind=engine) 
 
 
     def drop_tables(self):
-        User.__table__.drop(engine)
-
+        self.meta.drop_all(bind=engine)
 
     def seed(self):
         print("Dropping tables...")
