@@ -1,21 +1,19 @@
-FROM python:3.9
+FROM python:3.10
 
 RUN pip install --upgrade pip
 
 WORKDIR /app
-COPY ./requirements.txt .
+COPY ./pyproject.toml .
 
 RUN apt-get update \
-    && apt-get install gcc -y \
+    && apt-get install gcc curl -y \
     && apt-get clean 
 
-RUN pip install -r ./requirements.txt
+#RUN curl -sSL https://install.python-poetry.org/ | python -
 
-# Add docker-compose-wait tool -------------------
-ENV WAIT_VERSION 2.7.2
-ADD https://github.com/ufoscout/docker-compose-wait/releases/download/$WAIT_VERSION/wait /wait
-RUN chmod +x /wait
-# -----------------------------------------------
+RUN pip install poetry
+RUN poetry install --no-root --remove-untracked
+
 
 COPY ./app .
 COPY ./app/templates /app/

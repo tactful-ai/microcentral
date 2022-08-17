@@ -12,10 +12,7 @@ services:
       MYSQL_DATABASE: microcentral
       MYSQL_USER: ahmed
       MYSQL_PASSWORD: super_secret_password
-    #healthcheck:
-    #  test: mysqladmin ping -h localhost -u $MYSQL_USER --password=MYSQL_PASSWORD
-    #  timeout: 0.5s
-    #  retries: 100
+
     ports:
       - "3306:3306"
 
@@ -23,15 +20,13 @@ services:
     build: .
     image: microcentral:latest
     restart: always
-    command: uvicorn app.main:app --host 0.0.0.0 --port 8000
+    command: poetry run uvicorn app.main:app --host 0.0.0.0 --port 8000
     volumes:
       - .:/app/
     networks:
       - backend
     depends_on:
       - database
-      #database:
-      #  condition: service_healthy
     environment:
       - PROJECT_NAME=microcentral
       - BACKEND_CORS_ORIGINS=["http://localhost:8000","https://localhost:8000","http://localhost","https://localhost"]
@@ -44,7 +39,6 @@ services:
       - SHOULD_SEED_THE_DB=True
     ports:
       - "8000:8000"
-
 
 networks:
   backend:

@@ -1,0 +1,20 @@
+[tool.poetry]
+name = "microcentral"
+version = "0.1.0"
+description = "A Central Dashboard to manage and monitor all tactful.ai services"
+authors = ["Ahmed Eltaher <ahmedheltaher@gmail.com>"]
+
+[tool.poetry.dependencies]
+python = "^3.10"
+fastapi = "^0.79.0"
+uvicorn = "^0.18.2"
+SQLAlchemy = "^1.4.40"
+pydantic = "^1.9.2"
+mysql = "^0.0.3"
+Jinja2 = "^3.1.2"
+
+[tool.poetry.dev-dependencies]
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"
