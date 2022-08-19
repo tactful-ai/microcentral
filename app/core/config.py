@@ -1,10 +1,14 @@
+from functools import lru_cache
 from typing import Any, Dict, List, Optional, Union
 
-from pydantic import AnyHttpUrl, BaseSettings, validator
+from pydantic import AnyHttpUrl, BaseSettings, PostgresDsn, validator
 
 
 class Settings(BaseSettings):
     PROJECT_NAME: str
+    PROJECT_DESCRIPTION: Optional[str] = ""
+    PROJECT_VERSION: Optional[str] = "1.0.0"
+
     BACKEND_CORS_ORIGINS: List[AnyHttpUrl] = []
 
     @validator("BACKEND_CORS_ORIGINS", pre=True)
@@ -15,30 +19,28 @@ class Settings(BaseSettings):
             return v
         raise ValueError(v)
 
-    MYSQL_USER: str
-    MYSQL_PASSWORD: str
-    MYSQL_HOST: str
-    MYSQL_PORT: str
-    MYSQL_DATABASE: str
-    DATABASE_URI: Optional[str] = None
+    DB_USER: str
+    DB_PASSWORD: str
+    DB_HOST: str
+    DB_PORT: str
+    DB_DATABASE: str
+    DATABASE_URI: Optional[PostgresDsn] = None
 
     SHOULD_SEED_THE_DB: Optional[bool] = False
 
-
     @validator("DATABASE_URI", pre=True)
-    def assemble_db_connection(cls, v: Optional[str], values: Dict[str, Any]) -> Any:
-        if isinstance(v, str):
-            return v
+    def assemble_db_connection(cls, value: Optional[PostgresDsn], values: Dict[str, Any]) -> Any:
+        if isinstance(value, PostgresDsn):
+            return value
 
-        return (
-            f"mysql://{values.get('MYSQL_USER')}:{values.get('MYSQL_PASSWORD')}@{values.get('MYSQL_HOST')}:"
-            f"{values.get('MYSQL_PORT')}/{values.get('MYSQL_DATABASE')}"
-        )
+        return f"postgresql://{values.get('DB_USER')}:{values.get('DB_PASSWORD')}@{values.get('DB_HOST')}:{values.get('DB_PORT')}/{values.get('DB_DATABASE')}"
 
     class Config:
         case_sensitive = True
         env_file = "../env"
 
 
-settings = Settings()
-print(settings.DATABASE_URI)
+@lru_cache
+def get_settings() -> Settings:
+    settings = Settings()
+    return settings

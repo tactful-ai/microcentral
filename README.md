@@ -12,16 +12,37 @@ to start missing around with the app follow these steps
 
 2. clone the repo.
 
- ```bash
- git clone https://github.com/tactful-ai/microcentral.git
- cd microcentral
- ```
+```bash
+git clone https://github.com/tactful-ai/microcentral.git
+cd microcentral
+```
 
-3. run the following command
+3. create env files
 
- ```bash
- sudo docker-compose up
- ```
+    - `database.env.example => database.env`
+    - `app.env.example => app.env`
+
+4. run the following command
+
+```bash
+sudo docker-compose up
+```
+
+---
+
+For Migrations we went with alembic we after you update the models you need to run theses commands
+
+```bash
+sudo docker-compose run --rm app poetry run alembic revision --autogenerate -m "$message"
+```
+
+```bash
+sudo docker-compose run --rm app poetry run alembic upgrade head
+```
+
+and you are good to go
+
+---
 
 those three steps should result you an working app on your localhost
 
