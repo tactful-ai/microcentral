@@ -1,18 +1,18 @@
 FROM python:3.10
 
-RUN pip install --upgrade pip
-
 WORKDIR /app
 COPY ./pyproject.toml .
 
+# Install System dependencies
 RUN apt-get update \
-    && apt-get install gcc curl -y \
+    && apt-get install gcc -y \
     && apt-get clean 
 
-#RUN curl -sSL https://install.python-poetry.org/ | python -
-
+# Install Poetry to manage dependencies
 RUN pip install poetry
-RUN poetry install --no-root --remove-untracked
+
+# Install App dependencies
+RUN poetry install
 
 
 COPY ./app .
