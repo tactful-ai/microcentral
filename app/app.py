@@ -6,7 +6,7 @@ from app.api.v1.test import router as test_api_router
 from app.core.config import get_settings
 from app.core.seeder import Seeder
 from app.database import Base, engine, get_session
-from app.views.test import router as test_view_router
+from app.views.dashboard import router as dashboard_router
 
 
 def create_app() -> FastAPI:
@@ -30,7 +30,7 @@ def create_app() -> FastAPI:
     _app.mount("/app/static", StaticFiles(directory="app/static"), name="static")
 
     _app.include_router(test_api_router, prefix="/api/v1")
-    _app.include_router(test_view_router, prefix="/views")
+    _app.include_router(dashboard_router, prefix="/dashboard")
 
     if get_settings().SHOULD_SEED_THE_DB:
         print("Seeding the DB")

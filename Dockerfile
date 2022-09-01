@@ -17,4 +17,5 @@ RUN poetry install
 
 COPY ./app .
 COPY ./app/templates /app/
+
 EXPOSE 8000
