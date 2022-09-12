@@ -1,9 +1,12 @@
-const ctx = document.getElementById("statisticsChart").getContext("2d");
+const statisticsChartElement = document.getElementById("statisticsChart");
 
-const statisticsChart = new Chart(ctx, {
+const dates = statisticsChartElement.dataset.dates.split("-").map((date) => new Date(date).getDate());
+const values = JSON.parse(statisticsChartElement.dataset.values);
+
+const statisticsChart = new Chart(statisticsChartElement.getContext("2d"), {
 	type: "line",
 	data: {
-		labels: ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"],
+		labels: dates,
 		datasets: [
 			{
 				label: "Score",
@@ -14,7 +17,7 @@ const statisticsChart = new Chart(ctx, {
 				legendColor: "#177dff",
 				fill: true,
 				borderWidth: 2,
-				data: [542, 480, 430, 550, 530, 453, 380, 434, 568, 610, 700, 900],
+				data: values,
 			},
 		],
 	},
@@ -39,33 +42,6 @@ const statisticsChart = new Chart(ctx, {
 		},
 		layout: {
 			padding: { left: 5, right: 5, top: 15, bottom: 15 },
-		},
-		scales: {
-			yAxes: [
-				{
-					ticks: {
-						fontStyle: "500",
-						beginAtZero: false,
-						maxTicksLimit: 5,
-						padding: 10,
-					},
-					gridLines: {
-						drawTicks: false,
-						display: false,
-					},
-				},
-			],
-			xAxes: [
-				{
-					gridLines: {
-						zeroLineColor: "transparent",
-					},
-					ticks: {
-						padding: 10,
-						fontStyle: "500",
-					},
-				},
-			],
 		},
 	},
 });
