@@ -13,4 +13,4 @@ class ServiceMetric(Base):
     timestamp = Column(DateTime, nullable=False, default=datetime.utcnow)
 
     def __repr__(self):
-        return f"<ServiceMetric(name='{self.name}')>"
+        return f"<ServiceMetric(name='{self.value}')>"
