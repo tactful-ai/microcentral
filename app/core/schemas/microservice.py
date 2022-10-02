@@ -5,7 +5,7 @@ class Microservice(BaseModel):
     id: int
     name: str
     description: str
-    team_id: int
+    teamId: int
 
     class Config:
         orm_mode = True
@@ -14,7 +14,7 @@ class Microservice(BaseModel):
 class MicroserviceCreate(BaseModel):
     name: str
     description: str
-    team_id: int
+    teamId: int
 
     class Config:
         orm_mode = True
