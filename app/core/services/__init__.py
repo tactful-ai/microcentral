@@ -6,6 +6,7 @@ from .base import BaseService
 from .metric import MetricsService
 from .microservice import MicroservicesService
 from .scorecard import ScorecardsService
+from .scoreCardMetrics import ScoreCardMetricsService
 from .serviceMetric import ServiceMetricsService
 from .team import TeamsService
 
@@ -25,6 +26,9 @@ def _get_service_metrics_service(db_session: Session = Depends(get_session)) -> 
 def _get_teams_service(db_session: Session = Depends(get_session)) -> TeamsService:
     return TeamsService(db_session)
 
+def _get_scorecard_metrics_service(db_session: Session = Depends(get_session)) -> ScoreCardMetricsService:
+    return ScoreCardMetricsService(db_session)
+
 
 
 def get_services() -> dict:
@@ -34,9 +38,9 @@ def get_services() -> dict:
         'microservices': _get_microservices_service,
         'scorecards': _get_scorecards_service,
         'serviceMetrics': _get_service_metrics_service,
+        'scorecardMetrics': _get_scorecard_metrics_service,
     }
 
 
 def get_service(service_name: str) -> BaseService:
     return get_services()[service_name]
-

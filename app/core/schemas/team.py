@@ -8,8 +8,8 @@ from .microservice import Microservice
 class Team(BaseModel):
     id: int
     name: str
+    token: str
     services: List[Microservice] = []
-
 
     class Config:
         orm_mode = True
@@ -17,6 +17,7 @@ class Team(BaseModel):
 
 class TeamCreate(BaseModel):
     name: str
+    token: str
     services: Optional[List[Microservice]] = []
 
     class Config:

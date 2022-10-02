@@ -5,8 +5,8 @@ from pydantic import BaseModel
 
 class ServiceMetric(BaseModel):
     id: int
-    scorecard_id: int
-    metric_id: int
+    ServiceId: int
+    metricId: int
     value: int
     timestamp: datetime
 
@@ -15,8 +15,8 @@ class ServiceMetric(BaseModel):
 
 
 class ServiceMetricCreate(ServiceMetric):
-    scorecard_id: int
-    metric_id: int
+    ServiceId: int
+    metricId: int
     value: int
 
     class Config:

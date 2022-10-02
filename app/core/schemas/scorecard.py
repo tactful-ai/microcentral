@@ -5,7 +5,7 @@ class Scorecard(BaseModel):
     id: int
     name: str
     description: str
-    microservice_id: int
+    microserviceId: int
 
     class Config:
         orm_mode = True
@@ -14,7 +14,7 @@ class Scorecard(BaseModel):
 class ScorecardCreate(Scorecard):
     name: str
     description: str
-    microservice_id: int
+    microserviceId: int
 
     class Config:
         orm_mode = True
