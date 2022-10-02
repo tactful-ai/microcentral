@@ -1,7 +1,8 @@
 from datetime import datetime
 
-from app.database import Base
 from sqlalchemy import Column, DateTime, Integer
+
+from ...database import Base
 
 
 class ServiceMetric(Base):
@@ -14,6 +15,3 @@ class ServiceMetric(Base):
 
     def __repr__(self):
         return f"<ServiceMetric(id='{self.id}', ServiceId='{self.ServiceId}', metricId='{self.metricId}', value='{self.value}', timestamp='{self.timestamp}')>"
-
-# Sperate the value from the relation
-# ScoreCardMetrics: scorecard_id, metric_id

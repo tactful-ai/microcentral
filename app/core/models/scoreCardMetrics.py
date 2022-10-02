@@ -1,5 +1,6 @@
-from app.database import Base
 from sqlalchemy import Column, Integer
+
+from ...database import Base
 
 
 class ScoreCardMetrics(Base):

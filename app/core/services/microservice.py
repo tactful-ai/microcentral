@@ -1,9 +1,8 @@
 
-from app.core.models import Microservice
-from app.core.schemas.microservice import (MicroserviceCreate,
-                                           MicroserviceUpdate)
 from sqlalchemy.orm import Session
 
+from ...core.models import Microservice
+from ...core.schemas.microservice import MicroserviceCreate, MicroserviceUpdate
 from .base import BaseService
 
 

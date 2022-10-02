@@ -1,7 +1,7 @@
-from app.database import get_session
 from fastapi import Depends
 from sqlalchemy.orm import Session
 
+from ...database import get_session
 from .base import BaseService
 from .metric import MetricsService
 from .microservice import MicroservicesService

@@ -1,8 +1,8 @@
 
-from app.core.models import Scorecard
-from app.core.schemas.scorecard import ScorecardCreate, ScorecardUpdate
 from sqlalchemy.orm import Session
 
+from ...core.models import Scorecard
+from ...core.schemas.scorecard import ScorecardCreate, ScorecardUpdate
 from .base import BaseService
 
 

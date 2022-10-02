@@ -1,8 +1,8 @@
 
-from app.core.models import Metric
-from app.core.schemas.metric import MetricCreate, MetricUpdate
 from sqlalchemy.orm import Session
 
+from ...core.models import Metric
+from ...core.schemas.metric import MetricCreate, MetricUpdate
 from .base import BaseService
 
 

@@ -1,10 +1,11 @@
 from typing import Any, Generic, List, Optional, Type, TypeVar
 
 import sqlalchemy
-from app.database import Base
 from pydantic import BaseModel
 from sqlalchemy.orm import Session
 from starlette.exceptions import HTTPException
+
+from ...database import Base
 
 ModelType = TypeVar("ModelType", bound=Base)
 CreateSchemaType = TypeVar("CreateSchemaType", bound=BaseModel)

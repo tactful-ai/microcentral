@@ -1,5 +1,6 @@
-from app.database import Base
 from sqlalchemy import Column, ForeignKey, Integer, String
+
+from ...database import Base
 
 
 class Microservice(Base):
