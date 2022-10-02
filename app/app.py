@@ -2,11 +2,11 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 
-from app.api.v1.test import router as test_api_router
-from app.core.config import get_settings
-from app.core.seeder import Seeder
-from app.database import Base, engine, get_session
-from app.views.dashboard import router as dashboard_router
+from .api.v1.test import router as test_api_router
+from .core.config import get_settings
+from .core.seeder import Seeder
+from .database import Base, engine, get_session
+from .views.dashboard import router as dashboard_router
 
 
 def create_app() -> FastAPI:
@@ -25,15 +25,11 @@ def create_app() -> FastAPI:
     async def health() -> str:
         return "ok"
 
-    Base.metadata.create_all(engine)
+    Base.metadata.create_all(engine) # Create tables if they don't exist yet (idempotent) 
 
     _app.mount("/app/static", StaticFiles(directory="app/static"), name="static")
 
     _app.include_router(test_api_router, prefix="/api/v1")
     _app.include_router(dashboard_router, prefix="/dashboard")
-
-    if get_settings().SHOULD_SEED_THE_DB:
-        print("Seeding the DB")
-        Seeder(next(get_session())).seed()
 
     return _app

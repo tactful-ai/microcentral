@@ -1,9 +1,9 @@
 
-from app.core.models import ScoreCardMetrics
-from app.core.schemas.scoreCardMetrics import (ScoreCardMetricsCreate,
-                                               ScoreCardMetricsUpdate)
 from sqlalchemy.orm import Session
 
+from ...core.models import ScoreCardMetrics
+from ...core.schemas.scoreCardMetrics import (ScoreCardMetricsCreate,
+                                              ScoreCardMetricsUpdate)
 from .base import BaseService
 
 

@@ -1,7 +1,7 @@
-from app.core.models import Team
-from app.core.schemas.team import TeamCreate, TeamUpdate
 from sqlalchemy.orm import Session
 
+from ...core.models import Team
+from ...core.schemas.team import TeamCreate, TeamUpdate
 from .base import BaseService
 
 

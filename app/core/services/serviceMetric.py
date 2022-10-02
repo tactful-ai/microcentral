@@ -1,9 +1,9 @@
 
-from app.core.models import ServiceMetric
-from app.core.schemas.serviceMetric import (ServiceMetricCreate,
-                                            ServiceMetricUpdate)
 from sqlalchemy.orm import Session
 
+from ...core.models import ServiceMetric
+from ...core.schemas.serviceMetric import (ServiceMetricCreate,
+                                           ServiceMetricUpdate)
 from .base import BaseService
 
 

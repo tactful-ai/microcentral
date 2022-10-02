@@ -1,5 +1,6 @@
-from app.core.services import ServiceMetricsService, get_service
 from fastapi import APIRouter, Depends
+
+from ...core.services import ServiceMetricsService, get_service
 
 router = APIRouter()
 
