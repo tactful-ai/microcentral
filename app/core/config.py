@@ -28,6 +28,10 @@ class Settings(BaseSettings):
 
     SHOULD_SEED_THE_DB: Optional[bool] = False
 
+
+    JWT_SECRET_KEY: str
+    JWT_ALGORITHM: str = "HS256"
+
     @validator("DATABASE_URI", pre=True)
     def assemble_db_connection(cls, value: Optional[PostgresDsn], values: Dict[str, Any]) -> Any:
         if isinstance(value, PostgresDsn):

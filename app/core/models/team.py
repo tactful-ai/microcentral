@@ -12,6 +12,4 @@ class Team(Base):
     microservices = relationship("Microservice", cascade="all, delete-orphan", primaryjoin="Microservice.teamId == Team.id")
 
     def __repr__(self):
-        return f"<Team(name='{self.name}')>"
-
-# Save Token 
+        return f"Team(id={self.id}, name={self.name}, token={self.token})"

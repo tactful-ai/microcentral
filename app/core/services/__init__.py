@@ -2,6 +2,7 @@ from fastapi import Depends
 from sqlalchemy.orm import Session
 
 from ...database import get_session
+from .authentication import *
 from .base import BaseService
 from .metric import MetricsService
 from .microservice import MicroservicesService
