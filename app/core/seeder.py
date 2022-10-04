@@ -10,7 +10,7 @@ from app.core.schemas.scoreCardMetrics import ScoreCardMetricsCreate
 from app.core.schemas.team import TeamCreate
 from app.core.services import (MetricsService, MicroservicesService,
                                ScoreCardMetricsService, ScorecardsService,
-                               TeamsService)
+                               TeamsService, signJWT)
 from pydantic import BaseModel
 from sqlalchemy.orm import Session
 
@@ -76,7 +76,12 @@ class Seeder:
     def run(self, data: Seed):
         if len(self._teamsService.list()) == 0:
             for team in data.teams:
-                self._lookupTables['teams'][team.name] = self._teamsService.create(TeamCreate(**team.dict(), token=""))
+                db_team = self._teamsService.create(TeamCreate(**team.dict(), token=""))
+                token = signJWT(db_team.id)
+                print(f"Team {team.name} created with token {token}")
+                self._teamsService.update(db_team.id, TeamCreate(**team.dict(), token=token))
+                self._lookupTables["teams"][team.name] = db_team
+
 
         if len(self._microservicesService .list()) == 0:
             for service in data.services:

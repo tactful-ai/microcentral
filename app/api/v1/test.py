@@ -1,10 +1,11 @@
+from app.core.services.authentication import JWTBearer
 from fastapi import APIRouter, Depends
 
-from ...core.services import ServiceMetricsService, get_service
+from ...core.services import TeamsService, get_service
 
 router = APIRouter()
 
 
-@router.get("/testApi/")
-def testGet(service_metrics:ServiceMetricsService = Depends(get_service('serviceMetrics'))):
-    return service_metrics.list()
+@router.get("/testApi/", dependencies=[Depends(JWTBearer())])
+def testGet(teamsService: TeamsService = Depends(get_service("teams"))):
+    return teamsService.list()
