@@ -5,7 +5,7 @@ class Metric(BaseModel):
     id: int
     area: str
     description: str
-    type: int
+    type: str
 
     class Config:
         orm_mode = True
@@ -14,7 +14,7 @@ class Metric(BaseModel):
 class MetricCreate(BaseModel):
     area: str
     description: str
-    type: int
+    type: str
 
     class Config:
         orm_mode = True
@@ -23,7 +23,7 @@ class MetricCreate(BaseModel):
 class MetricUpdate(BaseModel):
     area: str
     description: str
-    type: int = None
+    type: str = None
 
     class Config:
         orm_mode = True

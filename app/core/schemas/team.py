@@ -18,7 +18,6 @@ class Team(BaseModel):
 class TeamCreate(BaseModel):
     name: str
     token: str
-    services: Optional[List[Microservice]] = []
 
     class Config:
         orm_mode = True

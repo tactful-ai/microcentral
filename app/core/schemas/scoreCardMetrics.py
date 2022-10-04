@@ -9,7 +9,7 @@ class ScoreCardMetrics(BaseModel):
     class Config:
         orm_mode = True
 
-class ScoreCardMetricsCreate(ScoreCardMetrics):
+class ScoreCardMetricsCreate(BaseModel):
     scorecardId: int
     metricId: int
 
