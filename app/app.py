@@ -32,4 +32,7 @@ def create_app() -> FastAPI:
     _app.include_router(test_api_router, prefix="/api/v1")
     _app.include_router(dashboard_router, prefix="/dashboard")
 
+    print("Running Seeder")
+    Seeder(next(get_session())).seed()
+
     return _app

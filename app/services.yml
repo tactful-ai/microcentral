@@ -1,0 +1,83 @@
+teams:
+  - name: "Team 1"
+
+  - name: "Team 2"
+
+  - name: "Team 3"
+
+services:
+  - name: "Service 1"
+    description: "Description 1"
+    team: "Team 1"
+
+  - name: "Service 2"
+    description: "Description 2"
+    team: "Team 2"
+
+  - name: "Service 3"
+    description: "Description 3"
+    team: "Team 3"
+
+  - name: "Service 4"
+    description: "Description 4"
+    team: "Team 1"
+
+  - name: "Service 5"
+    description: "Description 5"
+    team: "Team 2"
+
+  - name: "Service 6"
+    description: "Description 6"
+    team: "Team 3"
+
+metrics:
+  - area: "speed of delivery"
+    description: "How quickly can we deliver a feature to production?"
+    type: "integer"
+
+  - area: "reliability"
+    description: "How often does our service fail?"
+    type: "integer"
+
+  - area: "security"
+    description: "How secure is our service?"
+    type: "integer"
+
+  - area: "cost"
+    description: "How much does it cost to run our service?"
+    type: "integer"
+
+  - area: "user satisfaction"
+    description: "How satisfied are our users with our service?"
+    type: "integer"
+
+  - area: "owned"
+    description: "Dose this service belong to a team?"
+    type: "boolean"
+
+
+scorecards:
+  - name: "Scorecard 1"
+    description: "Scorecard 1 description"
+    metrics:
+      - "speed of delivery"
+      - "reliability"
+      - "user satisfaction"
+      - "owned"
+
+  - name: "Scorecard 2"
+    description: "Scorecard 2 description"
+    metrics:
+      - "reliability"
+      - "security"
+      - "cost"
+      - "user satisfaction"
+      - "owned"
+
+  - name: "Scorecard 3"
+    description: "Scorecard 3 description"
+    metrics:
+      - "speed of delivery"
+      - "reliability"
+      - "cost"
+      - "owned"
