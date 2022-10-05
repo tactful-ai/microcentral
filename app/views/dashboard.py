@@ -19,7 +19,7 @@ def index(request: Request, microservices: MicroservicesService = Depends(get_se
 @router.get("/microservice/{id}", response_class=HTMLResponse)
 def microservice(request: Request, id: int, microservices: MicroservicesService = Depends(get_service('microservices')), serviceMetricService: ServiceMetricsService = Depends(get_service('serviceMetrics'))):
     microservice = microservices.get(id)
-    service_metrics = serviceMetricService.getByScorecardId(2)
+    service_metrics = serviceMetricService.getByServiceId(2)
     dates = "-".join([service_metric.timestamp.strftime("%m/%d/%Y, %H:%M:%S")for service_metric in service_metrics])
     values = [service_metric.value for service_metric in service_metrics]
     print(dates)
