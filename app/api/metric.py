@@ -34,12 +34,11 @@ def create(service_code: str, metric_code: str, value: Value,
         return {"error": "Metric not found"}
 
     serviceMetricsService.create(ServiceMetricCreate(serviceId=service.id, metricId=metric.id, value=value.value))
-    return f"Service: {service_code} Metric: {metric_code} Value: {value.value}, Token: {token}"
+
+    return {"message": "Metric created"}
 
 
 @router.get("/allMetrics")
-def get_all_metrics(
-    serviceMetricsService: ServiceMetricsService = Depends(get_service('serviceMetrics')),
-    ):
+def get_all_metrics(serviceMetricsService: ServiceMetricsService = Depends(get_service('serviceMetrics'))):
 
     return serviceMetricsService.list()
