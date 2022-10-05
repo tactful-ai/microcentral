@@ -1,10 +1,11 @@
-from app.core.schemas.serviceMetric import ServiceMetricCreate
-from app.core.services.authentication import JWTBearer, decodeJWT
+from app.core.schemas import ServiceMetricCreate
 from fastapi import APIRouter, Depends
 from pydantic import BaseModel, Field
 
-from ..core.services import (MetricsService, MicroservicesService,
-                             ServiceMetricsService, get_service)
+from ..core.services import (JWTBearer, MetricsService,
+                             MicroserviceScoreCardService,
+                             MicroservicesService, ServiceMetricsService,
+                             decodeJWT, get_service)
 
 
 class Value(BaseModel):
@@ -42,3 +43,13 @@ def create(service_code: str, metric_code: str, value: Value,
 def get_all_metrics(serviceMetricsService: ServiceMetricsService = Depends(get_service('serviceMetrics'))):
 
     return serviceMetricsService.list()
+
+@router.get("/allScorecards")
+def getScoreCards(
+    microserviceScoreCardService: MicroserviceScoreCardService = Depends(get_service('microserviceScorecards')),
+    token = Depends(JWTBearer())
+    ):
+
+    teamId = decodeJWT(token)["teamId"]
+
+    return microserviceScoreCardService.getByTeamId(teamId)

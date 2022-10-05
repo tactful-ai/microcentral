@@ -6,7 +6,6 @@ from ...database import Base
 
 class Microservice(Base):
     id = Column(Integer, primary_key=True, index=True)
-
     name = Column(String(255), nullable=False)
     code = Column(String(255), nullable=False)
     description = Column(String(255))

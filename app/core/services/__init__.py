@@ -6,6 +6,7 @@ from .authentication import *
 from .base import BaseService
 from .metric import MetricsService
 from .microservice import MicroservicesService
+from .microserviceScoreCard import MicroserviceScoreCardService
 from .scorecard import ScorecardsService
 from .scoreCardMetrics import ScoreCardMetricsService
 from .serviceMetric import ServiceMetricsService
@@ -30,6 +31,8 @@ def _get_teams_service(db_session: Session = Depends(get_session)) -> TeamsServi
 def _get_scorecard_metrics_service(db_session: Session = Depends(get_session)) -> ScoreCardMetricsService:
     return ScoreCardMetricsService(db_session)
 
+def _get_microservice_scorecard_service(db_session: Session = Depends(get_session)) -> MicroserviceScoreCardService:
+    return MicroserviceScoreCardService(db_session)
 
 
 def get_services() -> dict:
@@ -40,6 +43,7 @@ def get_services() -> dict:
         'scorecards': _get_scorecards_service,
         'serviceMetrics': _get_service_metrics_service,
         'scorecardMetrics': _get_scorecard_metrics_service,
+        'microserviceScorecards': _get_microservice_scorecard_service
     }
 
 
