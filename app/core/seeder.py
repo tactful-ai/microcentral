@@ -1,6 +1,8 @@
 # this file needs a cleanup and some refactoring but it works for now
 
 from enum import Enum
+from typing import Optional
+from unicodedata import name
 
 import yaml
 from app.core.schemas.metric import MetricCreate
@@ -28,6 +30,7 @@ class MetricType(Enum):
     boolean = "boolean"
 
 class Metric(BaseModel):
+    name: str
     area: str
     description: str
     type: MetricType
@@ -77,7 +80,7 @@ class Seeder:
         if len(self._teamsService.list()) == 0:
             for team in data.teams:
                 db_team = self._teamsService.create(TeamCreate(**team.dict(), token=""))
-                token = signJWT(db_team.id)
+                token = signJWT(str(db_team.id))
                 print(f"Team {team.name} created with token {token}")
                 self._teamsService.update(db_team.id, TeamCreate(**team.dict(), token=token))
                 self._lookupTables["teams"][team.name] = db_team
@@ -85,17 +88,19 @@ class Seeder:
 
         if len(self._microservicesService .list()) == 0:
             for service in data.services:
-                self._lookupTables['services'][service.name] =  self._microservicesService .create(MicroserviceCreate(**service.dict(), teamId= self._lookupTables['teams'][service.team].id))
+                code = service.name.replace(" ", "-").lower()
+                self._lookupTables['services'][code] = self._microservicesService .create(MicroserviceCreate(**service.dict(), teamId=self._lookupTables['teams'][service.team].id, code=code))
 
         if len(self._metricsService.list()) == 0:
             for metric in data.metrics:
-                self._lookupTables['metrics'][metric.area] = self._metricsService.create(MetricCreate(**metric.dict()))
+                code = metric.name.replace(" ", "-").lower()
+                self._lookupTables['metrics'][code] = self._metricsService.create(MetricCreate(**metric.dict(), code=code))
 
         if len(self._scorecardsService.list()) == 0:
             for scorecard in data.scorecards:
                 dbScorecard = self._scorecardsService.create(ScorecardCreate(name=scorecard.name, description=scorecard.description))
                 for metric in scorecard.metrics:
-                    self._scoreCardMetricsService.create(ScoreCardMetricsCreate(scorecardId=dbScorecard.id, metricId=self._lookupTables['metrics'][metric].id))
+                    self._scoreCardMetricsService.create(ScoreCardMetricsCreate(scorecardId=dbScorecard.id, metricId=self._lookupTables['metrics'][metric.replace(" ", "-").lower()].id))
                 self._lookupTables['scorecards'][scorecard.name] = dbScorecard
 
         self.db.close()

@@ -31,27 +31,33 @@ services:
     team: "Team 3"
 
 metrics:
-  - area: "speed of delivery"
+  - name: "speed of delivery"
+    area: "delivery"
     description: "How quickly can we deliver a feature to production?"
     type: "integer"
 
-  - area: "reliability"
+  - name: "reliability"
+    area: "delivery"
     description: "How often does our service fail?"
     type: "integer"
 
-  - area: "security"
+  - name: "security"
+    area: "delivery"
     description: "How secure is our service?"
     type: "integer"
 
-  - area: "cost"
+  - name: "cost"
+    area: "market"
     description: "How much does it cost to run our service?"
     type: "integer"
 
-  - area: "user satisfaction"
+  - name: "user satisfaction"
+    area: "experience"
     description: "How satisfied are our users with our service?"
     type: "integer"
 
-  - area: "owned"
+  - name: "owned"
+    area: "development"
     description: "Dose this service belong to a team?"
     type: "boolean"
 

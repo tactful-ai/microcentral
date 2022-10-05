@@ -2,7 +2,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 
-from .api.v1.test import router as test_api_router
+from .api import setup_routes
 from .core.config import get_settings
 from .core.seeder import Seeder
 from .database import Base, engine, get_session
@@ -29,7 +29,7 @@ def create_app() -> FastAPI:
 
     _app.mount("/app/static", StaticFiles(directory="app/static"), name="static")
 
-    _app.include_router(test_api_router, prefix="/api/v1")
+    setup_routes(_app)
     _app.include_router(dashboard_router, prefix="/dashboard")
 
     print("Running Seeder")
