@@ -1,18 +1,14 @@
 # this file needs a cleanup and some refactoring but it works for now
 
 from enum import Enum
-from typing import Optional
-from unicodedata import name
 
 import yaml
-from app.core.schemas.metric import MetricCreate
-from app.core.schemas.microservice import MicroserviceCreate
-from app.core.schemas.scorecard import ScorecardCreate
-from app.core.schemas.scoreCardMetrics import ScoreCardMetricsCreate
-from app.core.schemas.team import TeamCreate
-from app.core.services import (MetricsService, MicroservicesService,
-                               ScoreCardMetricsService, ScorecardsService,
-                               TeamsService, signJWT)
+from app.core.schemas import (MetricCreate, MicroserviceCreate,
+                              MicroserviceScoreCardCreate, ScorecardCreate,
+                              ScoreCardMetricsCreate, TeamCreate)
+from app.core.services import (MetricsService, MicroserviceScoreCardService,
+                               MicroservicesService, ScoreCardMetricsService,
+                               ScorecardsService, TeamsService, signJWT)
 from pydantic import BaseModel
 from sqlalchemy.orm import Session
 
@@ -24,6 +20,7 @@ class Service(BaseModel):
     name: str
     team: str
     description: str
+    scorecards: list[str]
 
 class MetricType(Enum):
     integer = "integer"
@@ -61,6 +58,7 @@ class Seeder:
         self._metricsService = MetricsService(self.db)
         self._scorecardsService = ScorecardsService(self.db)
         self._scoreCardMetricsService = ScoreCardMetricsService(self.db)
+        self._microserviceScoreCardService = MicroserviceScoreCardService(self.db)
         self._lookupTables = {
             "teams": {},
             "services": {},
@@ -85,12 +83,6 @@ class Seeder:
                 self._teamsService.update(db_team.id, TeamCreate(**team.dict(), token=token))
                 self._lookupTables["teams"][team.name] = db_team
 
-
-        if len(self._microservicesService .list()) == 0:
-            for service in data.services:
-                code = service.name.replace(" ", "-").lower()
-                self._lookupTables['services'][code] = self._microservicesService .create(MicroserviceCreate(**service.dict(), teamId=self._lookupTables['teams'][service.team].id, code=code))
-
         if len(self._metricsService.list()) == 0:
             for metric in data.metrics:
                 code = metric.name.replace(" ", "-").lower()
@@ -102,6 +94,14 @@ class Seeder:
                 for metric in scorecard.metrics:
                     self._scoreCardMetricsService.create(ScoreCardMetricsCreate(scorecardId=dbScorecard.id, metricId=self._lookupTables['metrics'][metric.replace(" ", "-").lower()].id))
                 self._lookupTables['scorecards'][scorecard.name] = dbScorecard
+
+        if len(self._microservicesService .list()) == 0:
+            for service in data.services:
+                code = service.name.replace(" ", "-").lower()
+                db_service = self._microservicesService .create(MicroserviceCreate(**service.dict(), teamId=self._lookupTables['teams'][service.team].id, code=code))
+                for scorecard in service.scorecards:
+                    self._microserviceScoreCardService.create(MicroserviceScoreCardCreate(microserviceId=db_service.id, scorecardId=self._lookupTables['scorecards'][scorecard].id))
+                self._lookupTables['services'][code] = db_service
 
         self.db.close()
 

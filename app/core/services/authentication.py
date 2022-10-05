@@ -1,6 +1,3 @@
-import time
-from typing import Dict
-
 import jwt
 from app.core.config import get_settings
 from fastapi import HTTPException, Request

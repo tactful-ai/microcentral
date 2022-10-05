@@ -5,31 +5,6 @@ teams:
 
   - name: "Team 3"
 
-services:
-  - name: "Service 1"
-    description: "Description 1"
-    team: "Team 1"
-
-  - name: "Service 2"
-    description: "Description 2"
-    team: "Team 2"
-
-  - name: "Service 3"
-    description: "Description 3"
-    team: "Team 3"
-
-  - name: "Service 4"
-    description: "Description 4"
-    team: "Team 1"
-
-  - name: "Service 5"
-    description: "Description 5"
-    team: "Team 2"
-
-  - name: "Service 6"
-    description: "Description 6"
-    team: "Team 3"
-
 metrics:
   - name: "speed of delivery"
     area: "delivery"
@@ -87,3 +62,26 @@ scorecards:
       - "reliability"
       - "cost"
       - "owned"
+
+services:
+  - name: "Service 1"
+    description: "Description 1"
+    team: "Team 1"
+    scorecards:
+      - "Scorecard 1"
+      - "Scorecard 2"
+
+  - name: "Service 2"
+    description: "Description 2"
+    team: "Team 2"
+    scorecards:
+      - "Scorecard 1"
+      - "Scorecard 3"
+
+  - name: "Service 3"
+    description: "Description 3"
+    team: "Team 3"
+    scorecards:
+      - "Scorecard 1"
+      - "Scorecard 2"
+      - "Scorecard 3"

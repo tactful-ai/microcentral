@@ -7,7 +7,6 @@ from ...database import Base
 
 class ServiceMetric(Base):
     id = Column(Integer, primary_key=True, index=True)
-
     serviceId = Column(Integer, nullable=False)
     metricId = Column(Integer, nullable=False)
     value = Column(Integer, nullable=False)

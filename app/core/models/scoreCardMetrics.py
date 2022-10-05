@@ -5,7 +5,6 @@ from ...database import Base
 
 class ScoreCardMetrics(Base):
     id = Column(Integer, primary_key=True, index=True)
-
     scorecardId = Column(Integer, nullable=False)
     metricId = Column(Integer, nullable=False)
 

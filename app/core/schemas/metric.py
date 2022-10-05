@@ -24,12 +24,5 @@ class MetricCreate(BaseModel):
         orm_mode = True
 
 
-class MetricUpdate(BaseModel):
-    name: str
-    code: str
-    area: str
-    description: str
-    type: str = None
-
-    class Config:
-        orm_mode = True
+class MetricUpdate(MetricCreate):
+    pass
