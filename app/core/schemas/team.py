@@ -1,4 +1,5 @@
-from typing import List, Optional
+import uuid
+from typing import List
 
 from pydantic import BaseModel
 
@@ -6,7 +7,7 @@ from .microservice import Microservice
 
 
 class Team(BaseModel):
-    id: int
+    id: uuid.UUID
     name: str
     token: str
     services: List[Microservice] = []

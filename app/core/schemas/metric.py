@@ -3,6 +3,8 @@ from pydantic import BaseModel
 
 class Metric(BaseModel):
     id: int
+    name: str
+    code: str
     area: str
     description: str
     type: str
@@ -12,6 +14,8 @@ class Metric(BaseModel):
 
 
 class MetricCreate(BaseModel):
+    name: str
+    code: str
     area: str
     description: str
     type: str
@@ -21,6 +25,8 @@ class MetricCreate(BaseModel):
 
 
 class MetricUpdate(BaseModel):
+    name: str
+    code: str
     area: str
     description: str
     type: str = None

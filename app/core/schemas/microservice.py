@@ -1,11 +1,14 @@
+import uuid
+
 from pydantic import BaseModel
 
 
 class Microservice(BaseModel):
     id: int
     name: str
+    code: str
     description: str
-    teamId: int
+    teamId: uuid.UUID
 
     class Config:
         orm_mode = True
@@ -13,8 +16,9 @@ class Microservice(BaseModel):
 
 class MicroserviceCreate(BaseModel):
     name: str
+    code: str
     description: str
-    teamId: int
+    teamId: uuid.UUID
 
     class Config:
         orm_mode = True
