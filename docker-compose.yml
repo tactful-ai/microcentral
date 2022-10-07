@@ -10,9 +10,9 @@ services:
         ports:
             - "5432:5432"
 
-    app:
+    backend:
         build: ./backend
-        image: microcentral:latest
+        image: microcentral_backend:latest
         command: poetry run uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload
         volumes:
             - ./backend:/app
@@ -23,6 +23,19 @@ services:
         env_file: app.env
         ports:
             - "8000:8000"
+
+    frontend:
+        build: ./frontend
+        image: microcentral_frontend:latest
+        command: npm run dev -- --host
+        volumes:
+            - ./frontend:/app
+        networks:
+            - backend
+        depends_on:
+            - backend
+        ports:
+            - "5173:5173"
 
 networks:
     backend:
