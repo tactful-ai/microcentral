@@ -6,7 +6,10 @@ from pydantic import BaseModel
 # Shared properties
 class MetricBase(BaseModel):
     name:  Optional[str] = None
+    code:  Optional[str] = None
+    area:  Optional[str] = None
     description: Optional[str] = None
+    type: Optional[str] = None
 
 # Properties to receive on metric creation
 class MetricCreate(MetricBase):

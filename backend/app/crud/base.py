@@ -22,9 +22,8 @@ class CRUDBase(Generic[ModelType, CreateSchemaType, UpdateSchemaType]):
             raise HTTPException(status_code=404, detail="Not Found")
         return obj
 
-    def list(self) -> List[ModelType]:
-        objs: List[ModelType] = self.db_session.query(self.model).all()
-        return objs
+    def list(self, skip: int = 0, limit: int = 100) -> List[ModelType]:
+        return self.db_session.query(self.model).offset(skip).limit(limit).all()
 
     def create(self, obj: CreateSchemaType) -> ModelType:
         db_obj: ModelType = self.model(**obj.dict())

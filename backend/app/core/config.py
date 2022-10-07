@@ -19,6 +19,9 @@ class Settings(BaseSettings):
             return v
         raise ValueError(v)
 
+
+    API_V1_STR: str = "/api/v1"
+
     DB_USER: str
     DB_PASSWORD: str
     DB_HOST: str

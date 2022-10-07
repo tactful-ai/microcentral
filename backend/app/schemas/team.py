@@ -9,14 +9,13 @@ from .microservice import Microservice
 # Shared properties
 class TeamBase(BaseModel):
     name: Optional[str] = None
-    token: Optional[str] = None
+    token: Optional[str] = ""
     microservices: Optional[List[Microservice]] = []
 
 
 # Properties to receive on team creation
 class TeamCreate(TeamBase):
     name: str
-    token: str
 
 
 
@@ -27,7 +26,7 @@ class TeamUpdate(TeamBase):
 
 # Properties shared by models stored in DB
 class TeamInDBBase(TeamBase):
-    id: int
+    id: uuid.UUID
     name: str
     token: str
     microservices: List[Microservice]
