@@ -1,8 +1,8 @@
 """Init
 
-Revision ID: ee005e022621
+Revision ID: e8cece11b346
 Revises: 
-Create Date: 2022-10-06 21:30:27.167370
+Create Date: 2022-10-07 08:06:47.566277
 
 """
 from alembic import op
@@ -10,7 +10,7 @@ import sqlalchemy as sa
 from sqlalchemy.dialects import postgresql
 
 # revision identifiers, used by Alembic.
-revision = 'ee005e022621'
+revision = 'e8cece11b346'
 down_revision = None
 branch_labels = None
 depends_on = None
@@ -33,7 +33,7 @@ def upgrade() -> None:
     op.create_table('microservicescorecard',
     sa.Column('id', sa.Integer(), nullable=False),
     sa.Column('microserviceId', sa.Integer(), nullable=False),
-    sa.Column('scorecardId', sa.Integer(), nullable=False),
+    sa.Column('scoreCardId', sa.Integer(), nullable=False),
     sa.PrimaryKeyConstraint('id')
     )
     op.create_index(op.f('ix_microservicescorecard_id'), 'microservicescorecard', ['id'], unique=False)
@@ -46,7 +46,7 @@ def upgrade() -> None:
     op.create_index(op.f('ix_scorecard_id'), 'scorecard', ['id'], unique=False)
     op.create_table('scorecardmetrics',
     sa.Column('id', sa.Integer(), nullable=False),
-    sa.Column('scorecardId', sa.Integer(), nullable=False),
+    sa.Column('scoreCardId', sa.Integer(), nullable=False),
     sa.Column('metricId', sa.Integer(), nullable=False),
     sa.PrimaryKeyConstraint('id')
     )

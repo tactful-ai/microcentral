@@ -1,22 +1,40 @@
+from typing import Optional
+
 from pydantic import BaseModel
 
 
-class MicroserviceScoreCard(BaseModel):
+# Shared properties
+class MicroserviceScoreCardBase(BaseModel):
+    microserviceId: Optional[int] = None
+    scoreCardId: Optional[int] = None
+
+
+# Properties to receive on microserviceScoreCard creation
+class MicroserviceScoreCardCreate(MicroserviceScoreCardBase):
+    microserviceId: int
+    scoreCardId: int
+
+
+# Properties to receive on microserviceScoreCard update
+class MicroserviceScoreCardUpdate(MicroserviceScoreCardBase):
+    pass
+
+
+# Properties shared by models stored in DB
+class MicroserviceScoreCardInDBBase(MicroserviceScoreCardBase):
     id: int
     microserviceId: int
-    scorecardId: int
+    scoreCardId: int
 
     class Config:
         orm_mode = True
 
 
-class MicroserviceScoreCardCreate(BaseModel):
-    microserviceId: int
-    scorecardId: int
-
-    class Config:
-        orm_mode = True
+# Properties to return to client
+class MicroserviceScoreCard(MicroserviceScoreCardInDBBase):
+    pass
 
 
-class MicroserviceScoreCardUpdate(MicroserviceScoreCardCreate):
+# Properties properties stored in DB
+class MicroserviceScoreCardInDB(MicroserviceScoreCardInDBBase):
     pass

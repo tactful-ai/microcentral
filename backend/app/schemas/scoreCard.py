@@ -4,21 +4,21 @@ from pydantic import BaseModel
 
 
 # Shared properties
-class MetricBase(BaseModel):
-    name:  Optional[str] = None
+class ScoreCardBase(BaseModel):
+    name: Optional[str] = None
     description: Optional[str] = None
 
-# Properties to receive on metric creation
-class MetricCreate(MetricBase):
+# Properties to receive on scorecard creation
+class ScoreCardCreate(ScoreCardBase):
     name: str
     description: str
 
-# Properties to receive on metric update
-class MetricUpdate(MetricBase):
+# Properties to receive on scorecard update
+class ScoreCardUpdate(ScoreCardBase):
     pass
 
 # Properties shared by models stored in DB
-class MetricInDBBase(MetricBase):
+class ScoreCardInDBBase(ScoreCardBase):
     id: int
     name: str
     description: str
@@ -27,9 +27,9 @@ class MetricInDBBase(MetricBase):
         orm_mode = True
 
 # Properties to return to client
-class Metric(MetricInDBBase):
+class ScoreCard(ScoreCardInDBBase):
     pass
 
 # Properties properties stored in DB
-class MetricInDB(MetricInDBBase):
+class ScoreCardInDB(ScoreCardInDBBase):
     pass

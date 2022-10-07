@@ -8,21 +8,21 @@ from app.database.session import SessionLocal
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
-max_tries = 60 * 5  # 5 minutes
-wait_seconds = 1
+MAX_TRIES = 60 * 5  # 5 minutes
+WAIT_SECONDS = 1
 
 
 @retry(
-    stop=stop_after_attempt(max_tries),
-    wait=wait_fixed(wait_seconds),
+    stop=stop_after_attempt(MAX_TRIES),
+    wait=wait_fixed(WAIT_SECONDS),
     before=before_log(logger, logging.INFO),
     after=after_log(logger, logging.WARN),
 )
 def init() -> None:
     try:
-        db = SessionLocal()
         # Try to create session to check if DB is awake
-        r = db.execute("SELECT 1")
+        db = SessionLocal()
+        db.execute("SELECT 1")
     except Exception as e:
         logger.error(e)
         raise e

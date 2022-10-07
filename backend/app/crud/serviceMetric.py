@@ -2,7 +2,7 @@
 from sqlalchemy.orm import Session
 
 from ..models import ServiceMetric
-from ..schemas.serviceMetric import ServiceMetricCreate, ServiceMetricUpdate
+from ..schemas import ServiceMetricCreate, ServiceMetricUpdate
 from .base import CRUDBase
 
 

@@ -1,28 +1,46 @@
 import uuid
-from typing import List
+from typing import List, Optional
 
 from pydantic import BaseModel
 
 from .microservice import Microservice
 
 
-class Team(BaseModel):
-    id: uuid.UUID
+# Shared properties
+class TeamBase(BaseModel):
+    name: Optional[str] = None
+    token: Optional[str] = None
+    microservices: Optional[List[Microservice]] = []
+
+
+# Properties to receive on team creation
+class TeamCreate(TeamBase):
     name: str
     token: str
-    services: List[Microservice] = []
+
+
+
+# Properties to receive on team update
+class TeamUpdate(TeamBase):
+    pass
+
+
+# Properties shared by models stored in DB
+class TeamInDBBase(TeamBase):
+    id: int
+    name: str
+    token: str
+    microservices: List[Microservice]
 
     class Config:
         orm_mode = True
 
 
-class TeamCreate(BaseModel):
-    name: str
-    token: str
-
-    class Config:
-        orm_mode = True
+# Properties to return to client
+class Team(TeamInDBBase):
+    pass
 
 
-class TeamUpdate(TeamCreate):
+# Properties properties stored in DB
+class TeamInDB(TeamInDBBase):
     pass

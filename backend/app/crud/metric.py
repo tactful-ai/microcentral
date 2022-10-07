@@ -2,7 +2,7 @@
 from sqlalchemy.orm import Session
 
 from ..models import Metric
-from ..schemas.metric import MetricCreate, MetricUpdate
+from ..schemas import MetricCreate, MetricUpdate
 from .base import CRUDBase
 
 

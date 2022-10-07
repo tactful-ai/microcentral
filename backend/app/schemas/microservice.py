@@ -1,9 +1,29 @@
 import uuid
+from typing import Optional
 
 from pydantic import BaseModel
 
 
-class Microservice(BaseModel):
+# Shared properties
+class MicroserviceBase(BaseModel):
+    name: Optional[str] = None
+    description: Optional[str] = None
+
+
+# Properties to receive on microservice creation
+class MicroserviceCreate(MicroserviceBase):
+    name: str
+    description: str
+    token: uuid.UUID
+
+
+# Properties to receive on microservice update
+class MicroserviceUpdate(MicroserviceBase):
+    pass
+
+
+# Properties shared by models stored in DB
+class MicroserviceInDBBase(MicroserviceBase):
     id: int
     name: str
     code: str
@@ -14,15 +34,11 @@ class Microservice(BaseModel):
         orm_mode = True
 
 
-class MicroserviceCreate(BaseModel):
-    name: str
-    code: str
-    description: str
-    teamId: uuid.UUID
-
-    class Config:
-        orm_mode = True
+# Properties to return to client
+class Microservice(MicroserviceInDBBase):
+    pass
 
 
-class MicroserviceUpdate(MicroserviceCreate):
+# Properties properties stored in DB
+class MicroserviceInDB(MicroserviceInDBBase):
     pass
