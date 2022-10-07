@@ -5,7 +5,7 @@ typeStates = ('integer', 'boolean')
 
 class Metric(Base):
     id = Column(Integer, primary_key=True, index=True)
-    name = Column(String, unique=True, index=True)
+    name = Column(String, unique=True)
     code = Column(String, unique=True, index=True)
     area = Column(String, nullable=False)
     description = Column(String, nullable=False)

@@ -1,14 +1,8 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
-from app.api import setup_routes
+from app.api.v1.api import apiRouter
 from app.core.config import get_settings
-
-#from fastapi.staticfiles import StaticFiles
-
-#from .core.seeder import Seeder
-#from .database import Base, engine, get_session
-#from .views.dashboard import router as dashboard_router
 
 
 def create_app() -> FastAPI:
@@ -27,15 +21,7 @@ def create_app() -> FastAPI:
     async def health() -> str:
         return "ok"
 
-    #Base.metadata.create_all(engine) # Create tables if they don't exist yet (idempotent) 
-
-    #_app.mount("/app/static", StaticFiles(directory="app/static"), name="static")
-
-    setup_routes(_app)
-    #_app.include_router(dashboard_router, prefix="/dashboard")
-
-    #print("Running Seeder")
-    #Seeder(next(get_session())).seed()
+    _app.include_router(apiRouter, prefix=get_settings().API_V1_STR)
 
     return _app
 

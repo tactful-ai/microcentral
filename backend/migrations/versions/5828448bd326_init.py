@@ -1,8 +1,8 @@
 """Init
 
-Revision ID: e8cece11b346
+Revision ID: 5828448bd326
 Revises: 
-Create Date: 2022-10-07 08:06:47.566277
+Create Date: 2022-10-07 11:25:43.531423
 
 """
 from alembic import op
@@ -10,7 +10,7 @@ import sqlalchemy as sa
 from sqlalchemy.dialects import postgresql
 
 # revision identifiers, used by Alembic.
-revision = 'e8cece11b346'
+revision = '5828448bd326'
 down_revision = None
 branch_labels = None
 depends_on = None
@@ -25,11 +25,11 @@ def upgrade() -> None:
     sa.Column('area', sa.String(), nullable=False),
     sa.Column('description', sa.String(), nullable=False),
     sa.Column('type', sa.Enum('integer', 'boolean', name='type'), nullable=False),
-    sa.PrimaryKeyConstraint('id')
+    sa.PrimaryKeyConstraint('id'),
+    sa.UniqueConstraint('name')
     )
     op.create_index(op.f('ix_metric_code'), 'metric', ['code'], unique=True)
     op.create_index(op.f('ix_metric_id'), 'metric', ['id'], unique=False)
-    op.create_index(op.f('ix_metric_name'), 'metric', ['name'], unique=True)
     op.create_table('microservicescorecard',
     sa.Column('id', sa.Integer(), nullable=False),
     sa.Column('microserviceId', sa.Integer(), nullable=False),
@@ -94,7 +94,6 @@ def downgrade() -> None:
     op.drop_table('scorecard')
     op.drop_index(op.f('ix_microservicescorecard_id'), table_name='microservicescorecard')
     op.drop_table('microservicescorecard')
-    op.drop_index(op.f('ix_metric_name'), table_name='metric')
     op.drop_index(op.f('ix_metric_id'), table_name='metric')
     op.drop_index(op.f('ix_metric_code'), table_name='metric')
     op.drop_table('metric')

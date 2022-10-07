@@ -8,13 +8,15 @@ from pydantic import BaseModel
 class MicroserviceBase(BaseModel):
     name: Optional[str] = None
     description: Optional[str] = None
+    teamId: Optional[uuid.UUID] = None
+    code: Optional[str] = None
 
 
 # Properties to receive on microservice creation
 class MicroserviceCreate(MicroserviceBase):
     name: str
     description: str
-    token: uuid.UUID
+    code: str
 
 
 # Properties to receive on microservice update
