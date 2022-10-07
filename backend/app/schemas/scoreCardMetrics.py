@@ -1,20 +1,35 @@
+from typing import Optional
+
 from pydantic import BaseModel
 
 
-class ScoreCardMetrics(BaseModel):
+# Shared properties
+class ScoreCardMetricsBase(BaseModel):
+    scoreCardId: Optional[int] = None
+    metricId: Optional[int] = None
+
+# Properties to receive on ScoreCardMetrics creation
+class ScoreCardMetricsCreate(ScoreCardMetricsBase):
+    scoreCardId: int
+    metricId: int
+
+# Properties to receive on ScoreCardMetrics update
+class ScoreCardMetricsUpdate(ScoreCardMetricsBase):
+    pass
+
+# Properties shared by models stored in DB
+class ScoreCardMetricsInDBBase(ScoreCardMetricsBase):
     id: int
-    scorecardId: int
+    scoreCardId: int
     metricId: int
 
     class Config:
         orm_mode = True
 
-class ScoreCardMetricsCreate(BaseModel):
-    scorecardId: int
-    metricId: int
+# Properties to return to client
+class ScoreCardMetrics(ScoreCardMetricsInDBBase):
+    pass
 
-    class Config:
-        orm_mode = True
-
-class ScoreCardMetricsUpdate(ScoreCardMetricsCreate):
+# Properties properties stored in DB
+class ScoreCardMetricsInDB(ScoreCardMetricsInDBBase):
     pass

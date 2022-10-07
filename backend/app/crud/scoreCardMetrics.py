@@ -2,8 +2,7 @@
 from sqlalchemy.orm import Session
 
 from ..models import ScoreCardMetrics
-from ..schemas.scoreCardMetrics import (ScoreCardMetricsCreate,
-                                        ScoreCardMetricsUpdate)
+from ..schemas import ScoreCardMetricsCreate, ScoreCardMetricsUpdate
 from .base import CRUDBase
 
 

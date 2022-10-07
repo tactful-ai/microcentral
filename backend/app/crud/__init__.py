@@ -2,7 +2,7 @@ from .base import CRUDBase
 from .metric import CRUDMetric
 from .microservice import CRUDMicroservice
 from .microserviceScoreCard import CRUDMicroserviceScoreCard
-from .scorecard import CRUDScorecard
+from .scoreCard import CRUDScoreCard
 from .scoreCardMetrics import CRUDScoreCardMetric
 from .serviceMetric import CRUDServiceMetric
 from .team import CRUDTeam
@@ -18,7 +18,7 @@ def get_microservice_score_card_service(db_session):
     return CRUDMicroserviceScoreCard(db_session)
 
 def get_score_card_service(db_session):
-    return CRUDScorecard(db_session)
+    return CRUDScoreCard(db_session)
 
 def get_score_card_metrics_service(db_session):
     return CRUDScoreCardMetric(db_session)

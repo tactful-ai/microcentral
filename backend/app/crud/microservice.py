@@ -2,7 +2,7 @@
 from sqlalchemy.orm import Session
 
 from ..models import Microservice
-from ..schemas.microservice import MicroserviceCreate, MicroserviceUpdate
+from ..schemas import MicroserviceCreate, MicroserviceUpdate
 from .base import CRUDBase
 
 

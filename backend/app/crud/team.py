@@ -1,7 +1,7 @@
 from sqlalchemy.orm import Session
 
 from ..models import Team
-from ..schemas.team import TeamCreate, TeamUpdate
+from ..schemas import TeamCreate, TeamUpdate
 from .base import CRUDBase
 
 
