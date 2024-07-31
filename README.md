@@ -4,34 +4,23 @@ A Central Hub To Manage And Monitor your microservices against best in class sco
 
 ---
 
-## Installation and Running
-
+## Installation and Running on local machine
 
 - Get Docker In your machine you can follow this link to get it in your operating system [install docker](https://docs.docker.com/engine/install/)
 - Install Python 3.10+
-- Install Poetry
+
+
     ```bash
     curl -sSL https://install.python-poetry.org | python3 -
-    ```
-- clone the repo.
 
-```bash
-git clone https://github.com/tactful-ai/microcentral.git
-cd microcentral
-```
-- create env files
-    - `database.env.example => database.env`
-    - `app.env.example => app.env`
-
-- Install the dependencies
-    
-    ```bash 
+    # Install the dependencies
     sudo apt install libpq-dev gcc
     poetry install
-    ```
-- Run the following command to create the database
 
-    ```bash
+    # run database inside docker 
+    docker-compose up -d database
+
+    # then run the migrations
     poetry run alembic upgrade head
 
     # then run the app fastapi
