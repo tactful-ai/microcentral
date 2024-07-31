@@ -3,18 +3,18 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 
 from .api import setup_routes
-from .core.config import get_settings
+from .core.config import settings
 from .core.seeder import Seeder
 from .database import Base, engine, get_session
 from .views.dashboard import router as dashboard_router
 
 
 def create_app() -> FastAPI:
-    _app = FastAPI(title=get_settings().PROJECT_NAME, description=get_settings().PROJECT_DESCRIPTION, version=get_settings().PROJECT_VERSION)
+    _app = FastAPI(title=settings.PROJECT_NAME, description=settings.PROJECT_DESCRIPTION, version=settings.PROJECT_VERSION)
 
     _app.add_middleware(
         CORSMiddleware,
-        allow_origins=[str(origin) for origin in get_settings().BACKEND_CORS_ORIGINS],
+        allow_origins=[str(origin) for origin in settings.BACKEND_CORS_ORIGINS],
         allow_credentials=True,
         allow_methods=["*"],
         allow_headers=["*"],

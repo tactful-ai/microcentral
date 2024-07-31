@@ -5,9 +5,9 @@ from sqlalchemy import create_engine
 from sqlalchemy.ext.declarative import as_declarative, declared_attr
 from sqlalchemy.orm import scoped_session, sessionmaker
 
-from .core.config import get_settings
+from .core.config import settings
 
-engine = create_engine(get_settings().DATABASE_URI, pool_pre_ping=True)
+engine = create_engine(settings.DATABASE_URI.__str__(), pool_pre_ping=True)
 
 
 @lru_cache

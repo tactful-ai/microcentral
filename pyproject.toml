@@ -6,15 +6,16 @@ authors = ["Ahmed Eltaher <ahmedheltaher@gmail.com>"]
 
 [tool.poetry.dependencies]
 python = "^3.10"
-fastapi = "^0.79.0"
+fastapi = "^0.111.1"
 uvicorn = "^0.18.2"
 SQLAlchemy = "^1.4.40"
-pydantic = { version= "^1.9.2", extras = ["email"] }
+pydantic = "^2.8.2"
 Jinja2 = "^3.1.2"
 psycopg2 = "^2.9.3"
 alembic = "^1.8.1"
 pyyaml = "^6.0"
 pyjwt = "^2.5.0"
+pydantic-settings = "^2.4.0"
 
 [tool.poetry.dev-dependencies]
 

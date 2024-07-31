@@ -1,7 +1,7 @@
 from logging.config import fileConfig
 
 from alembic import context
-from app.core.config import get_settings
+from app.core.config import settings
 from app.database import Base, engine
 from sqlalchemy import engine_from_config, pool
 
@@ -40,7 +40,7 @@ def run_migrations_offline() -> None:
     """
     #url = config.get_main_option("sqlalchemy.url")
     context.configure(
-        url=get_settings().DATABASE_URI,
+        url=settings.DATABASE_URI,
         target_metadata=target_metadata,
         literal_binds=True,
         dialect_opts={"paramstyle": "named"},

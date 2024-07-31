@@ -4,9 +4,10 @@ services:
         image: postgres
         networks:
             - backend
-        env_file: database.env
-        volumes:
-            - microcentral:/var/lib/postgresql/data
+        environment:
+            - POSTGRES_USER=postgres
+            - POSTGRES_PASSWORD=postgres
+            - POSTGRES_DB=microcentral
         ports:
             - "5432:5432"
 
@@ -20,7 +21,7 @@ services:
             - backend
         depends_on:
             - database
-        env_file: app.env
+        env_file: .env
         ports:
             - "8000:8000"
 
@@ -28,6 +29,3 @@ networks:
     backend:
         driver: bridge
 
-volumes:
-    microcentral:
-        driver: local
