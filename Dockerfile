@@ -1,17 +1,18 @@
 FROM python:3.10
 
-WORKDIR /usr/src/app
+WORKDIR /app
 
 # Install Poetry to manage dependencies
 RUN pip install poetry
-COPY ./pyproject.toml /usr/src/app/pyproject.toml
+COPY ./pyproject.toml /app/pyproject.toml
 
 # Install App dependencies
 RUN poetry install
 
 
-COPY . /usr/src/app
-#COPY ./app/templates /app/
+# Copy the rest of the app
+COPY . /app
 
 # Entrypoint to handle Database Connection & migrations
-ENTRYPOINT ["/usr/src/app/entrypoint.sh"]
+ENTRYPOINT ["/app/entrypoint.sh"]
+ENV PYTHONPATH=/app

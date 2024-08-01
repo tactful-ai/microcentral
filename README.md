@@ -23,6 +23,9 @@ A Central Hub To Manage And Monitor your microservices against best in class sco
     # then run the migrations
     poetry run alembic upgrade head
 
+    # seed some data (services, teams, scorecards)
+    poetry run python -m app.initial_data
+
     # then run the app fastapi
     poetry run fastapi dev
     

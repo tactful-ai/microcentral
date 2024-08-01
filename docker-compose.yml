@@ -12,6 +12,8 @@ services:
             - "5432:5432"
 
     app:
+        profiles:   # will start only if `docker-compose --profile prod up` is used
+            - prod
         build: .
         image: microcentral:latest
         command: poetry run uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload
@@ -24,6 +26,18 @@ services:
         env_file: .env
         ports:
             - "8000:8000"
+
+    # runs on http://localhost:9000/?pgsql=database&username=postgres&db=microcentral&ns=public
+    adminer:
+        image: adminer
+        networks:
+            - backend
+        ports:
+            - "9000:8080"
+        depends_on:
+            - database
+        environment:
+            - ADMINER_DEFAULT_SERVER=database
 
 networks:
     backend:
