@@ -2,7 +2,7 @@ from logging.config import fileConfig
 
 from alembic import context
 from app.core.config import settings
-from app.database import Base, engine
+from app.database.base import Base
 from sqlalchemy import engine_from_config, pool
 
 # this is the Alembic Config object, which provides
@@ -43,6 +43,7 @@ def run_migrations_offline() -> None:
         url=settings.DATABASE_URI,
         target_metadata=target_metadata,
         literal_binds=True,
+        compare_type=True,
         dialect_opts={"paramstyle": "named"},
     )
 
@@ -57,10 +58,14 @@ def run_migrations_online() -> None:
     and associate a connection with the context.
 
     """
-    connectable = engine
+    configuration = config.get_section(config.config_ini_section)
+    configuration["sqlalchemy.url"] = settings.DATABASE_URI.__str__()
+    connectable = engine_from_config(
+        configuration, prefix="sqlalchemy.", poolclass=pool.NullPool,
+    )
 
     with connectable.connect() as connection:
-        context.configure(connection=connection, target_metadata=target_metadata)
+        context.configure(connection=connection, target_metadata=target_metadata, compare_type=True)
 
         with context.begin_transaction():
             context.run_migrations()
@@ -72,3 +77,4 @@ if context.is_offline_mode():
     print("Running migrations offline")
 else:
     run_migrations_online()
+    print("Running migrations online")

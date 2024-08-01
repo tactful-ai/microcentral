@@ -19,4 +19,7 @@ echo "Revision created"
 poetry run alembic upgrade head
 echo "Migrations complete"
 
+# Seed the database
+poetry run python /app/app/initial_data.py
+
 exec "$@"

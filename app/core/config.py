@@ -22,8 +22,10 @@ class Settings(BaseSettings):
             return v
         raise ValueError(v)
 
-    SHOULD_SEED_THE_DB: Optional[bool] = False
+    API_V1_STR: str = "/api/v1"
 
+    SHOULD_SEED_THE_DB: Optional[bool] = False
+    ACCESS_TOKEN_EXPIRE_MINUTES: int = 60 * 24 * 30 # 30 days
 
     JWT_SECRET_KEY: str
     JWT_ALGORITHM: str = "HS256"
