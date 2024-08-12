@@ -28,9 +28,11 @@ class MicroserviceUpdate(MicroserviceBase):
 class MicroserviceInDBBase(MicroserviceBase):
     id: int
     name: str
-    code: str
+    code: Optional[str] = None   
     description: str
-    teamId: uuid.UUID
+    #teamId: uuid.UUID
+    #add this line
+    team_name: Optional[str] =None
 
     class Config:
         orm_mode = True
