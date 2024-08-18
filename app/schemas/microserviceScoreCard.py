@@ -1,6 +1,6 @@
-from typing import Optional
+from typing import Optional , List
 
-from pydantic import BaseModel
+from pydantic import BaseModel 
 
 
 # Shared properties
@@ -8,6 +8,11 @@ class MicroserviceScoreCardBase(BaseModel):
     microserviceId: Optional[int] = None
     scoreCardId: Optional[int] = None
 
+#added 
+class ScoreCardBase(BaseModel):
+    id: int
+    name: Optional[str] = None
+    description: Optional[str] = None
 
 # Properties to receive on microserviceScoreCard creation
 class MicroserviceScoreCardCreate(MicroserviceScoreCardBase):
@@ -21,6 +26,7 @@ class MicroserviceScoreCardUpdate(MicroserviceScoreCardBase):
 
 
 # Properties shared by models stored in DB
+
 class MicroserviceScoreCardInDBBase(MicroserviceScoreCardBase):
     id: int
     microserviceId: int

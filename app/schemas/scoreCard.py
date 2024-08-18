@@ -21,7 +21,7 @@ class ScoreCardUpdate(ScoreCardBase):
 class ScoreCardInDBBase(ScoreCardBase):
     id: int
     name: str
-    description: str
+    description: str 
 
     class Config:
         orm_mode = True

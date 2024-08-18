@@ -10,7 +10,7 @@ class Team(Base):
     id = Column(UUID(as_uuid=True), primary_key=True, index=True, default=uuid.uuid4)
     name = Column(String, nullable=False)
     token = Column(String, nullable=False)
-    microservices = relationship("Microservice", cascade="all, delete-orphan", primaryjoin="Microservice.teamId == Team.id")
-
+    #microservices = relationship("Microservice", cascade="all, delete-orphan", primaryjoin="Microservice.teamId == Team.id")
+    microservices = relationship("Microservice", back_populates="team")
     def __repr__(self):
         return f"Team(id={self.id}, name={self.name}, token={self.token})"

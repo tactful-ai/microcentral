@@ -1,12 +1,12 @@
 from app.database.base_class import Base
 from sqlalchemy import Column, Integer
-
+from sqlalchemy.orm import relationship
 
 class MicroserviceScoreCard(Base):
     id = Column(Integer, primary_key=True, index=True)
     microserviceId = Column(Integer, nullable=False)
     scoreCardId = Column(Integer, nullable=False)
-
+ 
     def __repr__(self):
         return f"<MicroserviceScoreCard(id='{self.id}', microserviceId='{self.microserviceId}', scoreCardId='{self.scoreCardId}')>"
 

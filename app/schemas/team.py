@@ -23,6 +23,15 @@ class TeamCreate(TeamBase):
 class TeamUpdate(TeamBase):
     pass
 
+# New Properties shared by models stored in DB
+class TeamInDB(TeamBase):
+    id: uuid.UUID
+    name: str
+    token: str
+   
+
+    class Config:
+        orm_mode = True
 
 # Properties shared by models stored in DB
 class TeamInDBBase(TeamBase):

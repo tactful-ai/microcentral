@@ -1,7 +1,6 @@
 import uuid
 from typing import Optional
-
-from pydantic import BaseModel
+from pydantic import BaseModel 
 
 
 # Shared properties
@@ -17,7 +16,8 @@ class MicroserviceCreate(MicroserviceBase):
     name: str
     description: str
     code: str
-
+    #team: TeamInDB
+    #scorecards:list[ScoreCardInDBBase]
 
 # Properties to receive on microservice update
 class MicroserviceUpdate(MicroserviceBase):
@@ -33,11 +33,11 @@ class MicroserviceInDBBase(MicroserviceBase):
     #teamId: uuid.UUID
     #add this line
     team_name: Optional[str] =None
+    scorecard_names: Optional[list] = None
 
     class Config:
         orm_mode = True
-
-
+        
 # Properties to return to client
 class Microservice(MicroserviceInDBBase):
     pass
