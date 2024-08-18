@@ -12,4 +12,7 @@ class CRUDMetric(CRUDBase[Metric, MetricCreate, MetricUpdate]):
 
     def getByCode(self, code: str):
         return self.db_session.query(Metric).filter(Metric.code == code).first()
+    
+    def getByName(self, name: str):
+        return self.db_session.query(Metric).filter(Metric.name == name).first()
 

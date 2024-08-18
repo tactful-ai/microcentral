@@ -33,7 +33,7 @@ class CRUDBase(Generic[ModelType, CreateSchemaType, UpdateSchemaType]):
         except sqlalchemy.exc.IntegrityError as e:
             self.db_session.rollback()
             if "duplicate key" in str(e):
-                raise HTTPException(status_code=409, detail="Conflict Error")
+                raise HTTPException(status_code=409, detail="Duplicated Key, Name field is Duplicated")
             else:
                 raise e
         return db_obj

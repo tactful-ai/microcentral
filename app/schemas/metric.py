@@ -1,4 +1,4 @@
-from typing import Optional
+from typing import Optional, List
 
 from pydantic import BaseModel
 
@@ -7,7 +7,7 @@ from pydantic import BaseModel
 class MetricBase(BaseModel):
     name:  Optional[str] = None
     code:  Optional[str] = None
-    area:  Optional[str] = None
+    area:  Optional[List[str]] = None
     description: Optional[str] = None
     type: Optional[str] = None
 
@@ -15,6 +15,9 @@ class MetricBase(BaseModel):
 class MetricCreate(MetricBase):
     name: str
     description: str
+
+class MetricGet(MetricBase):
+    area: Optional[str] = None
 
 # Properties to receive on metric update
 class MetricUpdate(MetricBase):

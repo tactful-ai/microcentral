@@ -1,6 +1,10 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
+from fastapi import Request, status, FastAPI
+from fastapi.responses import JSONResponse
+from fastapi.exceptions import RequestValidationError
+from fastapi.encoders import jsonable_encoder
 
 from app.api.api import apiRouter
 from app.core.config import settings
@@ -17,6 +21,24 @@ def create_app() -> FastAPI:
         allow_methods=["*"],
         allow_headers=["*"],
     )
+
+    # Edit on the exceptiion handler of data type validation pydantic to send custom error messages
+    @_app.exception_handler(RequestValidationError)
+    async def validation_exception_handler(request: Request, exc: RequestValidationError):
+        # Get the original 'detail' list of errors
+        details = exc.errors()
+        modified_details = []
+        # Replace 'msg' with 'message' for each error
+        for error in details:
+            modified_details.append(
+                {
+                    error["loc"][1]: error["msg"]
+                }
+            )
+        return JSONResponse(
+            status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
+            content=jsonable_encoder({"detail": modified_details}),
+        )
 
     # Just for checking if the app is up and running
     @_app.get("/health")
