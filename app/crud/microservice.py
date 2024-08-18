@@ -60,27 +60,8 @@ class CRUDMicroservice(CRUDBase[Microservice, MicroserviceCreate, MicroserviceUp
         .first()
         )
         return result
-   
- 
-    # Get all with scorecard and team
-    #def getByServiceIdWithTeamAndSCOREDetails(self, service_id: int)-> MicroserviceScoreTeamInDB:
-    
-    #    microservice = self.get(service_id)
-    #    team = self.teamService.get(microservice.teamId)
-    #    scorecards=self.scoreCardService.getByServiceId(service_id)
-        
-        
-    #    service = MicroserviceScoreTeamInDB(
-    #    id=microservice.id,
-    #    name=microservice.name,
-    #    description=microservice.description,
-    #    code=microservice.code,
-    #    team=Team(id=team.id, name=team.name) if team else None,
-    #    scorecards=[Scorecard(id=sc.id, name=sc.name, description=sc.description) for sc in scorecards])
-    
-    #    return service
-        
-
+       
+#create one
     def create_service(db: Session, service: MicroserviceCreate):
    
         db_service = service(name=service.name, description=service.description,teamid=service.teamId)

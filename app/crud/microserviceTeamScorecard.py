@@ -5,7 +5,10 @@ from ..schemas import MicroserviceTeamScorecardBase,MicroserviceTeamScorecardCre
 from .base import CRUDBase
 from typing import List
 from sqlalchemy.sql import func
+from starlette.exceptions import HTTPException
 from . import CRUDTeam, CRUDMicroserviceScoreCard, CRUDScoreCard
+
+
 
 class CRUDMicroserviceTeamScorecard(CRUDBase[MicroserviceTeamScorecardBase, MicroserviceTeamScorecardCreate, MicroserviceTeamScorecardUpdate ]):
     def __init__(self, db_session: Session):

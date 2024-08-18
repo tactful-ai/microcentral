@@ -13,3 +13,5 @@ class CRUDScoreCard(CRUDBase[Scorecard, ScoreCardCreate, ScoreCardUpdate]):
     def getByScoreCradId(self, ScoreCardId: str):
         return self.db_session.query(Scorecard).filter(Scorecard.id == ScoreCardId).all()
 
+    def getByScoreCradIds(self, ScoreCardIds: list[int]):
+        return self.db_session.query(Scorecard).filter(Scorecard.id.in_([ScoreCardId for ScoreCardId in ScoreCardIds ])).all()

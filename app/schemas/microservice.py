@@ -16,13 +16,22 @@ class MicroserviceCreate(MicroserviceBase):
     name: str
     description: str
     code: str
-    #team: TeamInDB
+    teamId: uuid.UUID
     #scorecards:list[ScoreCardInDBBase]
 
 # Properties to receive on microservice update
 class MicroserviceUpdate(MicroserviceBase):
     pass
 
+#new
+class MicroserviceCreateApi(MicroserviceBase):
+    name: str
+    description: str
+    teamId: uuid.UUID
+    scorecardids: list[int]
+    
+    class Config:
+        orm_mode = True
 
 # Properties shared by models stored in DB
 class MicroserviceInDBBase(MicroserviceBase):
