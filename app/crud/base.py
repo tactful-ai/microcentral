@@ -1,5 +1,4 @@
 from typing import Any, Generic, List, Optional, Type, TypeVar
-
 import sqlalchemy
 from app.database.base_class import Base
 from pydantic import BaseModel

@@ -17,6 +17,10 @@ def create_app() -> FastAPI:
         allow_methods=["*"],
         allow_headers=["*"],
     )
+    ## for try
+    @_app.get("/")
+    async def root():
+          return {"message": "Hello World"}
 
     # Just for checking if the app is up and running
     @_app.get("/health")
