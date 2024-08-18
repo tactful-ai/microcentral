@@ -19,7 +19,7 @@ A Central Hub To Manage And Monitor your microservices against best in class sco
 
     # run database inside docker 
     docker-compose up -d database
-
+<!-- ####### -->
     # then run the migrations
     poetry run alembic upgrade head
 
