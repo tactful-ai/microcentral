@@ -134,3 +134,6 @@ poetry.lock
 
 # alembic
 app/migrations/versions/*
+
+# dummy files
+app/static/js/dummy.js

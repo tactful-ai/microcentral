@@ -12,6 +12,14 @@ router = APIRouter()
 templates = Jinja2Templates(directory="app/templates")
 
 
+# dummy data
+metric_data = {
+    "name": "Build-Time",
+    "type": "int",
+    "area": ["Marketing", "Delivery"],
+    "description": "measuring building time of a cpu service for one our containers, which considered very essintial"
+}
+
 @router.get("/", response_class=HTMLResponse)
 def index(request: Request, microservices: CRUDMicroservice = Depends(dependencies.getMicroservicesCrud)):
     all_microservices = microservices.list()
@@ -32,3 +40,19 @@ def microservice(request: Request, id: int, microservices: CRUDMicroservice = De
 def teams(request: Request, teamsService: CRUDTeam = Depends(dependencies.getTeamsCrud)):
     teams = teamsService.list()
     return templates.TemplateResponse("teams.html", {"request": request, "teams": teams})
+
+
+@router.get("/metrics", response_class=HTMLResponse)
+def services(request: Request):
+    return templates.TemplateResponse("metrics.html", {"request": request})
+
+@router.get("/metrics/create", response_class=HTMLResponse)
+def metric(request: Request):
+    return templates.TemplateResponse("create-metric.html", {"request": request, "mode": "create", "char_limit": 100})
+
+@router.get("/metrics/edit", response_class=HTMLResponse)
+def metric(request: Request):
+    return templates.TemplateResponse("create-metric.html", {
+        "request": request, "mode": "edit", "char_limit": 100, 
+        "metric_data": metric_data
+    })
