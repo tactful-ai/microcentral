@@ -52,6 +52,11 @@ def metric(request: Request):
 
 @router.get("/metrics/edit/{metric_id}", response_class=HTMLResponse)
 def metric(request: Request, metric_id: int):
+    api_url = f"http://127.0.0.1:8000/api/v1/metrics/{metric_id}"
+    
+    response = requests.get(api_url)
+    metric_data = response.json()
+
     return templates.TemplateResponse("create-metric.html", {
         "request": request, "mode": "edit", "char_limit": 100, 
         "metric_data": metric_data

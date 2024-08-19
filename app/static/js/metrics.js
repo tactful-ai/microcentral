@@ -63,29 +63,15 @@ function removeTag(e){
 }
 
 let formData = {
-    fields: [
-        {
-            name: 'metric-name',
-            value: metricName.value
-        },
-        {
-            name: 'metric-type',
-            value: metricType.value
-        },
-        {
-            name: 'metric-tags',
-            value: tags
-        },
-        {
-            name: 'metric-description',
-            value: metricDescription.value
-        }
-    ]
+    name: metricName.value,
+    area: tags,
+    descirption: metricDescription.value,
+    type: metricType.options[metricType.selectedIndex].textContent,
 }
 
 
-function postData(){
-    fetch('http://127.0.0.1:8000/api/v1/metrics', {
+function postMetric(){
+    fetch('http://127.0.0.1:8000/api/v1/metrics/', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
@@ -96,7 +82,23 @@ function postData(){
     .then(user => console.log(user));
 }
 
+function onload () {
+    let path = window.location.pathname;
+    let metric_id = 1;
+    getMetricById(metric_id);
+}
+
+function getMetricById(metric_id){
+    fetch(`http://127.0.0.1:8000/api/v1/metrics/${metric_id}`, {
+        method: 'GET',
+        headers: {
+            'Content-Type': 'application/json',
+        }
+    })
+    .then(response => response.json())
+    .then(user => console.log(user));
+}
 
 tagsInput.addEventListener('keyup', addTag);
 tagsCancel.forEach(cancel => {cancel.addEventListener('click', removeTag)});
-createBtn.addEventListener('click', postData);
+createBtn.addEventListener('click', postMetric);
