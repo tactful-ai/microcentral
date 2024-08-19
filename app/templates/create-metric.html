@@ -14,8 +14,14 @@
                     </div>
                     <div class="col-12">
                         <label for="metric-type" class="form-label">Metric Type</label>
-                        <input type="text" class="form-control" placeholder="" id="metric-type"
-                        value="{% if mode == 'edit' %}{{ metric_data['type'] }}{% else %}{% endif %}">
+                        <select class="form-select" name="" id="metric-type">
+                            <option value="1">
+                                integer
+                            </option>
+                            <option value="2">
+                                boolean
+                            </option>
+                        </select>
                         <span class="error-msg text-danger d-none">error</span>
                     </div>
                     <div class="col-12">

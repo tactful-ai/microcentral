@@ -50,7 +50,7 @@ def services(request: Request):
 def metric(request: Request):
     return templates.TemplateResponse("create-metric.html", {"request": request, "mode": "create", "char_limit": 100})
 
-@router.get("/metrics/edit", response_class=HTMLResponse)
+@router.get("/metrics/edit/{metric_id}", response_class=HTMLResponse)
 def metric(request: Request):
     return templates.TemplateResponse("create-metric.html", {
         "request": request, "mode": "edit", "char_limit": 100, 

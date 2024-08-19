@@ -62,42 +62,34 @@ function removeTag(e){
     console.log(e.target)
 }
 
+
 let formData = {
-    fields: [
-        {
-            name: 'metric-name',
-            value: metricName.value
-        },
-        {
-            name: 'metric-type',
-            value: metricType.value
-        },
-        {
-            name: 'metric-tags',
-            value: tags
-        },
-        {
-            name: 'metric-description',
-            value: metricDescription.value
-        }
-    ]
+    name: metricName.value,
+    type: metricType.options[metricType.selectedIndex].textContent,
+    area: tags,
+    description: metricDescription.textContent
 }
 
-let data = {
-    name: "string",
-    token: "",
-    microservices: []
+let dummyTest = {
+    name: "john doe",
+    type: "integer",
+    area: ["area 1", "area 2"],
+    description: "blah"
 }
 
-function fetchData(){
-    fetch('http://127.0.0.1:8000/api/v1/teams', {
+
+
+function PostMetric(e){
+    e.preventDefault();
+    console.log(formData)
+    fetch('http://127.0.0.1:8000/api/v1/metrics', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
         },
-        body: JSON.stringify(data),
+        body: JSON.stringify(formData),
     })
-    .then(response => response.json())
+    .then(response => console.log(response.json()))
     .then(user => console.log(user));
 }
 
@@ -107,4 +99,4 @@ console.log('hello 2')
 
 tagsInput.addEventListener('keyup', addTag);
 tagsCancel.forEach(cancel => {cancel.addEventListener('click', removeTag)});
-createBtn.addEventListener('click', fetchData);
+createBtn.addEventListener('click', PostMetric);
