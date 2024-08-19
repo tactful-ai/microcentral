@@ -18,8 +18,15 @@ scorecard_data = {
     "metrics": [
         {
             "name": "build-time",
-            "criteria": "greater-than",
-            "weight": 32
+            "criteria": "less-than",
+            "number": 3 ,
+            "weight": 30
+        },
+        {
+            "name": "cpu-usage",
+            "criteria": "equal",
+            "number": 1000 ,
+            "weight": 70
         }
     ]
 }

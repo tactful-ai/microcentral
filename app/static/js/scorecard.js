@@ -1,7 +1,6 @@
 
 let form = document.querySelector('form');
 let scorecardName = form.querySelector('#scorecard-name');
-let scorecardType = form.querySelector('#scorecard-type');
 let scorecardDescription = form.querySelector('#scorecard-description');
 let charCount = form.querySelector('.counter');
 let errorMsgs = form.querySelectorAll('.error-msg')
@@ -20,7 +19,6 @@ let tagsCancel = [];
 tagsBoxLi.forEach(li => {
     tags.push(li.textContent);
 })
-
 
 
 scorecardDescription.addEventListener('keydown', (e) => {
@@ -68,16 +66,16 @@ let formData = {
             value: scorecardName.value
         },
         {
-            name: 'scorecard-type',
-            value: scorecardType.value
-        },
-        {
-            name: 'scorecard-tags',
+            name: 'scorecard-services',
             value: tags
         },
         {
             name: 'scorecard-description',
             value: scorecardDescription.value
+        },
+        {
+            name: 'scorecard-metrics',
+            metrics: []
         }
     ]
 }
@@ -93,7 +91,7 @@ function fetchData(){
     .then(response => response.json())
     .then(user => console.log(user));
 }
-alert('hi')
+console.log('what')
 
 tagsInput.addEventListener('keyup', addTag);
 tagsCancel.forEach(cancel => {cancel.addEventListener('click', removeTag)});

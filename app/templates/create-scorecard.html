@@ -43,8 +43,11 @@
                         <label for="scorecard-type" class="form-label">Scorecard Metrics</label>
                         <select class="form-select" name="" id="scorecard-metrics">
                             <option selected>Choose one of the metrics</option>
-                            <option value="1">build-time</option>
-                            <option value="2">memory-usage</option>
+                            {% if mode == 'edit' %}
+                                {% for metric in scorecard_data['metrics'] %}
+                                    <option>{{metric['name']}}</option>
+                                {% endfor %}
+                            {% endif %}
                         </select>
                         <span class="error-msg text-danger d-none">error</span>
                     </div>
@@ -59,6 +62,6 @@
 {% endblock content %}
 
 {% block javascript %}
-<script src="{{ url_for('static', path='js/scorecards.js') }}"></script>
+<script src="{{ url_for('static', path='js/scorecard.js') }}"></script>
 {% endblock javascript %}
 
