@@ -1,24 +1,24 @@
-#metric-form :where(.tags-box ul, li, li i){
+form :where(.tags-box ul, li, li i){
 	display: flex;
 	align-items: center;
 }
 
-#metric-form .tags-box {
+form .tags-box {
 	border: 1px solid #d3d3d3;
 	border-radius: 6px;
 }
-#metric-form .input-note {
+form .input-note {
 	color: #919191
 } 
 
-#metric-form .tags-box ul {
+form .tags-box ul {
 	display: flex;
 	flex-wrap: wrap;
 	list-style-type: none;
 	padding: 10px;
 	margin: 0
 } 
-#metric-form .tags-box ul li {
+form .tags-box ul li {
 	margin: 0 5px 5px 0;
 	padding: 2px 7px;
 	background-color: #eee;
@@ -29,7 +29,7 @@
 	z-index: 1000;
 } 
 
-#metric-form .tags-box ul li i {
+form .tags-box ul li i {
 	color: #757575;
 	width: 15px;
 	height: 15px;
@@ -40,7 +40,7 @@
 	cursor: pointer;
 } 
 
-#metric-form .tags-box ul input {
+form .tags-box ul input {
 	width: 150px;
 	outline: none;
 	border: none;

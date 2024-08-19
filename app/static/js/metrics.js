@@ -59,7 +59,7 @@ function addTag (e){
 }
 
 function removeTag(e){
-    console.log(e.target)
+    console.log('--canceled--')
 }
 
 let formData = {
@@ -83,28 +83,20 @@ let formData = {
     ]
 }
 
-let data = {
-    name: "string",
-    token: "",
-    microservices: []
-}
 
-function fetchData(){
-    fetch('http://127.0.0.1:8000/api/v1/teams', {
+function postData(){
+    fetch('http://127.0.0.1:8000/api/v1/metrics', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
         },
-        body: JSON.stringify(data),
+        body: JSON.stringify(formData),
     })
     .then(response => response.json())
     .then(user => console.log(user));
 }
 
 
-console.log('hello 2')
-
-
 tagsInput.addEventListener('keyup', addTag);
 tagsCancel.forEach(cancel => {cancel.addEventListener('click', removeTag)});
-createBtn.addEventListener('click', fetchData);
+createBtn.addEventListener('click', postData);
