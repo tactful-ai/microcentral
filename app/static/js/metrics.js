@@ -30,7 +30,6 @@ metricDescription.addEventListener('keydown', (e) => {
         counter -= 1;
     }
     charCount.textContent = counter;
-    console.log('keyup')
 });
 
 function createTag(){
@@ -51,7 +50,7 @@ function addTag (e){
                     createTag();
                     tagsInput.value = '';
                     tagsCancel.push(tagsUl.querySelectorAll('li i.tag-cancel'));
-                    console.log(tagsCancel)
+                    // console.log(tagsCancel)
                 }
             });
         }
@@ -63,24 +62,16 @@ function removeTag(e){
 }
 
 
-let formData = {
-    name: metricName.value,
-    type: metricType.options[metricType.selectedIndex].textContent,
-    area: tags,
-    description: metricDescription.textContent
-}
-
-let dummyTest = {
-    name: "john doe",
-    type: "integer",
-    area: ["area 1", "area 2"],
-    description: "blah"
-}
-
-
-
 function PostMetric(e){
     e.preventDefault();
+    
+    let formData = {
+        name: metricName.value,
+        type: metricType.options[metricType.selectedIndex].textContent,
+        area: tags,
+        description: metricDescription.value
+    }
+
     console.log(formData)
     fetch('http://127.0.0.1:8000/api/v1/metrics', {
         method: 'POST',
