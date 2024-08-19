@@ -11,6 +11,18 @@ router = APIRouter()
 
 templates = Jinja2Templates(directory="app/templates")
 
+scorecard_data = {
+    "name": "Performance",
+    "services": ["Visa Auth", "Google maps"],
+    "description": "measuring the performance of the service according to standard metrics.",
+    "metrics": [
+        {
+            "name": "build-time",
+            "criteria": "greater-than",
+            "weight": 32
+        }
+    ]
+}
 
 @router.get("/", response_class=HTMLResponse)
 def index(request: Request, microservices: CRUDMicroservice = Depends(dependencies.getMicroservicesCrud)):
@@ -32,3 +44,16 @@ def microservice(request: Request, id: int, microservices: CRUDMicroservice = De
 def teams(request: Request, teamsService: CRUDTeam = Depends(dependencies.getTeamsCrud)):
     teams = teamsService.list()
     return templates.TemplateResponse("teams.html", {"request": request, "teams": teams})
+
+@router.get('/scorecards/create', response_class=HTMLResponse)
+def metrics(request: Request):
+    return templates.TemplateResponse("create-scorecard.html", {"request": request, "mode": "create", "char_limit": 100})
+
+@router.get('/scorecards/edit/{scorecard_id}', response_class=HTMLResponse)
+def metrics(request: Request, scorecard_id: int):
+    return templates.TemplateResponse("create-scorecard.html", {
+        "request": request, 
+        "mode": "edit",
+        "char_limit": 100,
+        "scorecard_data": scorecard_data
+    })

@@ -1,0 +1,64 @@
+{% extends "layouts/layout.html" %} {% block title %} Dashboard {% endblock %} {% block content %}
+
+{% block stylesheet %}
+<link rel="stylesheet" href="{{ url_for('static', path='css/form.css') }}">
+{% endblock stylesheet %}
+
+
+<div class="content mt-4 mb-5" style="width: 100%;">
+    <div class="container">
+        <div class="row">
+            <div class="col-sm-6 m-auto mb-5">
+                <h1 class="text-capitalize">{{ mode }} Scorecard</h1>
+                <form mode="{{mode}}" class="row g-3" id="scorecard-form" onkeydown="return event.key != 'Enter';">
+                    <div class="col-12">
+                        <label for="scorecard-name" class="form-label">Scorecard Name</label>
+                        <input type="text" class="form-control" placeholder="" id="scorecard-name"
+                        value="{% if mode == 'edit' %}{{ scorecard_data['name'] }}{% else %}{% endif %}">
+                        <span class="error-msg text-danger d-none">error</span>
+                    </div>
+                    <div class="col-12">
+                        <label for="scorecard-services" class="form-label">Scorecard Services</label>
+                        <span class="input-note d-block">Please add a comma after each tag and press enter</span>
+                        <div class="tags-box">
+                            <ul id="scorecard-services">
+                                {% if mode == 'edit' %}
+                                    {% for service in scorecard_data['services'] %}
+                                        <li>{{service}} <i class="tag-cancel fa fa-times"></i></li>
+                                    {% endfor %}
+                                {% endif %}
+                                <input type="text">
+                            </ul>
+                        </div>
+                        <span class="error-msg text-danger d-none">error</span>
+                    </div>
+                    <div class="col-md-12">
+                        <label for="scorecard-description" class="form-label">Scorecard Description </label>
+                        <textarea class="form-control" placeholder="Write a brief descriptoin here" 
+                        maxlength="{{char_limit}}" id="scorecard-description" style="height: 100px"">{% if mode == 'edit' %}{{ scorecard_data['description'] }}{% else %}{% endif %}</textarea>
+                        <div class="float-end"><span class="counter">0</span>/{{char_limit}}</div>
+                        <span class="error-msg text-danger d-none">error</span>
+                    </div>
+                    <div class="col-12">
+                        <label for="scorecard-type" class="form-label">Scorecard Metrics</label>
+                        <select class="form-select" name="" id="scorecard-metrics">
+                            <option selected>Choose one of the metrics</option>
+                            <option value="1">build-time</option>
+                            <option value="2">memory-usage</option>
+                        </select>
+                        <span class="error-msg text-danger d-none">error</span>
+                    </div>
+                    <div class="col-12">
+                        <button type="submit" class="btn btn-primary col-12" id="create-btn" style="background-color: #6482AD;">Create</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock content %}
+
+{% block javascript %}
+<script src="{{ url_for('static', path='js/scorecards.js') }}"></script>
+{% endblock javascript %}
+
