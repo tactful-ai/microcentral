@@ -34,3 +34,6 @@ def getMicroserviceScoreCardsCrud(db_session: Session = Depends(get_db)):
 
 def getServiceMetricsCrud(db_session: Session = Depends(get_db)):   
     return crud.CRUDServiceMetric(db_session)
+
+def getMicroserviceTeamScoreCardCrud(db_session: Session = Depends(get_db)):
+    return crud.CRUDMicroserviceTeamScorecard(db_session)

@@ -47,5 +47,7 @@ class CRUDBase(Generic[ModelType, CreateSchemaType, UpdateSchemaType]):
 
     def delete(self, id: Any) -> None:
         db_obj = self.db_session.query(self.model).get(id)
+        if db_obj is None:
+            raise HTTPException(status_code=404, detail="Not Found")
         self.db_session.delete(db_obj)
         self.db_session.commit()
