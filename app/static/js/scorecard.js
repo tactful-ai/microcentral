@@ -30,7 +30,6 @@ scorecardDescription.addEventListener('keydown', (e) => {
         counter -= 1;
     }
     charCount.textContent = counter;
-    console.log('keyup')
 });
 
 function createTag(tags){
