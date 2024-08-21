@@ -137,3 +137,4 @@ app/migrations/versions/*
 
 # dummy files
 app/static/js/dummy.js
+app/templates/create-metric-origin.html
