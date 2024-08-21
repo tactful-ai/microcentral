@@ -1,7 +1,7 @@
 {% extends "layouts/layout.html" %} {% block title %} Dashboard {% endblock %} {% block content %}
 
 {% block stylesheet %}
-<link rel="stylesheet" href="{{ url_for('static', path='css/form.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', path='css/scorecard.css') }}">
 {% endblock stylesheet %}
 
 
@@ -47,8 +47,14 @@
                                 {% for metric in scorecard_data['metrics'] %}
                                     <option>{{metric['name']}}</option>
                                 {% endfor %}
+                            {% else %}
+                                <option>metric 1</option>
+                                <option>metric 2</option>
                             {% endif %}
                         </select>
+                        <ul id="metrics-list">
+                            <li class="metrics-item"></li>
+                        </ul>
                         <span class="error-msg text-danger d-none">error</span>
                     </div>
                     <div class="col-12">

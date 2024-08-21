@@ -1,6 +1,8 @@
 
 let form = document.querySelector('form');
 let scorecardName = form.querySelector('#scorecard-name');
+let metricsSelect = form.querySelector('#scorecard-metrics');
+let metricsList = form.querySelector('#metrics-list')
 let scorecardDescription = form.querySelector('#scorecard-description');
 let charCount = form.querySelector('.counter');
 let errorMsgs = form.querySelectorAll('.error-msg')
@@ -14,6 +16,7 @@ let tagsInput = tagsUl.querySelector('input');
 let counter = 0;
 let tags = [];
 let tagsCancel = [];
+let metrics = [];
 
 
 tagsBoxLi.forEach(li => {
@@ -30,7 +33,7 @@ scorecardDescription.addEventListener('keydown', (e) => {
     console.log('keyup')
 });
 
-function createTag(){
+function createTag(tags){
     tagsUl.querySelectorAll('li').forEach(li => li.remove());
     tags.forEach(tag => {
         let tagLi = `<li>${tag} <i class="tag-cancel fa fa-times"></i></li>`;
@@ -45,10 +48,9 @@ function addTag (e){
             tag.split(',').forEach(tag => {
                 if( !tags.includes(tag)){
                     tags.push(tag);
-                    createTag();
+                    createTag(tags);
                     tagsInput.value = '';
                     tagsCancel.push(tagsUl.querySelectorAll('li i.tag-cancel'));
-                    console.log(tagsCancel)
                 }
             });
         }
@@ -59,40 +61,13 @@ function removeTag(e){
     console.log(e.target)
 }
 
-let formData = {
-    fields: [
-        {
-            name: 'scorecard-name',
-            value: scorecardName.value
-        },
-        {
-            name: 'scorecard-services',
-            value: tags
-        },
-        {
-            name: 'scorecard-description',
-            value: scorecardDescription.value
-        },
-        {
-            name: 'scorecard-metrics',
-            metrics: []
-        }
-    ]
-}
-
-function fetchData(){
-    fetch('http://127.0.0.1:8000/api/v1/scorecards', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(data),
-    })
-    .then(response => response.json())
-    .then(user => console.log(user));
-}
-console.log('what')
-
 tagsInput.addEventListener('keyup', addTag);
 tagsCancel.forEach(cancel => {cancel.addEventListener('click', removeTag)});
-createBtn.addEventListener('click', fetchData);
+createBtn.addEventListener('click', (e) => e.preventDefault());
+
+metricsSelect.addEventListener('change', (e)=>{
+    metrics.push(e.target.value);
+    
+    let metricLi = `<li>${e.target.value} </li>`;
+    metricsList.insertAdjacentHTML('beforebegin', metricLi);
+})
