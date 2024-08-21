@@ -22,8 +22,8 @@ class MicroserviceCreate(MicroserviceBase):
 class MicroserviceCreateApi(MicroserviceBase):
     name: str
     description: str
-    teamId: uuid.UUID
-    scorecardids: list[int]
+    teamId:Optional[uuid.UUID] = None
+    scorecardids: Optional [list[int]] = None
     
     class Config:
         orm_mode = True

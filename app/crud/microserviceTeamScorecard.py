@@ -1,18 +1,18 @@
 import sqlalchemy
 from sqlalchemy.orm import Session
 from ..models import Microservice
-from ..schemas import MicroserviceTeamScorecardBase,MicroserviceTeamScorecardCreate,MicroserviceTeamScorecardUpdate, team, scoreCard
+from ..schemas import MicroserviceTeamScorecardBase, team, scoreCard
 from .base import CRUDBase
 from typing import List
 from sqlalchemy.sql import func
 from starlette.exceptions import HTTPException
-from . import CRUDTeam, CRUDMicroserviceScoreCard, CRUDScoreCard
+from . import CRUDTeam, CRUDMicroserviceScoreCard, CRUDScoreCard ,CRUDMicroservice
 
 
 
-class CRUDMicroserviceTeamScorecard(CRUDBase[MicroserviceTeamScorecardBase, MicroserviceTeamScorecardCreate, MicroserviceTeamScorecardUpdate ]):
+class CRUDMicroserviceTeamScorecard:
     def __init__(self, db_session: Session):
-        super(CRUDMicroserviceTeamScorecard, self).__init__(Microservice, db_session)
+        self.microsService =CRUDMicroservice(db_session)
         self.teamService= CRUDTeam(db_session)
         self.scoreCardService= CRUDMicroserviceScoreCard(db_session) 
         self.scoreCard = CRUDScoreCard(db_session) 
@@ -20,15 +20,14 @@ class CRUDMicroserviceTeamScorecard(CRUDBase[MicroserviceTeamScorecardBase, Micr
     # Get all with scorecard and team
     def getByServiceIdWithTeamAndSCOREDetails(self, service_id: int)-> MicroserviceTeamScorecardBase:
     
-        microservice = self.get(service_id)
-    
+        microservice = self.microsService.get(service_id)
+       
         if not microservice:
             raise Exception(f"Microservice with id {service_id} not found")
         
-        # Fetch the associated team
+        
         teamobject = self.teamService.get(microservice.teamId)  
 
-        
         scorecardIds = self.scoreCardService.getByServiceId(microservice.id)
         scorecards = []
         

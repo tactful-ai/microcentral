@@ -50,14 +50,10 @@ class CRUDMicroservice(CRUDBase[Microservice, MicroserviceCreate, MicroserviceUp
         )
         return result
       
-   
-    #def delete(self, microservice_id: int):
-    #    session = self.db_session()
-    #    microservice = session.query(Microservice).filter(id=microservice_id).first()
-    #    if not microservice:
-    #        raise HTTPException(status_code=404, detail="Microservice not found")
-        
-    #    session.delete(microservice)
-    #    session.commit() 
+    def get_by_code (self , code:str):
+        return self.db_session.query(Microservice).filter(Microservice.code == code).first()
+ 
+
+
 
       

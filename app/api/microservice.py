@@ -11,6 +11,12 @@ class Value(BaseModel):
 
 router = APIRouter()
 
+def format_code(name):
+    code = name.strip()
+    code = code.replace(" ", "-")
+    code = re.sub(r'-+', '-', code)
+    return code
+
 @router.get("/", response_model=List[MicroserviceInDBBase])
 #@router.get("/Dashboard", response_model=List[MicroserviceInDBBase])
 def get_all_services(microServices: CRUDMicroservice = Depends(dependencies.getMicroservicesCrud)):
@@ -37,6 +43,12 @@ def create_microservice(newmicroservice: MicroserviceCreateApi,
                         servicescorecard: CRUDMicroserviceScoreCard = Depends(dependencies.getMicroserviceScoreCardsCrud),
                         scorecard: CRUDScoreCard = Depends(dependencies.getScoreCardsCrud)):
     
+    
+    formatted_code = format_code(newmicroservice.name)
+    existing_microservice = microservice.get_by_code(formatted_code)
+    if existing_microservice:
+        raise HTTPException(status_code=400, detail="Code already exists")
+    
     if not newmicroservice.name:
         raise HTTPException(status_code=400, detail="Name cannot be empty")
     
@@ -49,32 +61,38 @@ def create_microservice(newmicroservice: MicroserviceCreateApi,
     if len(newmicroservice.description) > 500:
         raise HTTPException(status_code=400, detail="Description cannot exceed 500 characters")
  
-    try:
-        teamobj = teamservice.get(newmicroservice.teamId)
-        if teamobj is None:
-            raise HTTPException(status_code=404, detail="Not Found") 
-    except Exception as x:
-        error_message = 'Team Id was not found'
-        raise HTTPException(status_code=404, detail=error_message)
-    
-    for scorecardid in newmicroservice.scorecardids:
+    if newmicroservice.teamId:
         try:
-            scorecard.get(scorecardid)
+            teamobj = teamservice.get(newmicroservice.teamId)
+            if teamobj is None:
+                raise HTTPException(status_code=404, detail="Team not found")
         except Exception as x:
-            error_message = f'ScoreCard of ID: {scorecardid} was not found'
+            error_message = 'Team Id was not found'
             raise HTTPException(status_code=404, detail=error_message)
+    else:
+        pass
     
-    code = newmicroservice.name.replace(" ","-") 
-    code = re.sub(r'-+', '-', code)
+    
+    
+    if newmicroservice.scorecardids:
+        for scorecardid in newmicroservice.scorecardids:
+            try:
+                scorecard_obj = scorecard.get(scorecardid)
+                if scorecard_obj is None:
+                    raise HTTPException(status_code=404, detail=f"ScoreCard of ID: {scorecardid} was not found")
+            except Exception as x:
+                error_message = f'ScoreCard of ID: {scorecardid} was not found'
+                raise HTTPException(status_code=404, detail=error_message)
 
     created_microservice = microservice.create(MicroserviceCreate(name=newmicroservice.name,
                                             description=newmicroservice.description,
                                             teamId=newmicroservice.teamId,
-                                            code=code))
+                                            code=formatted_code))
     
      # Create microservice scorecard associations
+   
     for scorecard in newmicroservice.scorecardids:
-        servicescorecard.create(MicroserviceScoreCardCreate(
+         servicescorecard.create(MicroserviceScoreCardCreate(
             microserviceId=created_microservice.id,scoreCardId=scorecard))
             
     return created_microservice
@@ -115,13 +133,13 @@ def update_microservice(microservice_id: int,updatemicroservice: MicroserviceCre
             error_message = f'ScoreCard of ID: {scorecardid} was not found'
             raise HTTPException(status_code=404, detail=error_message)
         
-    code = updatemicroservice.name.replace(" ","-") 
-    code = re.sub(r'-+', '-', code) 
+    
+    formatted_code = format_code(updatemicroservice.name)
     updated_microservice = microservice.update(microservice_id, MicroserviceUpdate(
         name=updatemicroservice.name,
         description=updatemicroservice.description,
         teamId=updatemicroservice.teamId,
-        code=code
+        code=formatted_code
     ))
     
     servicescorecard.deleteByServiceId(microservice_id)
