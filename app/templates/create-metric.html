@@ -5,11 +5,11 @@
         <div class="row">
             <div class="col-sm-6 m-auto mb-5">
                 <h1 class="text-capitalize">{{ mode }} Metric</h1>
-                <form mode="{{mode}}" class="row g-3" id="metric-form" onkeydown="return event.key != 'Enter';">
+                <form data-mode="{{mode}}" class="row g-3" id="metric-form" onkeydown="return event.key != 'Enter';">
                     <div class="col-12">
                         <label for="metric-name" class="form-label">Metric Name</label>
                         <input type="text" class="form-control" placeholder="" id="metric-name"
-                        value="{% if mode == 'edit' %}{{ metric_data['name'] }}{% else %}{% endif %}">
+                        >
                         <span class="error-msg text-danger d-none">error</span>
                     </div>
                     <div class="col-12">
@@ -25,11 +25,6 @@
                         <span class="input-note d-block">Please add a comma after each tag and press enter</span>
                         <div class="tags-box">
                             <ul id="metric-area">
-                                {% if mode == 'edit' %}
-                                    {% for area in metric_data['area'] %}
-                                        <li>{{area}} <i class="tag-cancel fa fa-times"></i></li>
-                                    {% endfor %}
-                                {% endif %}
                                 <input type="text">
                             </ul>
                         </div>
@@ -38,7 +33,7 @@
                     <div class="col-md-12">
                         <label for="metric-description" class="form-label">Metric Description </label>
                         <textarea class="form-control" placeholder="Write a brief descriptoin here" 
-                        maxlength="{{char_limit}}" id="metric-description" style="height: 100px"">{% if mode == 'edit' %}{{ metric_data['description'] }}{% else %}{% endif %}</textarea>
+                        maxlength="{{char_limit}}" id="metric-description" style="height: 100px""></textarea>
                         <div class="float-end"><span class="counter">0</span>/{{char_limit}}</div>
                         <span class="error-msg text-danger d-none">error</span>
                     </div>

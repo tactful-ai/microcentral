@@ -1,21 +1,22 @@
 
-let form = document.querySelector('form');
-let metricName = form.querySelector('#metric-name');
-let metricType = form.querySelector('#metric-type');
-let metricDescription = form.querySelector('#metric-description');
-let charCount = form.querySelector('.counter');
-let errorMsgs = form.querySelectorAll('.error-msg')
+const form = document.querySelector('form');
+const metricName = form.querySelector('#metric-name');
+const metricType = form.querySelector('#metric-type');
+const metricTypeOptions = metricType.querySelectorAll('option');
+const metricDescription = form.querySelector('#metric-description');
+const charCount = form.querySelector('.counter');
+const errorMsgs = form.querySelectorAll('.error-msg')
 
-let createBtn = form.querySelector('#create-btn');
+const createBtn = form.querySelector('#create-btn');
 
-let tagsUl = form.querySelector('.tags-box ul');
-let tagsBoxLi = form.querySelectorAll('.tags-box li');
-let tagsInput = tagsUl.querySelector('input');
+const tagsUl = form.querySelector('.tags-box ul');
+const tagsBoxLi = form.querySelectorAll('.tags-box li');
+const tagsInput = tagsUl.querySelector('input');
 
-let charLimit = 5;
-let counter = 0;
-let tags = [];
-let tagsCancel = [];
+const charLimit = 5;
+const counter = 0;
+const tags = [];
+const tagsCancel = [];
 
 
 tagsBoxLi.forEach(li => {
@@ -32,7 +33,7 @@ metricDescription.addEventListener('keydown', (e) => {
     charCount.textContent = counter;
 });
 
-function createTag(){
+function createTag(tags = []){
     tagsUl.querySelectorAll('li').forEach(li => li.remove());
     tags.forEach(tag => {
         let tagLi = `<li>${tag} <i class="tag-cancel fa fa-times"></i></li>`;
@@ -47,7 +48,7 @@ function addTag (e){
             tag.split(',').forEach(tag => {
                 if( !tags.includes(tag)){
                     tags.push(tag);
-                    createTag();
+                    createTag(tags);
                     tagsInput.value = '';
                     tagsCancel.push(tagsUl.querySelectorAll('li i.tag-cancel'));
                     // console.log(tagsCancel)
@@ -67,7 +68,7 @@ function PostMetric(e){
     
     let formData = {
         name: metricName.value,
-        type: metricType.options[metricType.selectedIndex].textContent,
+        type: metricType.options[metricType.selectedIndex].text,
         area: tags,
         description: metricDescription.value
     }
@@ -84,8 +85,38 @@ function PostMetric(e){
     .then(user => console.log(user));
 }
 
+const formMode = form.dataset.mode;
+if(formMode == 'edit'){
+    const pathname = window.location.pathname;
+    const regex = /(\d+)$/;
+    const metric_id = pathname.match(regex)[0];
+    var request = async () => {
+        var data = await fetch(`http://127.0.0.1:8000/api/v1/metrics/${metric_id}`)
+        .then((response) => response.json());
+        
+        var metric_data = data.object;
+        console.log(metric_data)
 
-console.log('hello 2')
+        metricName.value = metric_data.name;
+        metricDescription.value = metric_data.description;
+
+        metric_data.area.forEach(area => {
+            tags.push(area)
+        })
+        createTag(metric_data.area)
+
+        metricType.value = metric_data.type
+        
+        metricTypeOptions.forEach(option => {
+            if(option.text == metric_data.type){
+                option.selected = true;
+            }
+        })
+    };
+    request('PromiseResult');
+}
+
+console.log('hi2')
 
 
 tagsInput.addEventListener('keyup', addTag);
