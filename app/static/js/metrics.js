@@ -13,10 +13,10 @@ const tagsUl = form.querySelector('.tags-box ul');
 const tagsBoxLi = form.querySelectorAll('.tags-box li');
 const tagsInput = tagsUl.querySelector('input');
 
-const charLimit = 5;
-const counter = 0;
-const tags = [];
-const tagsCancel = [];
+let charLimit = 5;
+let counter = 0;
+let tags = [];
+let tagsCancel = [];
 
 
 tagsBoxLi.forEach(li => {
@@ -73,16 +73,22 @@ function PostMetric(e){
         description: metricDescription.value
     }
 
-    console.log(formData)
-    fetch('http://127.0.0.1:8000/api/v1/metrics', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(formData),
-    })
-    .then(response => console.log(response.json()))
-    .then(user => console.log(user));
+    const response = async () => {
+        var data = await fetch('http://127.0.0.1:8000/api/v1/metrics', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(formData),
+        })
+        .then((response) => response.json())
+        var responseData = {
+            message: data.message,
+            object: data.object
+        }
+        console.log(responseData)
+    };
+    response();
 }
 
 const formMode = form.dataset.mode;
@@ -90,7 +96,7 @@ if(formMode == 'edit'){
     const pathname = window.location.pathname;
     const regex = /(\d+)$/;
     const metric_id = pathname.match(regex)[0];
-    var request = async () => {
+    const request = async () => {
         var data = await fetch(`http://127.0.0.1:8000/api/v1/metrics/${metric_id}`)
         .then((response) => response.json());
         
