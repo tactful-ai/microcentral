@@ -4,6 +4,7 @@ from app.crud import CRUDMicroservice, CRUDMicroserviceTeamScorecard ,CRUDTeam, 
 from typing import List
 from app import dependencies 
 from pydantic import BaseModel, Field
+from sqlalchemy.orm import Session
 import re
 
 class Value(BaseModel):
@@ -43,7 +44,7 @@ def create_microservice(newmicroservice: MicroserviceCreateApi,
                         servicescorecard: CRUDMicroserviceScoreCard = Depends(dependencies.getMicroserviceScoreCardsCrud),
                         scorecard: CRUDScoreCard = Depends(dependencies.getScoreCardsCrud)):
     
-    
+    microservice.check_service_name_exists(newmicroservice.name)
     formatted_code = format_code(newmicroservice.name)
     existing_microservice = microservice.get_by_code(formatted_code)
     if existing_microservice:
@@ -72,8 +73,6 @@ def create_microservice(newmicroservice: MicroserviceCreateApi,
     else:
         pass
     
-    
-    
     if newmicroservice.scorecardids:
         for scorecardid in newmicroservice.scorecardids:
             try:
@@ -89,11 +88,22 @@ def create_microservice(newmicroservice: MicroserviceCreateApi,
                                             teamId=newmicroservice.teamId,
                                             code=formatted_code))
     
-     # Create microservice scorecard associations
    
-    for scorecard in newmicroservice.scorecardids:
-         servicescorecard.create(MicroserviceScoreCardCreate(
-            microserviceId=created_microservice.id,scoreCardId=scorecard))
+    if newmicroservice.scorecardids is not None:
+        for scorecardid in newmicroservice.scorecardids:
+            try:
+                scorecard_obj = scorecard.get(scorecardid)
+                if scorecard_obj is None:
+                    raise HTTPException(status_code=404, detail=f"ScoreCard of ID: {scorecardid} was not found")
+                
+                servicescorecard.create(MicroserviceScoreCardCreate(
+                    microserviceId=created_microservice.id,
+                    scoreCardId=scorecardid
+                ))
+            except Exception as x:
+                error_message = f"Failed to create relationship for ScoreCard ID: {scorecardid}. Reason: {str(x)}"
+                raise HTTPException(status_code=400, detail=error_message)
+            
             
     return created_microservice
     
