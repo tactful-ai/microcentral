@@ -38,7 +38,11 @@
                         <span class="error-msg text-danger d-none">error</span>
                     </div>
                     <div class="col-12">
-                        <button type="submit" class="btn btn-primary col-12" id="create-btn" style="background-color: #6482AD;">Create</button>
+                        <button type="submit" class="btn btn-primary col-12" id="create-btn" style="background-color: #6482AD;">
+                            {% if mode == 'edit' %} Save
+                            {% else %} Create
+                            {% endif %}
+                        </button>
                     </div>
                 </form>
             </div>

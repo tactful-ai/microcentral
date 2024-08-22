@@ -16,7 +16,7 @@ const tagsInput = tagsUl.querySelector('input');
 let charLimit = 5;
 let counter = 0;
 let tags = [];
-let tagsCancel = [];
+let cancelBtns = [];
 
 
 tagsBoxLi.forEach(li => {
@@ -36,7 +36,7 @@ metricDescription.addEventListener('keydown', (e) => {
 function createTag(tags = []){
     tagsUl.querySelectorAll('li').forEach(li => li.remove());
     tags.forEach(tag => {
-        let tagLi = `<li>${tag} <i class="tag-cancel fa fa-times"></i></li>`;
+        let tagLi = `<li>${tag} <button type="button" class="tag-cancel"><i class="tag-cancel fa fa-times"></i></button></li>`;
         tagsInput.insertAdjacentHTML('beforebegin', tagLi);
     })
 }
@@ -50,16 +50,12 @@ function addTag (e){
                     tags.push(tag);
                     createTag(tags);
                     tagsInput.value = '';
-                    tagsCancel.push(tagsUl.querySelectorAll('li i.tag-cancel'));
-                    // console.log(tagsCancel)
+                    cancelBtns = Array.from(tagsUl.querySelectorAll('li button.tag-cancel'));
+                    
                 }
             });
         }
     }
-}
-
-function removeTag(e){
-    console.log(e.target)
 }
 
 
@@ -118,13 +114,26 @@ if(formMode == 'edit'){
                 option.selected = true;
             }
         })
+
+        createBtn.value = 'save';
     };
     request('PromiseResult');
 }
 
-console.log('hi2')
+console.log('hello world')
+
+
+function removeTag(e){
+    let li = e.target.parentNode.parentNode;
+    console.log(',target:', li.textContent.trim())
+    tags = tags.filter(item => item != li.textContent.trim())
+    createTag(tags)
+}
+
+cancelBtns.forEach((btn) => {
+    btn.addEventListener('click', removeTag)
+})
 
 
 tagsInput.addEventListener('keyup', addTag);
-tagsCancel.forEach(cancel => {cancel.addEventListener('click', removeTag)});
 createBtn.addEventListener('click', PostMetric);
