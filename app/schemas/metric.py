@@ -1,6 +1,6 @@
-from typing import Optional, List
+from typing import Optional, List 
 
-from pydantic import BaseModel
+from pydantic import BaseModel, validator
 
 
 # Shared properties
@@ -10,6 +10,12 @@ class MetricBase(BaseModel):
     area:  Optional[List[str]] = None
     description: Optional[str] = None
     type: Optional[str] = None
+
+    @validator('area', pre=True, always=True)
+    def validate_area_length(cls, area):
+        if len(area) == 0:
+            raise ValueError("empty list not allowed")
+        return area
 
 # Properties to receive on metric creation
 class MetricCreate(MetricBase):

@@ -73,6 +73,11 @@ def createMetric(metric: schemas.MetricCreate, metricCrud: crud.CRUDMetric = Dep
     if (not isinstance(metricObj.area,list)):
         return JSONResponse(status_code=status.HTTP_422_UNPROCESSABLE_ENTITY, content= jsonable_encoder({"area": "area must be valid list"}))
     
+    """
+    if (metricObj.area == None):
+        return JSONResponse(status_code=status.HTTP_422_UNPROCESSABLE_ENTITY, content= jsonable_encoder({"Area field cannot be empty"}))
+    """
+
     # Stringfying the list of areas to be saved as string 
     metricObj.area = json.dumps(metric.area)
     
@@ -94,7 +99,13 @@ def getMetric(metricID: int, metricCrud: crud.CRUDMetric = Depends(dependencies.
         return JSONResponse(status_code=status.HTTP_404_NOT_FOUND, content= jsonable_encoder({"error":"Not Found"}))
     return JSONResponse(status_code=status.HTTP_200_OK, content= jsonable_encoder({"object":metric}))
 
-
+@router.delete("/{metricID}")
+def deleteMetric(metricID: int, metricCrud: crud.CRUDMetric = Depends(dependencies.getMetricsCrud)) -> Any:
+    metric = metricCrud.get(metricID)
+    if metric is None:
+        return JSONResponse(status_code=status.HTTP_404_NOT_FOUND, content= jsonable_encoder({"Not Found"}))
+    metricCrud.delete(metricID)
+    return JSONResponse("deleted successfully")
 
 
 
