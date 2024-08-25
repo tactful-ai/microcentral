@@ -12,6 +12,7 @@ from fastapi.routing import APIRoute
 
 
 
+
 from app import dependencies 
 from app.core.security import JWTBearer, decodeJWT
 
@@ -107,6 +108,24 @@ def deleteMetric(metricID: int, metricCrud: crud.CRUDMetric = Depends(dependenci
     metricCrud.delete(metricID)
     return JSONResponse("deleted successfully")
 
+#Still need some work to be enhanced
+@router.put("/{metricID}")
+def editMetric(metricID: int, metricInput: schemas.MetricUpdate ,metricCrud: crud.CRUDMetric = Depends(dependencies.getMetricsCrud)) -> Any:
+    metric = metricCrud.get(metricID)
+    if metric is None:
+        return JSONResponse(status_code=status.HTTP_404_NOT_FOUND, content= jsonable_encoder({"Not Found"}))
+    print(metric.area)
+    if (metricInput.name):
+        metric.name = metricInput.name
+        metric.code = "-".join( metricInput.name.split())
+    if (metricInput.area):
+        metric.area = json.dumps(metricInput.area)
+    if (metricInput.description):
+        metric.description = metricInput.description
+    if (metricInput.type):
+        metric.type = metricInput.type
+    metricCrud.update(metricID,metric)
+    return JSONResponse(status_code=status.HTTP_200_OK, content="Success in Editing")
 
 
 """

@@ -1,7 +1,7 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
-from fastapi import Request, status, FastAPI
+from fastapi import Request, status, FastAPI, HTTPException
 from fastapi.responses import JSONResponse
 from fastapi.exceptions import RequestValidationError
 from fastapi.encoders import jsonable_encoder
@@ -39,7 +39,15 @@ def create_app() -> FastAPI:
             status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
             content=jsonable_encoder({"detail": modified_details}),
         )
-
+    
+    """
+    class ExceptionCustom(HTTPException):
+        pass
+    def exception_404_handler(request: Request, exc: HTTPException):
+        return JSONResponse(status_code=status.HTTP_404_NOT_FOUND, content={"message":exc.detail})
+    _app.add_exception_handler(ExceptionCustom, exception_404_handler)
+    """
+    
     # Just for checking if the app is up and running
     @_app.get("/health")
     async def health() -> str:
