@@ -18,6 +18,9 @@ def format_code(name):
     code = re.sub(r'-+', '-', code)
     return code
 
+
+
+
 @router.get("/", response_model=List[MicroserviceInDBBase])
 #@router.get("/Dashboard", response_model=List[MicroserviceInDBBase])
 def get_all_services(microServices: CRUDMicroservice = Depends(dependencies.getMicroservicesCrud)):
@@ -30,14 +33,14 @@ async def getOne_service(service_id: int, microServices: CRUDMicroservice = Depe
         raise HTTPException(status_code=404, detail="Service not found")
     return service
 
-@router.get("/serviceDetails/{service_id}", response_model=MicroserviceTeamScorecardBase)
+@router.get("/{service_id}/ScoreCards", response_model=MicroserviceTeamScorecardBase)
 async def getmicroservice_with_teamAndScorecards(service_id: int, microServicesteamScorecard: CRUDMicroserviceTeamScorecard = Depends(dependencies.getMicroserviceTeamScoreCardCrud)):
     service = microServicesteamScorecard.getByServiceIdWithTeamAndSCOREDetails(service_id)
     if service is None:
         raise HTTPException(status_code=404, detail="Service not found")
     return service
 
-@router.post("/create/", response_model= None)
+@router.post("/", response_model= None)
 def create_microservice(newmicroservice: MicroserviceCreateApi, 
                         microservice: CRUDMicroservice = Depends(dependencies.getMicroservicesCrud),
                         teamservice: CRUDTeam = Depends(dependencies.getTeamsCrud),
@@ -62,6 +65,8 @@ def create_microservice(newmicroservice: MicroserviceCreateApi,
     if len(newmicroservice.description) > 500:
         raise HTTPException(status_code=400, detail="Description cannot exceed 500 characters")
  
+    teamobj = None
+    scorecard_objs = []
     if newmicroservice.teamId:
         try:
             teamobj = teamservice.get(newmicroservice.teamId)
@@ -73,15 +78,22 @@ def create_microservice(newmicroservice: MicroserviceCreateApi,
     else:
         pass
     
-    if newmicroservice.scorecardids:
-        for scorecardid in newmicroservice.scorecardids:
-            try:
-                scorecard_obj = scorecard.get(scorecardid)
-                if scorecard_obj is None:
-                    raise HTTPException(status_code=404, detail=f"ScoreCard of ID: {scorecardid} was not found")
-            except Exception as x:
-                error_message = f'ScoreCard of ID: {scorecardid} was not found'
-                raise HTTPException(status_code=404, detail=error_message)
+        if newmicroservice.scorecardids:
+            scorecard_objs = scorecard.getByScoreCradIds(newmicroservice.scorecardids)
+            if len(scorecard_objs) != len(newmicroservice.scorecardids):
+                missing_ids = set(newmicroservice.scorecardids) - {sc.id for sc in scorecard_objs}
+            raise HTTPException(status_code=404, detail=f"ScoreCard(s) with ID(s): {missing_ids} were not found")
+    
+    
+    #if newmicroservice.scorecardids:
+    #    for scorecardid in newmicroservice.scorecardids:
+    #        try:
+    #            scorecard_obj = scorecard.get(scorecardid)
+    #            if scorecard_obj is None:
+    #                raise HTTPException(status_code=404, detail=f"ScoreCard of ID: {scorecardid} was not found")
+    #        except Exception as x:
+    #            error_message = f'ScoreCard of ID: {scorecardid} was not found'
+    #            raise HTTPException(status_code=404, detail=error_message)
 
     created_microservice = microservice.create(MicroserviceCreate(name=newmicroservice.name,
                                             description=newmicroservice.description,
@@ -110,7 +122,7 @@ def create_microservice(newmicroservice: MicroserviceCreateApi,
     
     
     #update operation
-@router.put("/update/{servise_id}", response_model= None)
+@router.put("/{servise_id}", response_model= None)
 def update_microservice(microservice_id: int,updatemicroservice: MicroserviceCreateApi, 
                         microservice: CRUDMicroservice = Depends(dependencies.getMicroservicesCrud),
                         teamservice: CRUDTeam = Depends(dependencies.getTeamsCrud),
@@ -160,7 +172,7 @@ def update_microservice(microservice_id: int,updatemicroservice: MicroserviceCre
     return updated_microservice
 
 
-@router.delete("/delete/{microservice_id}")
+@router.delete("/{service_id}")
 def delete_microservice(
     microservice_id: int,
     microservice: CRUDMicroservice = Depends(dependencies.getMicroservicesCrud),
