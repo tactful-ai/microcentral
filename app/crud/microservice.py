@@ -1,12 +1,13 @@
 import sqlalchemy
 from sqlalchemy.orm import Session
+from fastapi import status
 from fastapi.responses import JSONResponse 
 from ..models import Microservice ,Team ,Scorecard ,MicroserviceScoreCard
 from ..schemas import MicroserviceCreate, MicroserviceUpdate ,MicroserviceInDBBase , TeamInDBBase ,ScoreCardInDBBase
 from .base import CRUDBase
 from typing import List
 from sqlalchemy.sql import func
-from starlette.exceptions import HTTPException
+from starlette.exceptions import HTTPException 
 
 
 class CRUDMicroservice(CRUDBase[Microservice, MicroserviceCreate, MicroserviceUpdate]):
@@ -54,6 +55,12 @@ class CRUDMicroservice(CRUDBase[Microservice, MicroserviceCreate, MicroserviceUp
         return self.db_session.query(Microservice).filter(Microservice.code == code).first()
  
 
-
+    def check_service_name_exists(self, name: str):
+     service = self.db_session.query(Microservice).filter(Microservice.name == name).first()
+     if service:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="service name is aready existed"
+        )
 
       
