@@ -1,10 +1,11 @@
-from fastapi import APIRouter ,Depends,HTTPException ,status
+from fastapi import APIRouter ,Depends ,status
 from app.schemas import MicroserviceInDBBase , MicroserviceCreate , MicroserviceTeamScorecardBase ,MicroserviceCreateApi, MicroserviceScoreCardCreate , MicroserviceUpdate, MicroserviceScoreCardUpdate
 from app.crud import CRUDMicroservice, CRUDMicroserviceTeamScorecard ,CRUDTeam, CRUDScoreCard, CRUDMicroserviceScoreCard
 from typing import List
 from app import dependencies 
 from pydantic import BaseModel, Field
 from sqlalchemy.orm import Session
+from .exceptions import ExceptionCustom
 import re
 
 class Value(BaseModel):
@@ -30,14 +31,14 @@ def get_all_services(microServices: CRUDMicroservice = Depends(dependencies.getM
 async def getOne_service(service_id: int, microServices: CRUDMicroservice = Depends(dependencies.getMicroservicesCrud)):
     service = microServices.getByServiceIdWithTeamName(service_id)
     if service is None:
-        raise HTTPException(status_code=404, detail="Service not found")
+        raise ExceptionCustom(status_code=404, detail="Service not found")
     return service
-
-@router.get("/{service_id}/ScoreCards", response_model=MicroserviceTeamScorecardBase)
+    
+@router.get("/{service_id}/details", response_model=MicroserviceTeamScorecardBase)
 async def getmicroservice_with_teamAndScorecards(service_id: int, microServicesteamScorecard: CRUDMicroserviceTeamScorecard = Depends(dependencies.getMicroserviceTeamScoreCardCrud)):
-    service = microServicesteamScorecard.getByServiceIdWithTeamAndSCOREDetails(service_id)
+    service = microServicesteamScorecard.getByServiceIdWithTeamAndScoreDetails(service_id)
     if service is None:
-        raise HTTPException(status_code=404, detail="Service not found")
+        raise ExceptionCustom(status_code=404, detail="Service not found")
     return service
 
 @router.post("/", response_model= None)
@@ -51,19 +52,19 @@ def create_microservice(newmicroservice: MicroserviceCreateApi,
     formatted_code = format_code(newmicroservice.name)
     existing_microservice = microservice.get_by_code(formatted_code)
     if existing_microservice:
-        raise HTTPException(status_code=400, detail="Code already exists")
+        raise ExceptionCustom(status_code=400, detail="Code already exists")
     
     if not newmicroservice.name:
-        raise HTTPException(status_code=400, detail="Name cannot be empty")
+        raise ExceptionCustom(status_code=400, detail="Name cannot be empty")
     
     if len(newmicroservice.name) < 3:
-        raise HTTPException(status_code=400, detail="Name must be at least 3 characters long")
+        raise ExceptionCustom(status_code=400, detail="Name must be at least 3 characters long")
     
     if not newmicroservice.description :
-        raise HTTPException(status_code=400, detail="Description cannot be empty")
+        raise ExceptionCustom(status_code=400, detail="Description cannot be empty")
     
     if len(newmicroservice.description) > 500:
-        raise HTTPException(status_code=400, detail="Description cannot exceed 500 characters")
+        raise ExceptionCustom(status_code=400, detail="Description cannot exceed 500 characters")
  
     teamobj = None
     scorecard_objs = []
@@ -71,10 +72,10 @@ def create_microservice(newmicroservice: MicroserviceCreateApi,
         try:
             teamobj = teamservice.get(newmicroservice.teamId)
             if teamobj is None:
-                raise HTTPException(status_code=404, detail="Team not found")
+                raise ExceptionCustom(status_code=404, detail="Team not found")
         except Exception as x:
             error_message = 'Team Id was not found'
-            raise HTTPException(status_code=404, detail=error_message)
+            raise ExceptionCustom(status_code=404, detail=error_message)
     else:
         pass
     
@@ -82,18 +83,9 @@ def create_microservice(newmicroservice: MicroserviceCreateApi,
             scorecard_objs = scorecard.getByScoreCradIds(newmicroservice.scorecardids)
             if len(scorecard_objs) != len(newmicroservice.scorecardids):
                 missing_ids = set(newmicroservice.scorecardids) - {sc.id for sc in scorecard_objs}
-            raise HTTPException(status_code=404, detail=f"ScoreCard(s) with ID(s): {missing_ids} were not found")
+            raise ExceptionCustom(status_code=404, detail=f"ScoreCard(s) with ID(s): {missing_ids} were not found")
     
     
-    #if newmicroservice.scorecardids:
-    #    for scorecardid in newmicroservice.scorecardids:
-    #        try:
-    #            scorecard_obj = scorecard.get(scorecardid)
-    #            if scorecard_obj is None:
-    #                raise HTTPException(status_code=404, detail=f"ScoreCard of ID: {scorecardid} was not found")
-    #        except Exception as x:
-    #            error_message = f'ScoreCard of ID: {scorecardid} was not found'
-    #            raise HTTPException(status_code=404, detail=error_message)
 
     created_microservice = microservice.create(MicroserviceCreate(name=newmicroservice.name,
                                             description=newmicroservice.description,
@@ -106,7 +98,7 @@ def create_microservice(newmicroservice: MicroserviceCreateApi,
             try:
                 scorecard_obj = scorecard.get(scorecardid)
                 if scorecard_obj is None:
-                    raise HTTPException(status_code=404, detail=f"ScoreCard of ID: {scorecardid} was not found")
+                    raise ExceptionCustom(status_code=404, detail=f"ScoreCard of ID: {scorecardid} was not found")
                 
                 servicescorecard.create(MicroserviceScoreCardCreate(
                     microserviceId=created_microservice.id,
@@ -114,7 +106,7 @@ def create_microservice(newmicroservice: MicroserviceCreateApi,
                 ))
             except Exception as x:
                 error_message = f"Failed to create relationship for ScoreCard ID: {scorecardid}. Reason: {str(x)}"
-                raise HTTPException(status_code=400, detail=error_message)
+                raise ExceptionCustom(status_code=400, detail=error_message)
             
             
     return created_microservice
@@ -130,30 +122,30 @@ def update_microservice(microservice_id: int,updatemicroservice: MicroserviceCre
                         scorecard: CRUDScoreCard = Depends(dependencies.getScoreCardsCrud)):
     
     if not updatemicroservice.name:
-        raise HTTPException(status_code=400, detail="Name cannot be empty")
+        raise ExceptionCustom(status_code=400, detail="Name cannot be empty")
     
     if len(updatemicroservice.name) < 3:
-        raise HTTPException(status_code=400, detail="Name must be at least 3 characters long")
+        raise ExceptionCustom(status_code=400, detail="Name must be at least 3 characters long")
 
     if not updatemicroservice.description :
-        raise HTTPException(status_code=400, detail="Description cannot be empty")
+        raise ExceptionCustom(status_code=400, detail="Description cannot be empty")
 
     if len(updatemicroservice.description) > 500:
-        raise HTTPException(status_code=400, detail="Description cannot exceed 500 characters")
+        raise ExceptionCustom(status_code=400, detail="Description cannot exceed 500 characters")
  
     try:
         teamobj = teamservice.get(updatemicroservice.teamId)
         if teamobj is None:
-            raise HTTPException(status_code=404, detail="Not Found") 
+            raise ExceptionCustom(status_code=404, detail="Not Found") 
     except Exception as x:
         error_message = 'Team Id was not found'
-        raise HTTPException(status_code=404, detail=error_message)
+        raise ExceptionCustom(status_code=404, detail=error_message)
     for scorecardid in updatemicroservice.scorecardids:
         try:
             scorecard.get(scorecardid)
         except Exception as x:
             error_message = f'ScoreCard of ID: {scorecardid} was not found'
-            raise HTTPException(status_code=404, detail=error_message)
+            raise ExceptionCustom(status_code=404, detail=error_message)
         
     
     formatted_code = format_code(updatemicroservice.name)
@@ -182,12 +174,12 @@ def delete_microservice(
         microservice.delete(microservice_id)
     except Exception:
         error_message = "Can't delete Microservice"
-        raise HTTPException(status_code=404, detail="Microservice not found")
+        raise ExceptionCustom(status_code=404, detail="Microservice not found")
     try:
         servicescorecard.deleteByServiceId(microservice_id)
     except Exception:
         error_message = "Can't delete Microservice ScoreCard"
-        raise HTTPException(status_code=404, detail="Can't delete Microservice ScoreCard")
+        raise ExceptionCustom(status_code=404, detail="Can't delete Microservice ScoreCard")
 
     
     return {"message": "Microservice and associated scorecards successfully deleted"}

@@ -18,7 +18,7 @@ class CRUDMicroserviceTeamScorecard:
         self.scoreCard = CRUDScoreCard(db_session) 
 
     # Get all with scorecard and team
-    def getByServiceIdWithTeamAndSCOREDetails(self, service_id: int)-> MicroserviceTeamScorecardBase:
+    def getByServiceIdWithTeamAndScoreDetails(self, service_id: int)-> MicroserviceTeamScorecardBase:
     
         microservice = self.microsService.get(service_id)
        
