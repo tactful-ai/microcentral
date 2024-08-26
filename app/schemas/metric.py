@@ -11,16 +11,18 @@ class MetricBase(BaseModel):
     description: Optional[str] = None
     type: Optional[str] = None
 
-    @validator('area', pre=True, always=True)
-    def validate_area_length(cls, area):
-        if len(area) == 0:
-            raise ValueError("empty list not allowed")
-        return area
+    
 
 # Properties to receive on metric creation
 class MetricCreate(MetricBase):
     name: str
     description: str
+
+    @validator('area', pre=True, always=True)
+    def validate_area_length(cls, area):
+        if len(area) == 0:
+            raise ValueError("empty list not allowed")
+        return area
 
 class MetricGet(MetricBase):
     area: Optional[str] = None

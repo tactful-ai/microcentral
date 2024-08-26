@@ -114,17 +114,17 @@ def editMetric(metricID: int, metricInput: schemas.MetricUpdate ,metricCrud: cru
     metric = metricCrud.get(metricID)
     if metric is None:
         return JSONResponse(status_code=status.HTTP_404_NOT_FOUND, content= jsonable_encoder({"Not Found"}))
-    print(metric.area)
+    metricObj = metricInput
     if (metricInput.name):
-        metric.name = metricInput.name
-        metric.code = "-".join( metricInput.name.split())
+        metricObj.name = metricInput.name
+        metricObj.code = "-".join(metricInput.name.split())
     if (metricInput.area):
-        metric.area = json.dumps(metricInput.area)
-    if (metricInput.description):
-        metric.description = metricInput.description
-    if (metricInput.type):
-        metric.type = metricInput.type
-    metricCrud.update(metricID,metric)
+        metricObj.area = json.dumps(metricInput.area)
+    if (metricInput.description == None):
+        metricObj.description = metric.description
+    if (metricInput.type == None):
+        metricObj.type = metric.type
+    metricCrud.update(metricID,metricObj)
     return JSONResponse(status_code=status.HTTP_200_OK, content="Success in Editing")
 
 
