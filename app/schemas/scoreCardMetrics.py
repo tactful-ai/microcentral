@@ -1,4 +1,4 @@
-from typing import Optional
+from typing import Optional, Union
 
 from pydantic import BaseModel
 
@@ -7,22 +7,22 @@ from pydantic import BaseModel
 class ScoreCardMetricsBase(BaseModel):
     scoreCardId: Optional[int] = None
     metricId: Optional[int] = None
-    """
+    
     criteria: Optional[str] = None
-    desiredValue: Optional[] = None
+    desiredValue: Optional[Union[str,float,int,str]] = None
     weight: Optional[int] = None
-    """
+    
 # class ScoreCardMetricsGet(ScoreCardMetricsBase):
 
 # Properties to receive on ScoreCardMetrics creation
 class ScoreCardMetricsCreate(ScoreCardMetricsBase):
     scoreCardId: int
     metricId: int
-    """
+    
     criteria: str
     #desiredValue: list
     weight: int
-    """
+    
     
 # Properties to receive on ScoreCardMetrics update
 class ScoreCardMetricsUpdate(ScoreCardMetricsBase):
@@ -33,11 +33,11 @@ class ScoreCardMetricsInDBBase(ScoreCardMetricsBase):
     id: int
     scoreCardId: int
     metricId: int
-    """
+    
     criteria: str
     #desiredValue: list
     weight: int
-    """
+    
 
     class Config:
         orm_mode = True
