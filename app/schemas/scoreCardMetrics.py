@@ -20,7 +20,7 @@ class ScoreCardMetricsCreate(ScoreCardMetricsBase):
     metricId: int
     
     criteria: str
-    #desiredValue: list
+    desiredValue: Optional[Union[str,float,int,str]] = None
     weight: int
     
     
@@ -35,7 +35,7 @@ class ScoreCardMetricsInDBBase(ScoreCardMetricsBase):
     metricId: int
     
     criteria: str
-    #desiredValue: list
+    desiredValue: Optional[Union[str,float,int,str]] = None
     weight: int
     
 
