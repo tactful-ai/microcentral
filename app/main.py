@@ -1,6 +1,8 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
+from app.api.exceptions import ExceptionCustom
+from app.api.handling_exception import my_exception_handler
 
 from app.api.api import apiRouter
 from app.core.config import settings
@@ -17,6 +19,8 @@ def create_app() -> FastAPI:
         allow_methods=["*"],
         allow_headers=["*"],
     )
+
+    _app.add_exception_handler(ExceptionCustom, my_exception_handler)
 
     # Just for checking if the app is up and running
     @_app.get("/health")
