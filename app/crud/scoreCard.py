@@ -17,4 +17,3 @@ class CRUDScoreCard(CRUDBase[Scorecard, ScoreCardCreate, ScoreCardUpdate]):
         ids =[ScoreCardId for ScoreCardId in ScoreCardIds ]
         return self.db_session.query(Scorecard).filter(Scorecard.id.in_(ids)).all()
 
-   

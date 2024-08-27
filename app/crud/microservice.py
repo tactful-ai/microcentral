@@ -7,8 +7,7 @@ from ..schemas import MicroserviceCreate, MicroserviceUpdate ,MicroserviceInDBBa
 from .base import CRUDBase
 from typing import List
 from sqlalchemy.sql import func
-from starlette.exceptions import HTTPException 
-
+from app.api.exceptions import ExceptionCustom
 
 class CRUDMicroservice(CRUDBase[Microservice, MicroserviceCreate, MicroserviceUpdate]):
     def __init__(self, db_session: Session):
@@ -19,10 +18,8 @@ class CRUDMicroservice(CRUDBase[Microservice, MicroserviceCreate, MicroserviceUp
 
     def getByTeamIdAndCode(self, teamId: str, code: str):
         return self.db_session.query(Microservice).filter(Microservice.teamId == teamId, Microservice.code == code).first()
-
-   
-    
-    def getAllServicesByTeamName(self) -> list[MicroserviceInDBBase]:
+ 
+    def getAllServicesWithTeamName(self) -> list[MicroserviceInDBBase]:
         
         microservices = self.list()
         services = []
@@ -42,10 +39,9 @@ class CRUDMicroservice(CRUDBase[Microservice, MicroserviceCreate, MicroserviceUp
         return services
    
    #get one with team
-    def getByServiceIdWithTeamName(self , service_id:int):
+    def getByServiceId(self , service_id:int):
         result = (
         self.db_session.query(Microservice.id, Microservice.name, Microservice.description, Microservice.code, Team.name.label("team_name"))
-        .join(Team, Microservice.teamId == Team.id)
         .filter(Microservice.id == service_id)
         .first()
         )
@@ -58,9 +54,7 @@ class CRUDMicroservice(CRUDBase[Microservice, MicroserviceCreate, MicroserviceUp
     def check_service_name_exists(self, name: str):
      service = self.db_session.query(Microservice).filter(Microservice.name == name).first()
      if service:
-        raise HTTPException(
+        raise ExceptionCustom(
             status_code=status.HTTP_400_BAD_REQUEST,
             detail="service name is aready existed"
         )
-
-      
