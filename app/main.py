@@ -5,6 +5,8 @@ from fastapi import Request, status, FastAPI, HTTPException
 from fastapi.responses import JSONResponse
 from fastapi.exceptions import RequestValidationError
 from fastapi.encoders import jsonable_encoder
+from app.api.exceptions import ExceptionCustom
+from app.api.handling_exception import my_exception_handler
 
 from app.api.api import apiRouter
 from app.core.config import settings
@@ -22,6 +24,9 @@ def create_app() -> FastAPI:
         allow_headers=["*"],
     )
 
+    _app.add_exception_handler(ExceptionCustom, my_exception_handler)
+
+    
     # Edit on the exceptiion handler of data type validation pydantic to send custom error messages
     @_app.exception_handler(RequestValidationError)
     async def validation_exception_handler(request: Request, exc: RequestValidationError):
@@ -37,8 +42,9 @@ def create_app() -> FastAPI:
             )
         return JSONResponse(
             status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
-            content=jsonable_encoder({"detail": modified_details}),
+            content=jsonable_encoder({"message": modified_details}),
         )
+    
     
     """
     class ExceptionCustom(HTTPException):

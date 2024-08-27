@@ -5,6 +5,7 @@ from app.database.base_class import Base
 from pydantic import BaseModel
 from sqlalchemy.orm import Session
 from starlette.exceptions import HTTPException
+from app.api.exceptions import ExceptionCustom
 
 ModelType = TypeVar("ModelType", bound=Base)
 CreateSchemaType = TypeVar("CreateSchemaType", bound=BaseModel)
@@ -19,7 +20,7 @@ class CRUDBase(Generic[ModelType, CreateSchemaType, UpdateSchemaType]):
     def get(self, id: Any) -> Optional[ModelType]:
         obj: Optional[ModelType] = self.db_session.query(self.model).get(id)
         if obj is None:
-            raise HTTPException(status_code=404, detail="Not Found")
+            raise ExceptionCustom(status_code=404, detail="Not Found")
         return obj
 
     def list(self, skip: int = 0, limit: int = 100) -> List[ModelType]:
@@ -33,7 +34,7 @@ class CRUDBase(Generic[ModelType, CreateSchemaType, UpdateSchemaType]):
         except sqlalchemy.exc.IntegrityError as e:
             self.db_session.rollback()
             if "duplicate key" in str(e):
-                raise HTTPException(status_code=409, detail="Duplicated Key, Name field is Duplicated")
+                raise ExceptionCustom(status_code=409, detail="Duplicated Key, Name field is Duplicated")
             else:
                 raise e
         return db_obj

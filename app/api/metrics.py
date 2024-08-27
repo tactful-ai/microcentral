@@ -8,8 +8,9 @@ from app.crud import CRUDMetric, CRUDServiceMetric, CRUDMicroserviceScoreCard, C
 from app import schemas, models, crud
 from typing import Any, Callable
 import json
+import re
 from fastapi.routing import APIRoute
-
+from .exceptions import ExceptionCustom
 
 
 
@@ -22,7 +23,12 @@ class Value(BaseModel):
 router = APIRouter()
 app = FastAPI()
 
+def format_code(name):
+    code = re.sub(r'\s+', '-', name.strip())
+    return code
 
+"""
+# OLD ONES NOT USED ANYMORE
 @router.post("/{service_code}/{metric_code}")
 def create(service_code: str, metric_code: str, value: Value,
     metricsService: CRUDMetric = Depends(dependencies.getMetricsCrud),
@@ -61,7 +67,7 @@ def getScoreCards(
     teamId = decodeJWT(token)["teamId"]
 
     return microserviceScoreCardService.getByTeamId(teamId)
-
+"""
 
 # ADD NEW METRIC HERE
 @router.post("/", response_model=schemas.Metric)
@@ -69,10 +75,10 @@ def createMetric(metric: schemas.MetricCreate, metricCrud: crud.CRUDMetric = Dep
     metricObj = metric
 
     # change ' ' with '-'
-    metricObj.code = "-".join( metric.name.split())
+    metricObj.code = format_code(metric.name)
 
-    if (not isinstance(metricObj.area,list)):
-        return JSONResponse(status_code=status.HTTP_422_UNPROCESSABLE_ENTITY, content= jsonable_encoder({"area": "area must be valid list"}))
+    #if (not isinstance(metricObj.area,list)):
+    #    raise JSONResponse(status_code=status.HTTP_422_UNPROCESSABLE_ENTITY, content= jsonable_encoder({"area": "BLAH"}))
     
     """
     if (metricObj.area == None):
@@ -83,22 +89,22 @@ def createMetric(metric: schemas.MetricCreate, metricCrud: crud.CRUDMetric = Dep
     metricObj.area = json.dumps(metric.area)
     
     if (metricObj.type != "integer" and metricObj.type != "boolean"):
-        return JSONResponse(status_code=status.HTTP_422_UNPROCESSABLE_ENTITY, content= jsonable_encoder({"type": "type must be integer or boolean"}))
+        raise ExceptionCustom(status_code=422, detail= "type must be integer or boolean")
     
-    try:
-        metricCrud.create(metricObj)
-        return JSONResponse(status_code=status.HTTP_200_OK, content= jsonable_encoder({"message": "Success", "object":metricObj}))
-    except HTTPException as exc:
-        return JSONResponse(status_code=exc.status_code, content= jsonable_encoder({"error": exc.detail}))
+
+    metricCrud.create(metricObj)
+    raise ExceptionCustom(status_code=200, detail="Success in creating metric")
+    #except HTTPException as exc:
+    #    return ExceptionCustom(status_code=exc.status_code, detail= exc.detail)
 
 # Get Any Metric Here By ID with parsing the list to be a real list not just stringified
 @router.get("/{metricID}", response_model=schemas.List[schemas.Metric])
 def getMetric(metricID: int, metricCrud: crud.CRUDMetric = Depends(dependencies.getMetricsCrud)) -> Any:
     metric = metricCrud.get(metricID)
     metric.area = json.loads(metric.area)
-    if metric is None:
-        return JSONResponse(status_code=status.HTTP_404_NOT_FOUND, content= jsonable_encoder({"error":"Not Found"}))
-    return JSONResponse(status_code=status.HTTP_200_OK, content= jsonable_encoder({"object":metric}))
+    metricOBJ = jsonable_encoder(metric)
+    # HERE MAN IT IS NOT WORKING WITH ExceptionCustom
+    raise ExceptionCustom(status_code=200, detail=metricOBJ)
 
 @router.delete("/{metricID}")
 def deleteMetric(metricID: int, metricCrud: crud.CRUDMetric = Depends(dependencies.getMetricsCrud)) -> Any:
@@ -106,18 +112,16 @@ def deleteMetric(metricID: int, metricCrud: crud.CRUDMetric = Depends(dependenci
     if metric is None:
         return JSONResponse(status_code=status.HTTP_404_NOT_FOUND, content= jsonable_encoder({"Not Found"}))
     metricCrud.delete(metricID)
-    return JSONResponse("deleted successfully")
+    raise ExceptionCustom(status_code = 200 , detail="deleted successfully")
 
 #Still need some work to be enhanced
 @router.put("/{metricID}")
 def editMetric(metricID: int, metricInput: schemas.MetricUpdate ,metricCrud: crud.CRUDMetric = Depends(dependencies.getMetricsCrud)) -> Any:
     metric = metricCrud.get(metricID)
-    if metric is None:
-        return JSONResponse(status_code=status.HTTP_404_NOT_FOUND, content= jsonable_encoder({"Not Found"}))
     metricObj = metricInput
     if (metricInput.name):
         metricObj.name = metricInput.name
-        metricObj.code = "-".join(metricInput.name.split())
+        metricObj.code = format_code(metricInput.name)
     if (metricInput.area):
         metricObj.area = json.dumps(metricInput.area)
     if (metricInput.description == None):
@@ -125,15 +129,20 @@ def editMetric(metricID: int, metricInput: schemas.MetricUpdate ,metricCrud: cru
     if (metricInput.type == None):
         metricObj.type = metric.type
     metricCrud.update(metricID,metricObj)
-    return JSONResponse(status_code=status.HTTP_200_OK, content="Success in Editing")
+    raise ExceptionCustom(status_code=200, detail="Success in Editing")
 
 
-"""
-# For Older Version of Metric where area is not list 
+
+
 @router.get("/", response_model=schemas.List[schemas.Metric])
 def getAllMetrics(metricCrud: crud.CRUDMetric = Depends(dependencies.getMetricsCrud)) -> Any:
-    return JSONResponse(status_code=status.HTTP_200_OK, content= jsonable_encoder({"object":metricCrud.list()}))
-"""
+    metrics = metricCrud.list()
+    metricsOBJ =  []
+    for metric in metrics:
+        metric.area = json.loads(metric.area)
+        metricsOBJ.append(metric)
+    raise ExceptionCustom(status_code=200, detail= jsonable_encoder(metricsOBJ))
+
     
 
 """
