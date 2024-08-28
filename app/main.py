@@ -33,7 +33,6 @@ def create_app() -> FastAPI:
         # Get the original 'detail' list of errors
         details = exc.errors()
         modified_details = []
-        # Replace 'msg' with 'message' for each error
         for error in details:
             modified_details.append(
                 {
@@ -44,15 +43,6 @@ def create_app() -> FastAPI:
             status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
             content=jsonable_encoder({"message": modified_details}),
         )
-    
-    
-    """
-    class ExceptionCustom(HTTPException):
-        pass
-    def exception_404_handler(request: Request, exc: HTTPException):
-        return JSONResponse(status_code=status.HTTP_404_NOT_FOUND, content={"message":exc.detail})
-    _app.add_exception_handler(ExceptionCustom, exception_404_handler)
-    """
     
     # Just for checking if the app is up and running
     @_app.get("/health")
