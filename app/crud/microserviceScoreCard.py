@@ -15,3 +15,7 @@ class CRUDMicroserviceScoreCard(CRUDBase[MicroserviceScoreCard, MicroserviceScor
     def getByTeamId(self, teamId: str):
         microservices = self.microserviceService.getByTeamId(teamId)
         return self.db_session.query(MicroserviceScoreCard).filter(MicroserviceScoreCard.microserviceId.in_([microservice.id for microservice in microservices])).all()
+
+    def getservice(self, scorecardId: int):
+        microserviceIDs = self.db_session.query(MicroserviceScoreCard).filter(MicroserviceScoreCard.scoreCardId == scorecardId)
+        return microserviceIDs

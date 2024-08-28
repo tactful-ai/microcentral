@@ -38,7 +38,6 @@ def getScoreCard(scorecardID: int, scoreCardCrud: crud.CRUDScoreCard = Depends(d
 @router.delete("/{scorecardID}")
 def deleteScorecard(scorecardID:int , scoreCardCrud: crud.CRUDScoreCard = Depends(dependencies.getScoreCardsCrud)) -> Any:
     scorecard = scoreCardCrud.get(scorecardID)
-    if scorecard is None:
-        return JSONResponse(status_code=status.HTTP_404_NOT_FOUND, content= jsonable_encoder({"detail":"Not Found"}))
     scoreCardCrud.delete(scorecardID)
     return JSONResponse("Deleted Successfully")
+
