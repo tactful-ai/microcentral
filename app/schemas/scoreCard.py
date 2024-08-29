@@ -21,6 +21,7 @@ class ScoreCardUpdate(ScoreCardBase):
 class ScoreCardInDBBase(ScoreCardBase):
     id: int
     name: str
+    code: str
     description: str
 
     class Config:
