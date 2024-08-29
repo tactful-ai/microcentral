@@ -7,6 +7,7 @@ from pydantic import BaseModel
 class ScoreCardBase(BaseModel):
     name: Optional[str] = None
     description: Optional[str] = None
+    code: Optional[str] = None
 
 # Properties to receive on scorecard creation
 class ScoreCardCreate(ScoreCardBase):

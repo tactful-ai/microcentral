@@ -13,19 +13,23 @@ from fastapi.routing import APIRoute
 
 router = APIRouter()
 
+def format_code(name):
+    code = re.sub(r'\s+', '-', name.strip())
+    return code
+
 @router.post("/", response_model=schemas.ScoreCard)
 def createScoreCard(scoreCard: schemas.ScoreCardCreate, scoreCardCrud: crud.CRUDScoreCard = Depends(dependencies.getScoreCardsCrud)) -> Any:
+    scoreCard.code = format_code(scoreCard.name)
     return scoreCardCrud.create(scoreCard)
 
 
 
 # I get all the scorecards id then go to microserviceSCORECARD to get all ids of microservices related to one scorecardID
-"""
 @router.get("/", response_model=List[schemas.ScoreCard])
 def getAllScoreCard(scoreCardCrud: crud.CRUDScoreCard = Depends(dependencies.getScoreCardsCrud)):
     scoreCards = scoreCardCrud.list()
     return scoreCards
-"""
+
 
 # Get Single Scorecard by its won ID (NOTE: This is working on the old DB of scorecard 
 # DATA of scorecard retreived is : 1- ID 2- Name 3- Descritpion)
