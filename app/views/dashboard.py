@@ -32,3 +32,8 @@ def microservice(request: Request, id: int, microservices: CRUDMicroservice = De
 def teams(request: Request, teamsService: CRUDTeam = Depends(dependencies.getTeamsCrud)):
     teams = teamsService.list()
     return templates.TemplateResponse("teams.html", {"request": request, "teams": teams})
+
+@router.get("/microservices/create", response_class=HTMLResponse)
+def create(request: Request):
+
+    return templates.TemplateResponse("service_create_edit.html", {"request": request})
