@@ -1,6 +1,6 @@
 from typing import Optional
-
 from pydantic import BaseModel
+from datetime import datetime
 
 
 # Shared properties
@@ -22,14 +22,23 @@ class ScoreCardInDBBase(ScoreCardBase):
     id: int
     name: str
     code: str
-    description: str
+    description: Optional[str]= None
 
     class Config:
         orm_mode = True
 
-# Properties to return to client
+# Properties shared serviceinfo
 class ScoreCard(ScoreCardInDBBase):
-    pass
+    id: int
+    name: str
+    code: str
+    update_time:Optional[datetime] = datetime.now() 
+    #score: float = 0.0
+    #score_value: Optional[float] = None
+
+    class Config:
+        orm_mode = True
+ 
 
 # Properties properties stored in DB
 class ScoreCardInDB(ScoreCardInDBBase):

@@ -10,3 +10,15 @@ class CRUDScoreCardMetric(CRUDBase[ScoreCardMetrics, ScoreCardMetricsCreate, Sco
     def __init__(self, db_session: Session):
         super(CRUDScoreCardMetric, self).__init__(ScoreCardMetrics, db_session)
 
+    #def getMetricIdByScoreCardId(self, scorecard_id):
+    #    # Query to get the metric_id associated with the score_card_id from the ScoreCardMetric table
+    #    scorecard_metric = (
+    #        self.db_session.query(ScoreCardMetrics)
+    #        .filter(ScoreCardMetrics.scoreCardId == scorecard_id)
+    #        .first()
+    #    )
+    #    return scorecard_metric.metricId if scorecard_metric else None
+      
+    def getMetricByScoreCradId(self, scorecard_id: int) -> list[ScoreCardMetrics]:
+        return self.db_session.query(ScoreCardMetrics).filter(ScoreCardMetrics.scoreCardId == scorecard_id).all() 
+        
