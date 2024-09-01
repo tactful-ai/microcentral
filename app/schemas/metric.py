@@ -17,12 +17,16 @@ class MetricBase(BaseModel):
 class MetricCreate(MetricBase):
     name: str
     description: str
+    type: str
 
+"""
+    # So i will remove it as the area field is optional ?
     @validator('area', pre=True, always=True)
     def validate_area_length(cls, area):
         if len(area) == 0:
             raise ValueError("empty list not allowed")
         return area
+"""
 
 class MetricGet(MetricBase):
     area: Optional[str] = None

@@ -7,7 +7,7 @@ from ..schemas import MicroserviceCreate, MicroserviceUpdate ,MicroserviceInDBBa
 from .base import CRUDBase
 from typing import List
 from sqlalchemy.sql import func
-from app.api.exceptions import ExceptionCustom
+from app.api.exceptions import HTTPResponseCustomized
 
 class CRUDMicroservice(CRUDBase[Microservice, MicroserviceCreate, MicroserviceUpdate]):
     def __init__(self, db_session: Session):
@@ -53,7 +53,7 @@ class CRUDMicroservice(CRUDBase[Microservice, MicroserviceCreate, MicroserviceUp
     def check_service_name_exists(self, name: str):
         service = self.db_session.query(Microservice).filter(Microservice.name == name).first()
         if service:
-            raise ExceptionCustom(
+            raise HTTPResponseCustomized(
                 status_code=status.HTTP_400_BAD_REQUEST,
                 detail="service name is aready existed"
             )

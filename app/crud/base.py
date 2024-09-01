@@ -1,10 +1,10 @@
 from typing import Any, Generic, List, Optional, Type, TypeVar
-
+from fastapi.encoders import jsonable_encoder
 import sqlalchemy
 from app.database.base_class import Base
 from pydantic import BaseModel
 from sqlalchemy.orm import Session
-from app.api.exceptions import ExceptionCustom
+from app.api.exceptions import HTTPResponseCustomized
 
 
 ModelType = TypeVar("ModelType", bound=Base)
@@ -20,11 +20,20 @@ class CRUDBase(Generic[ModelType, CreateSchemaType, UpdateSchemaType]):
     def get(self, id: Any) -> Optional[ModelType]:
         obj: Optional[ModelType] = self.db_session.query(self.model).get(id)
         if obj is None:
-            raise ExceptionCustom(status_code=404, detail="Not Found")
+            raise HTTPResponseCustomized(status_code=404, detail="Not Found")
         return obj
 
     def list(self, skip: int = 0, limit: int = 100) -> List[ModelType]:
-        return self.db_session.query(self.model).offset(skip).limit(limit).all()
+        lst = self.db_session.query(self.model).offset(skip).limit(limit).all()
+        lst = sorted(lst, key=lambda item: item.id)
+        return lst
+    
+
+    def extract_duplicated_field_name(params, orig):
+        for key in params:
+            if key.startswith("unique_"):
+                return key[7:]  # Remove "unique_" prefix
+            return None
 
     def create(self, obj: CreateSchemaType) -> ModelType:
         db_obj: ModelType = self.model(**obj.dict())
@@ -34,10 +43,13 @@ class CRUDBase(Generic[ModelType, CreateSchemaType, UpdateSchemaType]):
         except sqlalchemy.exc.IntegrityError as e:
             self.db_session.rollback()
             if "duplicate key" in str(e):
-                raise ExceptionCustom(status_code=409, detail="Duplicated Key, Name field is Duplicated")
+                e = jsonable_encoder(e)
+                raise HTTPResponseCustomized(status_code=409, detail="duplicated field, please check the field name")
             else:
                 raise e
         return db_obj
+    
+    
 
     def update(self, id: Any, obj: UpdateSchemaType) -> Optional[ModelType]:
         db_obj = self.get(id)
@@ -49,6 +61,6 @@ class CRUDBase(Generic[ModelType, CreateSchemaType, UpdateSchemaType]):
     def delete(self, id: Any) -> None:
         db_obj = self.db_session.query(self.model).get(id)
         if db_obj is None:
-            raise ExceptionCustom(status_code=404, detail="Not Found")
+            raise HTTPResponseCustomized(status_code=404, detail="Not Found")
         self.db_session.delete(db_obj)
         self.db_session.commit()
