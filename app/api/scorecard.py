@@ -10,12 +10,9 @@ from app import schemas, models, crud
 from typing import Any, List
 import json
 from fastapi.routing import APIRoute
+from app.utils.base import format_code
 
 router = APIRouter()
-
-def format_code(name):
-    code = re.sub(r'\s+', '-', name.strip())
-    return code
 
 @router.post("/", response_model=schemas.ScoreCard)
 def createScoreCard(scoreCard: schemas.ScoreCardCreate, scoreCardCrud: crud.CRUDScoreCard = Depends(dependencies.getScoreCardsCrud)) -> Any:
