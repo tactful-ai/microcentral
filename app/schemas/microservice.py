@@ -17,11 +17,25 @@ class MicroserviceCreate(MicroserviceBase):
     name: str
     description: str
     code: str
-
+    teamId:uuid.UUID
+#new
+class MicroserviceCreateApi(MicroserviceBase):
+    name: str
+    description: str
+    teamId:Optional[uuid.UUID] = None
+    scorecardids: Optional [list[int]] = None
+    
+    class Config:
+        orm_mode = True
 
 # Properties to receive on microservice update
 class MicroserviceUpdate(MicroserviceBase):
-    pass
+    name: str
+    description: str
+    teamId: uuid.UUID
+    
+    class Config:
+        orm_mode = True
 
 
 # Properties shared by models stored in DB
@@ -30,7 +44,8 @@ class MicroserviceInDBBase(MicroserviceBase):
     name: str
     code: str
     description: str
-    teamId: uuid.UUID
+    team_name: Optional[str] =None
+    scorecard_names: Optional[list] = None
 
     class Config:
         orm_mode = True

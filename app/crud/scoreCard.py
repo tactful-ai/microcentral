@@ -10,3 +10,10 @@ class CRUDScoreCard(CRUDBase[Scorecard, ScoreCardCreate, ScoreCardUpdate]):
     def __init__(self, db_session: Session):
         super(CRUDScoreCard, self).__init__(Scorecard, db_session)
 
+    def getByScoreCradId(self, ScoreCardId: str):
+        return self.db_session.query(Scorecard).filter(Scorecard.id == ScoreCardId).all()
+
+    def getByScoreCradIds(self, ScoreCardIds: list[int]):
+        ids =[ScoreCardId for ScoreCardId in ScoreCardIds ]
+        return self.db_session.query(Scorecard).filter(Scorecard.id.in_(ids)).all()
+
