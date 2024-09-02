@@ -3,7 +3,8 @@ from sqlalchemy.orm import Session
 from ..models import Microservice
 from ..schemas import MicroserviceInfoBase, team, scoreCard, scoreCardMetrics, serviceMetric
 from .base import CRUDBase
-from typing import List
+from typing import List 
+from datetime import datetime
 from sqlalchemy.sql import func
 from app.api.exceptions import ExceptionCustom
 from . import CRUDTeam, CRUDMicroserviceScoreCard, CRUDScoreCard, CRUDMicroservice, CRUDScoreCardMetric, CRUDServiceMetric
@@ -19,9 +20,8 @@ class CRUDMicroserviceInfo:
         self.seviceMetric = CRUDServiceMetric(db_session)
 
     # Get one with scorecard list and team name
-
     def getServiceInfo(self, service_id: int) -> MicroserviceInfoBase:
-
+        print(datetime.now())
         microservice = self.microsService.get(service_id)
 
         if not microservice:
@@ -33,17 +33,20 @@ class CRUDMicroserviceInfo:
         scorecard_ids = [sc_id.scoreCardId for sc_id in scorecardIds]
         scorecards = self.scoreCard.getByScoreCradIds(scorecard_ids)
         
+        
         service_scorecards = []
+        for sc in scorecards:
+           update_time = self.seviceMetric.get_timestamp(service_id, sc.id)
+           print(update_time)
+           
         for sc in scorecards:
            service_scorecards.append({
              'id': sc.id,
              'name': sc.name,
              'code': sc.code,
-             'update_time' :self.seviceMetric.get_timestamp(service_id , sc.id)
+             'update_time' : update_time
         })
            
-        #update_time = self.seviceMetric.get_timestamp(service_id , scorecard_ids)
-
         service = MicroserviceInfoBase(
             id=microservice.id,
             name=microservice.name,
