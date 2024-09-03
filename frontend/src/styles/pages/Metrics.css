@@ -1,0 +1,8 @@
+
+table * {
+    color: #303030 !important
+}
+
+html, body, #app, #app>div {
+	min-height: 100% !important
+}
