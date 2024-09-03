@@ -1,8 +1,12 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
-from app.api.exceptions import ExceptionCustom
-from app.api.handling_exception import my_exception_handler
+from fastapi import Request, status, FastAPI, HTTPException
+from fastapi.responses import JSONResponse
+from fastapi.exceptions import RequestValidationError
+from fastapi.encoders import jsonable_encoder
+from app.api.exceptions import HTTPResponseCustomized
+from app.api.handling_exception import my_exception_handler, validation_exception_handler
 
 from app.api.api import apiRouter
 from app.core.config import settings
@@ -20,7 +24,11 @@ def create_app() -> FastAPI:
         allow_headers=["*"],
     )
 
-    _app.add_exception_handler(ExceptionCustom, my_exception_handler)
+    _app.add_exception_handler(HTTPResponseCustomized, my_exception_handler)
+
+    @_app.exception_handler(RequestValidationError)
+    async def ValidationExceptionHandler(request: Request, exc: RequestValidationError):
+        return validation_exception_handler(request, exc)
 
     # Just for checking if the app is up and running
     @_app.get("/health")
@@ -34,5 +42,6 @@ def create_app() -> FastAPI:
     _app.include_router(apiRouter, prefix=settings.API_V1_STR)
 
     return _app
+
 
 app = create_app()

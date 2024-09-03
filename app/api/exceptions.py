@@ -1,5 +1,7 @@
 from fastapi import HTTPException
 
-class ExceptionCustom(HTTPException):
+class HTTPResponseCustomized(HTTPException):
     pass
 
+class ValidationDatatypeCustomized():
+    pass

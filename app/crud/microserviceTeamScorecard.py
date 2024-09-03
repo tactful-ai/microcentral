@@ -5,7 +5,7 @@ from ..schemas import MicroserviceTeamScorecardBase, team, scoreCard
 from .base import CRUDBase
 from typing import List
 from sqlalchemy.sql import func
-from app.api.exceptions import ExceptionCustom
+from app.api.exceptions import HTTPResponseCustomized
 from . import CRUDTeam, CRUDMicroserviceScoreCard, CRUDScoreCard, CRUDMicroservice
 
 
@@ -22,13 +22,13 @@ class CRUDMicroserviceTeamScorecard:
         microservice = self.microsService.get(service_id)
 
         if not microservice:
-            raise ExceptionCustom(
+            raise HTTPResponseCustomized(
                 f"Microservice with id {service_id} not found")
 
         teamobject = self.teamService.get(microservice.teamId)
         scorecardIds = self.scoreCardService.getByServiceId(microservice.id)
         scorecards = []
-         
+
         scorecard_ids = [sc_id.scoreCardId for sc_id in scorecardIds]
         scorecards = self.scoreCard.getByScoreCradIds(scorecard_ids)
 

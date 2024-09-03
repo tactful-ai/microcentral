@@ -7,7 +7,7 @@ from ..schemas import MicroserviceCreate, MicroserviceUpdate ,MicroserviceInDBBa
 from .base import CRUDBase
 from typing import List
 from sqlalchemy.sql import func
-from app.api.exceptions import ExceptionCustom
+from app.api.exceptions import HTTPResponseCustomized
 
 class CRUDMicroservice(CRUDBase[Microservice, MicroserviceCreate, MicroserviceUpdate]):
     def __init__(self, db_session: Session):
@@ -18,7 +18,7 @@ class CRUDMicroservice(CRUDBase[Microservice, MicroserviceCreate, MicroserviceUp
 
     def getByTeamIdAndCode(self, teamId: str, code: str):
         return self.db_session.query(Microservice).filter(Microservice.teamId == teamId, Microservice.code == code).first()
- 
+
     def getAllServicesWithTeamName(self) -> list[MicroserviceInDBBase]:
         
         microservices = self.list()
@@ -35,10 +35,9 @@ class CRUDMicroservice(CRUDBase[Microservice, MicroserviceCreate, MicroserviceUp
                 team_name=team.name if team else None,
             )
             services.append(service)
-         
         return services
-   
-   #get one with team
+
+    #get one with team
     def getByServiceId(self , service_id:int):
         result = (
         self.db_session.query(Microservice.id, Microservice.name, Microservice.description, Microservice.code, Team.name.label("team_name"))
@@ -46,15 +45,15 @@ class CRUDMicroservice(CRUDBase[Microservice, MicroserviceCreate, MicroserviceUp
         .first()
         )
         return result
-      
+
     def get_by_code (self , code:str):
         return self.db_session.query(Microservice).filter(Microservice.code == code).first()
- 
+
 
     def check_service_name_exists(self, name: str):
-     service = self.db_session.query(Microservice).filter(Microservice.name == name).first()
-     if service:
-        raise ExceptionCustom(
-            status_code=status.HTTP_400_BAD_REQUEST,
-            detail="service name is aready existed"
-        )
+        service = self.db_session.query(Microservice).filter(Microservice.name == name).first()
+        if service:
+            raise HTTPResponseCustomized(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail="service name is aready existed"
+            )
