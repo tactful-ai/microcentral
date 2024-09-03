@@ -1,20 +1,35 @@
-from typing import Optional
+from typing import Optional, List 
 
-from pydantic import BaseModel
+from pydantic import BaseModel, validator
 
 
 # Shared properties
 class MetricBase(BaseModel):
     name:  Optional[str] = None
     code:  Optional[str] = None
-    area:  Optional[str] = None
+    area:  Optional[List[str]] = None
     description: Optional[str] = None
     type: Optional[str] = None
+
+    
 
 # Properties to receive on metric creation
 class MetricCreate(MetricBase):
     name: str
     description: str
+    type: str
+
+"""
+    # So i will remove it as the area field is optional ?
+    @validator('area', pre=True, always=True)
+    def validate_area_length(cls, area):
+        if len(area) == 0:
+            raise ValueError("empty list not allowed")
+        return area
+"""
+
+class MetricGet(MetricBase):
+    area: Optional[str] = None
 
 # Properties to receive on metric update
 class MetricUpdate(MetricBase):
