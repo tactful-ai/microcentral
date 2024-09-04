@@ -1,11 +1,12 @@
 import React, { useState, useEffect, useRef } from 'react'
-import { useParams } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import TagsBox from '../components/TagsBox';
 import Layout from '../layouts/Layout';
 
 
 const MetricCreateEdit = (props) => {
-    
+  const navigate = useNavigate();
+
   const {metric_id} = useParams();
   const [tags, setTags] = useState([]);
   const [charLimit, setCharLimit] = useState(0);
@@ -15,8 +16,7 @@ const MetricCreateEdit = (props) => {
   const metricDescRef = useRef(null);
     
 
-  const postMetric = (e) => {
-    e.preventDefault();
+  const postMetric = async (e) => {
     
     const metricName = metricNameRef.current;
     const metricType = metricTypeRef.current;
@@ -29,44 +29,91 @@ const MetricCreateEdit = (props) => {
         description: metricDesc.value
     }
 
-    const response = async () => {
-        var data = await fetch('http://127.0.0.1:8000/api/v1/metrics', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(formData),
-        })
-        .then((response) => response.json())
-        var responseData = {
-            message: data.message,
-            object: data.object
-        }
-        console.log(responseData)
-    };
-    response();
+    var data = await fetch('http://127.0.0.1:8000/api/v1/metrics', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(formData),
+    })
+    .then((response) => response.json())
+    var responseData = {
+        message: data.message,
+        object: data.object
+    }
+    console.log(responseData);
   }
-
-  const getMetricById = async (metric_id) => {
-    var data = await fetch(`http://127.0.0.1:8000/api/v1/metrics/${metric_id}`)
-    .then((response) => response.json());
-    
-    var metric_data = data.object;
-    console.log(metric_data);
+  
+  const editMetric = async () => {
     
     const metricName = metricNameRef.current;
     const metricType = metricTypeRef.current;
     const metricDesc = metricDescRef.current; 
 
-    metricName.value = metric_data.name;
-    metricType.value = metric_data.type;
-    metricDesc.value = metric_data.description;
+    let formData = {
+        name: metricName.value,
+        type: metricType.value,
+        area: tags,
+        description: metricDesc.value
+    }
 
-    setTags([...metric_data.area]);
+    var data = await fetch(`http://127.0.0.1:8000/api/v1/metrics/${metric_id}`, {
+        method: 'PUT',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(formData),
+    })
+    .then((response) => response.json())
+    var responseData = {
+        message: data.message,
+        object: data
+    }
+    console.log(responseData)
+  }
+
+  const getMetricById = async (metric_id) => {
+    try{
+        var data = await fetch(`http://127.0.0.1:8000/api/v1/metrics/${metric_id}`)
+        .then((response) => response.json());
+        
+        if( data.message == "Not Found") {
+            // replace path history to a 404 not found page
+            navigate('/404');
+        }
+
+        var metric_data = data;
+        console.log(metric_data);
+        
+        const metricName = metricNameRef.current;
+        const metricType = metricTypeRef.current;
+        const metricDesc = metricDescRef.current; 
+
+        metricName.value = metric_data.name;
+        metricType.value = metric_data.type;
+        metricDesc.value = metric_data.description;
+
+        setTags([...metric_data.area]);
+
+    } catch (error) {
+        console.log(error);
+    }
 
   };
 
+  const handleFormClick = async (e) => {
+    e.preventDefault();
+    if (props.mode == "create"){
+        await postMetric();
+    }
+    else if (props.mode == "edit"){
+        await editMetric(metric_id);
+    }
+    navigate('/dashboard/metrics', {state: { forceRender: true }});
+  }
+
   let disable = 'false'
+
   useEffect(()=> {
     if(props.mode == 'edit'){
         getMetricById(metric_id)
@@ -118,7 +165,7 @@ const MetricCreateEdit = (props) => {
                             <div className="col-12">
                                 <button type="submit" className="btn btn-primary col-12" 
                                 id="create-btn" style={{backgroundColor: '#6482AD'}}
-                                onClick={(e)=>postMetric(e)}>
+                                onClick={(e)=>handleFormClick(e)}>
                                     {props.mode == "create"? "Create": "Save"}
                                 </button>
                             </div>

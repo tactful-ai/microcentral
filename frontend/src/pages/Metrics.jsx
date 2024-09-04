@@ -1,12 +1,58 @@
-import React, { useEffect, useState, useRef } from 'react'
+import React, { useEffect, useState } from 'react'
 import Layout from '../layouts/Layout.jsx'
-import { NavLink } from 'react-router-dom'
+import { NavLink, useParams } from 'react-router-dom'
 import '../styles/pages/Metrics.css'
 import '@fortawesome/fontawesome-free/css/all.min.css';
 
+const MetricRaws = (props) => {
+    useEffect(() => {
+        const fetchMetrics = async () => {
+            const data = await props.getAllMetrics();
+            console.log("get data:: ", data);
+            props.setMetricData(data);
+            props.setLoading(false); 
+        };
+
+        fetchMetrics(); 
+    }, []);
+
+    if (props.loading) {
+        return <div>Loading...</div>; 
+    }
+
+    if (!props.metricData) {
+        return <div>No data available</div>;
+    }
+
+    return props.metricData.map((metric, index) => (
+        <tr key={index}>
+            <th scope="row">{index + 1}</th>
+            <td>{metric.name}</td>
+            <td>{metric.description}</td>
+            <td>{metric.type}</td>
+            <td>{metric.area.join(',')}</td>
+            <th>
+                <NavLink to={`/dashboard/metrics/edit/${metric.id}`} 
+                    className={(navData) => navData.isActive ? 'active' : ''}>
+                    <button className="action-btn mx-1">
+                        <i className="fa-solid fa-pen-to-square"></i>
+                    </button>
+                </NavLink>
+                <button className="action-btn mx-1" onClick={()=>props.handleDelete(metric.id)}>
+                    <i className="fa-solid fa-trash"></i>
+                </button>
+            </th>
+        </tr>
+    ))
+        
+};
+
+
 const Metrics = () => {
-    let id = 0;
-    
+    const [metricData, setMetricData] = useState(null);
+    const [loading, setLoading] = useState(true);
+
+    useEffect(() => {console.log("re-rendered")}, []);
     const getAllMetrics = async () => {
         try {
             const response = await fetch(`http://127.0.0.1:8000/api/v1/metrics`);
@@ -16,56 +62,22 @@ const Metrics = () => {
             console.error('Error fetching metrics:', error);
         }
     };
-    
-    const MetricRaws = () => {
-        const [metricData, setMetricData] = useState(null);
-        const [loading, setLoading] = useState(true);
-    
-        useEffect(() => {
-            const fetchMetrics = async () => {
-                const data = await getAllMetrics();
-                setMetricData(data);
-                setLoading(false); 
-            };
-    
-            fetchMetrics(); 
-        }, []);
-    
-        if (loading) {
-            return <div>Loading...</div>; 
-        }
-    
-        if (!metricData) {
-            return <div>No data available</div>;
-        }
-    
-        return metricData.map((metric, index) => (
-            <tr key={index}>
-                <th scope="row">{index + 1}</th>
-                <td>{metric.name}</td>
-                <td>{metric.description}</td>
-                <td>{metric.type}</td>
-                <td>{metric.area.join(',')}</td>
-                <th>
-                    <NavLink to={`/dashboard/metrics/view/${index + 1}`} 
-                        className={(navData) => navData.isActive ? 'active' : ''}>
-                        <button className="action-btn mx-1">
-                            <i className="fa-solid fa-eye"></i>
-                        </button>
-                    </NavLink>
-                    <NavLink to={`/dashboard/metrics/edit/${index + 1}`} 
-                        className={(navData) => navData.isActive ? 'active' : ''}>
-                        <button className="action-btn mx-1">
-                            <i className="fa-solid fa-pen-to-square"></i>
-                        </button>
-                    </NavLink>
-                </th>
-            </tr>
-        ))
+
+    const handleDelete = async (metric_id) => {
+        try {
+            const response = await fetch(`http://127.0.0.1:8000/api/v1/metrics/${metric_id}`, {
+                method: 'DELETE',
+            });
             
+            const data = await getAllMetrics();
+            setMetricData(data);
+
+            console.log(`Metric with id ${metric_id} deleted successfully`);
+        } catch (error) {
+            console.error('Error deleting metric:', error);
+        }
     };
     
-
     return (
     <Layout>
         <div className="container my-5 px-5">
@@ -92,7 +104,9 @@ const Metrics = () => {
                         </tr>
                     </thead>
                     <tbody>
-                        <MetricRaws />
+                        <MetricRaws getAllMetrics={getAllMetrics} handleDelete={handleDelete}
+                        metricData={metricData} setMetricData={setMetricData}
+                        loading={loading} setLoading={setLoading}/>
                     </tbody>
                 </table>
             </div>
