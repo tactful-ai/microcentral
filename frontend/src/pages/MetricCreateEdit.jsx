@@ -1,7 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react'
 import { useParams } from 'react-router-dom';
 import TagsBox from '../components/TagsBox';
-import axios from 'axios'
 import Layout from '../layouts/Layout';
 
 
@@ -76,8 +75,6 @@ const MetricCreateEdit = (props) => {
         }
     }
   }, [metric_id])
-
-  
 
   return (
     <Layout>
