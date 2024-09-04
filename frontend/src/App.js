@@ -4,6 +4,7 @@ import MetricCreateEdit from './pages/MetricCreateEdit';
 import Services from './pages/Services.jsx';
 import Metrics from './pages/Metrics';
 import NotFound from './pages/NotFound';
+import Scorecards from './pages/Scorecards';
 
 function App() {
   return (
@@ -12,6 +13,7 @@ function App() {
         <Route path="/" element={<Services />}/>
         <Route path="/dashboard/services" element={<Services />}/>
         <Route path="/dashboard/metrics" element={<Metrics />}/>
+        <Route path="/dashboard/scorecards" element={<Scorecards />}/>
         <Route path="/dashboard/metrics/create" element={<MetricCreateEdit mode="create"/>}/>
         <Route path="/dashboard/metrics/view/:metric_id" element={<MetricCreateEdit mode="edit"/>}/>
         <Route path="/dashboard/metrics/edit/:metric_id" element={<MetricCreateEdit mode="edit"/>}/>

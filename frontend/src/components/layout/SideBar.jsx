@@ -13,13 +13,13 @@ const SideBar = () => {
                   <ul id="sidebar-list">
                       <div className="row">
                         <li className="sidebar-item">
-                            <NavLink to="/" 
+                            <NavLink to="/dashboard/services" 
                             className={( (navData) => navData.isActive? 'active': '')}>
                                 Services
                             </NavLink>
                         </li>
                         <li className="sidebar-item">
-                            <NavLink to="/dashboard/scorecards/create" 
+                            <NavLink to="/dashboard/scorecards" 
                             className={( (navData) => navData.isActive? 'active': '')}>
                                 Scorecards
                             </NavLink>
