@@ -33,8 +33,7 @@ class ScoreCard(ScoreCardInDBBase):
     name: str
     code: str
     update_time:Optional[datetime] = datetime.now() 
-    #score: float = 0.0
-    #score_value: Optional[float] = None
+    score_value: float
 
     class Config:
         orm_mode = True

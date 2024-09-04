@@ -15,3 +15,4 @@ class ScoreCardMetrics(Base):
 
     def __repr__(self):
         return f"<ScoreCardMetrics(id='{self.id}', scoreCardId='{self.scoreCardId}', metricId='{self.metricId}')>"
+    

@@ -17,7 +17,7 @@ class CRUDMicroserviceInfo:
         self.scoreCardService = CRUDMicroserviceScoreCard(db_session)
         self.scoreCard = CRUDScoreCard(db_session)
         self.scoreCardMetric = CRUDScoreCardMetric(db_session)
-        self.seviceMetric = CRUDServiceMetric(db_session)
+        self.serviceMetric = CRUDServiceMetric(db_session)
 
     # Get one with scorecard list and team name
     def getServiceInfo(self, service_id: int) -> MicroserviceInfoBase:
@@ -29,22 +29,19 @@ class CRUDMicroserviceInfo:
                 f"Microservice with id {service_id} not found")
 
         scorecardIds = self.scoreCardService.getByServiceId(microservice.id)
-        scorecards = []
         scorecard_ids = [sc_id.scoreCardId for sc_id in scorecardIds]
         scorecards = self.scoreCard.getByScoreCradIds(scorecard_ids)
         
-        
         service_scorecards = []
         for sc in scorecards:
-           update_time = self.seviceMetric.get_timestamp(service_id, sc.id)
-           print(update_time)
-           
-        for sc in scorecards:
+           update_time = self.serviceMetric.get_timestamp(service_id, sc.id)
+           calculated_scores = self.serviceMetric.get_calculated_value(service_id, sc.id)
            service_scorecards.append({
              'id': sc.id,
              'name': sc.name,
              'code': sc.code,
-             'update_time' : update_time
+             'update_time' : update_time,
+             'score_value' : calculated_scores
         })
            
         service = MicroserviceInfoBase(

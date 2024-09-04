@@ -17,8 +17,7 @@ class ScoreCardMetricsBase(BaseModel):
 # Properties to receive on ScoreCardMetrics creation
 class ScoreCardMetricsCreate(ScoreCardMetricsBase):
     scoreCardId: int
-    metricId: int
-    
+    metricId: int 
     criteria: str
     desiredValue: Optional[Union[str,float,int,str]] = None
     weight: int
