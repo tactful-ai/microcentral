@@ -131,7 +131,7 @@ def editMetric(metricID: int, metricInput: schemas.MetricUpdate, metricCrud: cru
     metricObj = metricInput
     if (metricInput.name):
         metricObj.code = format_code(metricInput.name)
-        if (metricCrud.getByCode(metricObj.code)):
+        if (metricCrud.getByCode(metricObj.code) and metricObj.id == metric.id):
             raise HTTPResponseCustomized(status_code=422, detail="name already exists")
     if (metricInput.area != None):
         if any(item == "" for item in metricObj.area):
