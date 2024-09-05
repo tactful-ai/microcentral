@@ -134,3 +134,4 @@ poetry.lock
 
 # alembic
 app/migrations/versions/*
+frontend/node_modules
