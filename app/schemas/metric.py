@@ -5,6 +5,7 @@ from pydantic import BaseModel, validator
 
 # Shared properties
 class MetricBase(BaseModel):
+    id: Optional[int] = None
     name:  Optional[str] = None
     code:  Optional[str] = None
     area:  Optional[List[str]] = None
