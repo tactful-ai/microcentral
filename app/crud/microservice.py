@@ -19,6 +19,10 @@ class CRUDMicroservice(CRUDBase[Microservice, MicroserviceCreate, MicroserviceUp
     def getByTeamIdAndCode(self, teamId: str, code: str):
         return self.db_session.query(Microservice).filter(Microservice.teamId == teamId, Microservice.code == code).first()
 
+    
+    def getByServiceId(self, serviceID: int) -> Microservice:
+        return self.db_session.query(Microservice).filter(Microservice.id == serviceID).first()
+    
     def getAllServicesWithTeamName(self) -> list[MicroserviceInDBBase]:
         
         microservices = self.list()
@@ -38,7 +42,7 @@ class CRUDMicroservice(CRUDBase[Microservice, MicroserviceCreate, MicroserviceUp
         return services
 
     #get one with team
-    def getByServiceId(self , service_id:int):
+    def getByServiceIdWithTeam(self , service_id:int):
         result = (
         self.db_session.query(Microservice.id, Microservice.name, Microservice.description, Microservice.code, Team.name.label("team_name"))
         .filter(Microservice.id == service_id)

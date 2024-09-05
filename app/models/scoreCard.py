@@ -1,5 +1,7 @@
 from app.database.base_class import Base
 from sqlalchemy import Column, Integer, String
+from .microservice import Microservice
+from .scoreCardMetrics import ScoreCardMetrics
 
 
 class Scorecard(Base):
@@ -7,6 +9,7 @@ class Scorecard(Base):
     code = Column(String, nullable=False)
     name = Column(String, nullable=False)
     description = Column(String, nullable=False)
+    
 
     def __repr__(self):
         return f"<Scorecard(name='{self.name}')>"

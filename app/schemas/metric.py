@@ -5,13 +5,12 @@ from pydantic import BaseModel, validator
 
 # Shared properties
 class MetricBase(BaseModel):
+    id: Optional[int] = None
     name:  Optional[str] = None
     code:  Optional[str] = None
     area:  Optional[List[str]] = None
     description: Optional[str] = None
-    type: Optional[str] = None
-
-    
+    type: Optional[str] = None    
 
 # Properties to receive on metric creation
 class MetricCreate(MetricBase):

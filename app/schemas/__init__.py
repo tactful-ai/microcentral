@@ -6,3 +6,4 @@ from .scoreCardMetrics import *
 from .serviceMetric import *
 from .team import *
 from .microserviceTeamScorecard import *
+from .scorecardServiceMetric import *

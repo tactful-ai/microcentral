@@ -12,6 +12,7 @@ from fastapi.routing import APIRoute
 from .exceptions import HTTPResponseCustomized
 from app.core.security import JWTBearer, decodeJWT
 from app.utils.base import format_code
+from collections import OrderedDict
 
 
 metric_type = ["integer", "boolean"]
@@ -81,6 +82,8 @@ def createMetric(metric: schemas.MetricCreate, metricCrud: crud.CRUDMetric = Dep
             raise HTTPResponseCustomized(
                 status_code=422, detail="area can not have an empty string or more")
         try:
+            # I use set to remove all duplicates and return it back to list cuz set is not json serializable
+            metricObj.area = list(set(metric.area))
             metricObj.area = json.dumps(metric.area)
         # Well it will throw the error but i can not test it as i dont know how the error will come as XD
         # need help for testing it.
@@ -129,14 +132,22 @@ def editMetric(metricID: int, metricInput: schemas.MetricUpdate, metricCrud: cru
     metricObj = metricInput
     if (metricInput.name):
         metricObj.code = format_code(metricInput.name)
-        if (metricCrud.getByCode(metricObj.code)):
+        if (metricCrud.getByCode(metricObj.code) and metricObj.id == metric.id):
             raise HTTPResponseCustomized(status_code=422, detail="name already exists")
-    if (metricInput.area):
+    # Stringfying the list of areas to be saved as string
+    if (metricObj.area != None):
+        if any(item == "" for item in metricObj.area):
+            raise HTTPResponseCustomized(
+                status_code=422, detail="area can not have an empty string or more")
         try:
+            # I use set to remove all duplicates and return it back to list cuz set is not json serializable
+            metricObj.area = list(set(metricInput.area))
             metricObj.area = json.dumps(metricInput.area)
-        except:
-            metricInput.area = []
-            metricObj.area = json.dumps(metricInput.area)
+        except (TypeError, ValueError) as e:
+            raise ValueError(f"Invalid area datatype: {e}")
+    else:
+        metric.area = []
+        metricObj.area = json.dumps(metric.area)
     metricCrud.update(metricID, metricObj)
     raise HTTPResponseCustomized(status_code=200, detail="Success in Editing")
 
