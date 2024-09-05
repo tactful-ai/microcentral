@@ -41,7 +41,7 @@ class CRUDMicroserviceInfo:
              'name': sc.name,
              'code': sc.code,
              'update_time' : update_time,
-             'score_value' : calculated_scores
+            'score_value' : calculated_scores
         })
            
         service = MicroserviceInfoBase(

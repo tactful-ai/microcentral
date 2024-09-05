@@ -12,4 +12,13 @@ class CRUDMetric(CRUDBase[Metric, MetricCreate, MetricUpdate]):
 
     def getByCode(self, code: str):
         return self.db_session.query(Metric).filter(Metric.code == code).first()
+    
+    def getMetricType(self,metricId: int) -> str:
+        subquery=self.db_session.query(Metric.type).filter(
+        Metric.id == metricId
+      ).scalar()
+        print(subquery)
+        return subquery
+       
+
 

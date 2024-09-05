@@ -17,7 +17,8 @@ class CRUDScoreCardMetric(CRUDBase[ScoreCardMetrics, ScoreCardMetricsCreate, Sco
         metric = self.db_session.query(
             ScoreCardMetrics.metricId,
             ScoreCardMetrics.criteria,
-            ScoreCardMetrics.desiredValue
+            ScoreCardMetrics.desiredValue,
+            ScoreCardMetrics.weight
         ).filter(
             ScoreCardMetrics.scoreCardId == scorecard_id
         ).all()
