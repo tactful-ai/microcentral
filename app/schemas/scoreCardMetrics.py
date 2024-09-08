@@ -9,7 +9,7 @@ class ScoreCardMetricsBase(BaseModel):
     metricId: Optional[int] = None
     
     criteria: Optional[str] = None
-    desiredValue: Optional[Union[str,float,int,str]] = None
+    desiredValue: Optional[Union[str,float,int,bool]] = None
     weight: Optional[int] = None
     
 # class ScoreCardMetricsGet(ScoreCardMetricsBase):
@@ -19,7 +19,7 @@ class ScoreCardMetricsCreate(ScoreCardMetricsBase):
     scoreCardId: int
     metricId: int 
     criteria: str
-    desiredValue: Optional[Union[str,float,int,str]] = None
+    desiredValue: Optional[Union[str,float,int,bool]] = None
     weight: int
     
     
@@ -34,7 +34,7 @@ class ScoreCardMetricsInDBBase(ScoreCardMetricsBase):
     metricId: int
     
     criteria: str
-    desiredValue: Optional[Union[str,float,int,str]] = None
+    desiredValue: Optional[Union[str,float,int,bool]] = None
     weight: int
     
 
