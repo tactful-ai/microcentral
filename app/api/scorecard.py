@@ -54,7 +54,6 @@ def getScoreCard(scorecardID: int, scoreCardCrud: crud.CRUDScoreCardServiceMetri
 # Delete one ScoreCard with its own ID
 @router.delete("/{scorecardID}")
 def deleteScorecard(scorecardID:int , scoreCardCrud: crud.CRUDScoreCard = Depends(dependencies.getScoreCardsCrud)) -> Any:
-    scorecard = scoreCardCrud.get(scorecardID)
     scoreCardCrud.delete(scorecardID)
-    return HTTPResponseCustomized(status = 200, detail = "Scorecard Has Been Deleted Successfully")
+    raise HTTPResponseCustomized(status_code = 200, detail = "Scorecard Has Been Deleted Successfully")
 

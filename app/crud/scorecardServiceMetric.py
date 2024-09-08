@@ -33,8 +33,8 @@ class CRUDScoreCardServiceMetric:
 
     
     for metricID in metric_ids:
-      metric = self.scoreCardMetric.get(metricID)
-      print(metric)
+      print(metricID)
+      metric = self.scoreCardMetric.getbymetricID(metricID)
       metricOBJs.append({
         'scoreCardId': metric.scoreCardId,
         'metricId': metric.metricId,
