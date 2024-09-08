@@ -1,38 +1,5 @@
 from app.api.exceptions import ExceptionCustom
 from app.utils.utity_datatype import parse_stringified_value
-#def convert_desired_value(desired_value, measured_value) -> float:
-#    if type(desired_value) == type(measured_value):
-#        return 100.0 if desired_value == measured_value else 0.0
-#    else:
-#        return 0.0 
-
-##def  calculate_error_for_strings(value, desired, weight, criteria):
-##  return 0
-#def calculate_error(measured: float, desired: str, criteria: str) -> float:
-#    converted_value = convert_desired_value(desired, measured)  
-#    print(type(converted_value))  
-
-#    #if metricType == 'string':
-#    #  return calculate_error_for_strings(value, desired, weight, criteria)
-#    #elif metric
-  
-#    if criteria == 'greater':
-#        error = max(0, ((converted_value - measured) / converted_value) * 100)
-#    elif criteria == 'smaller':
-#        error = max(0, ((measured - converted_value) / converted_value) * 100)
-#    elif criteria == 'greater or equal':
-#        error = max(0, ((converted_value - measured) / converted_value) * 100)
-#    elif criteria == 'smaller or equal':
-#        error = max(0, ((measured - converted_value) / converted_value) * 100)
-#    elif criteria == 'equal':
-#        error = (abs(measured - converted_value) / converted_value) * 100
-#    else:
-#        raise ValueError(f"Invalid criteria: {criteria}")
-
-#    return min(100, error)
-
-#def calculate_score(error: float) -> float:
-#    return 100 - error
 
 def calculate_error_for_strings(value: str, desired: str, weight: float, criteria: str) -> float:
     if criteria == 'equal':
