@@ -55,11 +55,14 @@ class CRUDServiceMetric(CRUDBase[ServiceMetric, ServiceMetricCreate, ServiceMetr
      
      service_metrics = self.db_session.query(
         ServiceMetric.metricId,
-        ServiceMetric.value
+        ServiceMetric.value,
+        ServiceMetric.timestamp
      ).filter(
         ServiceMetric.serviceId == service_id,
         ServiceMetric.metricId.in_(metric_info_dict)
-     ).all()   
+    # ).all()   
+     ).order_by(ServiceMetric.metricId, ServiceMetric.timestamp.desc()).distinct(ServiceMetric.metricId).all()
+
      print("Service metrics:", service_metrics)
 
      for service_metric in service_metrics:
