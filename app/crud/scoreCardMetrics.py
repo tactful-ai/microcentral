@@ -13,5 +13,5 @@ class CRUDScoreCardMetric(CRUDBase[ScoreCardMetrics, ScoreCardMetricsCreate, Sco
     def getbyscorecardID(self, scorecardID) -> list[ScoreCardMetrics]:
         return self.db_session.query(ScoreCardMetrics).filter(ScoreCardMetrics.scoreCardId == scorecardID).all()
 
-    def getbymetricID(self, metricID) -> list[ScoreCardMetrics]:
+    def getbymetricID(self, metricID) :
         return self.db_session.query(ScoreCardMetrics).filter(ScoreCardMetrics.metricId == metricID).first()

@@ -3,12 +3,12 @@ from pydantic import BaseModel
 from . import team, scoreCard, scoreCardMetrics, microservice
 
 class scorecardServiceMetric(BaseModel):
-    id: int
-    name: str
+    id: Optional[int] = None
+    name: Optional[str] = None
     code: Optional[str] = None   
-    description: str
-    metrics: list[scoreCardMetrics.metric4scorecard]
-    services: list[microservice.MicroserviceCreateApi]
+    description: Optional[str] = None
+    metrics: Optional[list[scoreCardMetrics.metric4scorecard]] = None
+    services: Optional[list[microservice.MicroserviceCreateApi]] = None
 
     class Config:
         orm_mode = True

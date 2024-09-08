@@ -13,7 +13,6 @@ class CRUDScoreCardServiceMetric:
     self.scoreCard = CRUDScoreCard(db_session)
     self.microServiceScoreCard = CRUDMicroserviceScoreCard(db_session)
     self.scoreCardMetric = CRUDScoreCardMetric(db_session)
-    self.metric = CRUDMetric(db_session)
     self.microService = CRUDMicroservice(db_session)
 
   def getwithscorecardIDmetricandservice(self, scorecardID:int):
@@ -33,7 +32,6 @@ class CRUDScoreCardServiceMetric:
 
     
     for metricID in metric_ids:
-      print(metricID)
       metric = self.scoreCardMetric.getbymetricID(metricID)
       metricOBJs.append({
         'scoreCardId': metric.scoreCardId,
@@ -50,7 +48,7 @@ class CRUDScoreCardServiceMetric:
       print (service)
       serviceOBJs.append({
         'name': service.name,
-        'descroption': service.description,
+        'description': service.description,
         'code': service.code,
         'teamId': service.teamId
       })
@@ -58,14 +56,13 @@ class CRUDScoreCardServiceMetric:
     print(serviceOBJs)
     
     scorecard.code = format_code(scorecard.name)
-
+    print (scorecard.name)
     scorecard = scorecardServiceMetricCreate(
-      id = scorecard.id,
       name = scorecard.name,
-      metrics = metricOBJs,
-      services = serviceOBJs,
+      code = scorecard.code,
       description = scorecard.description,
-      code = scorecard.code
+      metrics = metricOBJs,
+      services = serviceOBJs
     )
 
     return metricIDs

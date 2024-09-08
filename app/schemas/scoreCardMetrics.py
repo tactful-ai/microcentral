@@ -48,7 +48,7 @@ class ScoreCardMetricsInDB(ScoreCardMetricsInDBBase):
 
 
 class metric4scorecard(ScoreCardMetricsBase):
-    name: str
-    criteria: str
+    name: Optional[str]
+    criteria: Optional[str]
     desiredValue: Optional[Union[str,float,int,bool]]
-    weight: int
+    weight: Optional[int]
