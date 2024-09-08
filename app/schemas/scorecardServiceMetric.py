@@ -7,8 +7,8 @@ class scorecardServiceMetric(BaseModel):
     name: Optional[str] = None
     code: Optional[str] = None   
     description: Optional[str] = None
-    metrics: Optional[list[scoreCardMetrics.metric4scorecard]] = None
-    services: Optional[list[microservice.MicroserviceCreateApi]] = None
+    metrics: Optional[list[scoreCardMetrics.metric4scorecard]] = []
+    services: Optional[list[microservice.MicroserviceCreateApi]] = []
 
     class Config:
         orm_mode = True

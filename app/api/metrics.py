@@ -15,7 +15,7 @@ from app.utils.base import format_code
 from collections import OrderedDict
 
 
-metric_type = ["integer", "boolean"]
+metric_type = ["integer", "boolean", "string", "float"]
 
 
 class Value(BaseModel):

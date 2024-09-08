@@ -1,14 +1,14 @@
 from datetime import datetime
 
 from app.database.base_class import Base
-from sqlalchemy import Column, DateTime, Integer
+from sqlalchemy import Column, DateTime, Integer, String
 
 
 class ServiceMetric(Base):
     id = Column(Integer, primary_key=True, index=True)
     serviceId = Column(Integer, nullable=False)
     metricId = Column(Integer, nullable=False)
-    value = Column(Integer, nullable=False)
+    value = Column(String, nullable=False)
     timestamp = Column(DateTime, nullable=False, default=datetime.utcnow)
 
     def __repr__(self):

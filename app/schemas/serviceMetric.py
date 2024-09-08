@@ -8,7 +8,7 @@ from pydantic import BaseModel
 class ServiceMetricBase(BaseModel):
     serviceId: Optional[int] = None
     metricId: Optional[int] = None
-    value: Optional[float] = None
+    value: Optional[str] = None
     date: Optional[datetime] = None
 
 
@@ -16,7 +16,7 @@ class ServiceMetricBase(BaseModel):
 class ServiceMetricCreate(ServiceMetricBase):
     serviceId: int
     metricId: int
-    value: float
+    value: str
     date: datetime
 
 
@@ -30,7 +30,7 @@ class ServiceMetricInDBBase(ServiceMetricBase):
     id: int
     serviceId: int
     metricId: int
-    value: float
+    value: str
     date: datetime
 
     class Config:
