@@ -1,7 +1,7 @@
 import sqlalchemy
 from sqlalchemy.orm import Session
 from ..models import Microservice
-from ..schemas import MicroserviceInfoBase, team, scoreCard, scoreCardMetrics, serviceMetric
+from ..schemas import MicroserviceInfoBase
 from .base import CRUDBase
 from typing import List 
 from datetime import datetime

@@ -19,6 +19,13 @@ class CRUDServiceMetric(CRUDBase[ServiceMetric, ServiceMetricCreate, ServiceMetr
     def getByServiceId(self, serviceId: int) -> list[ServiceMetric]:
         return self.db_session.query(ServiceMetric).filter(ServiceMetric.serviceId == serviceId).all()
     
+    def get_metrics_by_scorecard_and_service(self, db: Session, scorecard_id: int, service_id: int) -> list[ServiceMetric]:
+        metrics = db.query(ServiceMetric).filter(
+            ServiceMetric.serviceId == service_id,
+            scoreCardMetrics.scoreCardId == scorecard_id
+        ).all()
+        return metrics
+    
 
     def get_timestamp(self, service_id: int, scorecard_id: int):
         subquery = self.scorecardMetrics.getMetricByScoreCradId(scorecard_id)
