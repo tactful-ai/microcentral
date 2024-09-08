@@ -14,7 +14,7 @@ from app.core.security import JWTBearer, decodeJWT
 from app.utils.base import format_code
 
 
-metric_type = ["integer", "boolean"]
+metric_type = ["integer", "boolean", "string", "float"]
 
 
 class Value(BaseModel):
