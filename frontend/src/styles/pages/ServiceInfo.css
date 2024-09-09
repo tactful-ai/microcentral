@@ -13,11 +13,11 @@
     border: 1px solid #bdbdbd;
 }
 
-.member-add {
+.member-more {
     width: 60px;
     height: 60px;
     border-radius: 50% !important;
-    border: none;
+    /* border: none; */
     background: #e1e1e1 !important;
     border-color: #bdbdbd !important;
 }
