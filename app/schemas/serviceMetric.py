@@ -40,8 +40,14 @@ class ServiceMetricInDBBase(ServiceMetricBase):
 
 # Properties to return to client
 class ServiceMetric(ServiceMetricInDBBase):
-    pass
-
+    metricId: int
+    metric_name: str
+    value: Union[float, int, str, bool]
+    date: datetime
+    weight: Optional[int]
+   
+    class Config:
+        orm_mode = True
 
 # Properties properties stored in DB
 class ServiceMetricInDB(ServiceMetricInDBBase):
