@@ -2,6 +2,7 @@ import React from 'react';
 import {BrowserRouter, Routes, Route, Navigate} from 'react-router-dom';
 import MetricCreateEdit from './pages/MetricCreateEdit';
 import Services from './pages/Services.jsx';
+import ServiceInfo from './pages/ServiceInfo.jsx';
 import Metrics from './pages/Metrics';
 import NotFound from './pages/NotFound';
 import Scorecards from './pages/Scorecards';
@@ -13,6 +14,7 @@ function App() {
       <Routes>
         <Route path="/" element={<Navigate to="/dashboard/services" />}/>
         <Route path="/dashboard/services" element={<Services />}/>
+        <Route path="/dashboard/services/:service_id" element={<ServiceInfo />}/>
         <Route path="/dashboard/metrics" element={<Metrics />}/>
         <Route path="/dashboard/scorecards" element={<Scorecards />}/>
         <Route path="/dashboard/scorecards/create" element={<ScorecardCreateEdit mode="create" />}/>
