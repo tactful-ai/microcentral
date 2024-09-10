@@ -71,7 +71,7 @@ const ScoreCardCarousel = ({scorecards, slideItems}) => {
         <Container>
           <Row className="justify-content-center">
             {slide.map((card, idx) => (
-              <Col key={idx} xs={12} sm={6} md={4} lg={3} className="mb-4">
+              <Col key={idx} xs={12} sm={6} md={4} className="mb-4">
                 <ScoreCard
                   name={card.name}
                   score={card.score}
