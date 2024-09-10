@@ -30,3 +30,8 @@
 .assign-btn {
     background-color: #6482ad !important;
 }
+
+.score-card {
+    user-select: none;
+    cursor: pointer
+}

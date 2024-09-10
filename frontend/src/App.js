@@ -8,22 +8,29 @@ import NotFound from './pages/NotFound';
 import Scorecards from './pages/Scorecards';
 import ScorecardCreateEdit from './pages/ScorecardCreateEdit.jsx';
 import ServiceCreateEdit from './pages/ServiceCreateEdit';
+import ScorecardMetrics from './pages/ScorecardMetrics';
+
 
 function App() {
   return (
     <BrowserRouter>
       <Routes>
+        {/* Services */}
         <Route path="/" element={<Navigate to="/dashboard/services" />}/>
         <Route path="/dashboard/services" element={<Services />}/>
         <Route path="/dashboard/services/:service_id" element={<ServiceInfo />}/>
+        <Route path="/dashboard/services/:service_id/:scorecard_id" element={<ScorecardMetrics />}/>
         <Route path="/dashboard/services/create" element={<ServiceCreateEdit />}/>
-        <Route path="/dashboard/metrics" element={<Metrics />}/>
+        {/* Scorecards */}
         <Route path="/dashboard/scorecards" element={<Scorecards />}/>
         <Route path="/dashboard/scorecards/create" element={<ScorecardCreateEdit mode="create" />}/>
         <Route path="/dashboard/scorecards/edit/:scorecard_id" element={<ScorecardCreateEdit mode="edit" />}/>
+        {/* Metrics */}
+        <Route path="/dashboard/metrics" element={<Metrics />}/>
         <Route path="/dashboard/metrics/create" element={<MetricCreateEdit mode="create"/>}/>
         <Route path="/dashboard/metrics/view/:metric_id" element={<MetricCreateEdit mode="edit"/>}/>
         <Route path="/dashboard/metrics/edit/:metric_id" element={<MetricCreateEdit mode="edit"/>}/>
+        {/* Not Found */}
         <Route path="/404" element={<NotFound />} /> 
         <Route path="*" element={<NotFound />} /> 
       </Routes>
