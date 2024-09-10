@@ -19,13 +19,40 @@ class CRUDServiceMetric(CRUDBase[ServiceMetric, ServiceMetricCreate, ServiceMetr
     def getByServiceId(self, serviceId: int) -> list[ServiceMetric]:
         return self.db_session.query(ServiceMetric).filter(ServiceMetric.serviceId == serviceId).all()
 
-    def get_metrics_by_scorecard_and_service(self, db: Session, scorecard_id: int, service_id: int) -> list[ServiceMetric]:
-        metrics = db.query(ServiceMetric).filter(
+    def get_metrics_by_scorecard_and_service(self, scorecard_id: int, service_id: int) -> list[ServiceMetric]:
+        metrics = self.db_session.query(ServiceMetric).filter(
             ServiceMetric.serviceId == service_id,
             scoreCardMetrics.scoreCardId == scorecard_id
         ).all()
         return metrics
+    
+    def get_last_metrics(self, scorecard_id: int, service_id: int)-> list[ServiceMetric]:
+        #metricweight= self.scorecardMetrics.getMetricWeight(scorecard_id)
+        last_timestamp = (
+        self.db_session.query(ServiceMetric.timestamp)
+        .filter(
+            ServiceMetric.serviceId == service_id,
+            ServiceMetric.metricId.in_(
+                self.scorecardMetrics.getMetricByScoreCradId(scorecard_id)
+            ),
+        )
+        .order_by(ServiceMetric.timestamp.desc())
+        .scalar()
+    )
 
+        latest_metrics = self.db_session.query(
+        ServiceMetric.metricId,
+        ServiceMetric.value,
+        ServiceMetric.timestamp
+         ).filter(
+        ServiceMetric.timestamp == last_timestamp,
+        ServiceMetric.serviceId == service_id,
+        scoreCardMetrics.ScoreCardMetrics.scoreCardId == scorecard_id
+        ).all()
+        print("servicemetric:", latest_metrics)
+        return latest_metrics
+     
+    
     def get_timestamp(self, service_id: int, scorecard_id: int):
         subquery = self.scorecardMetrics.getMetricByScoreCradId(scorecard_id)
 
@@ -40,36 +67,7 @@ class CRUDServiceMetric(CRUDBase[ServiceMetric, ServiceMetricCreate, ServiceMetr
             return formatted_time
         else:
             return None
-
-    #def get_latest_metric_readings(db: Session):
-    #    # Subquery to get the latest timestamp for each metric
-    #    latest_subquery = db.query(
-    #        ServiceMetric.metric_id,
-    #        func.max(ServiceMetric.timestamp).label('latest_timestamp')
-    #    ).group_by(ServiceMetric.metric_id).subquery()
-
-    ## Query for the latest metric readings without using joins
-    #    latest_metrics = db.query(
-    #        ServiceMetric.metric_id,
-    #        ServiceMetric.value,
-    #        ServiceMetric.timestamp
-    #    ).filter(
-    #        ServiceMetric.timestamp == latest_subquery.c.latest_timestamp
-    #    ).order_by(ServiceMetric.metric_id).all()
-
-    ## Fetching additional details from the Metric and ScorecardMetric tables separately
-    #    output = [
-    #        {
-    #            'metric_id': metric.metric_id,
-    #            'metric_name': db.query(Metric.name).filter(Metric.id == metric.metric_id).scalar(),
-    #            'value': metric.value,
-    #            'timestamp': metric.timestamp.strftime('%Y-%m-%d %H:%M:%S'),
-    #            'weight': db.query(ScorecardMetric.weight).filter(ScorecardMetric.metric_id == metric.metric_id).scalar()
-    #        }
-    #        for metric in latest_metrics
-    #    ]
-
-    #    return output
+ 
 
     def get_calculated_value(self, service_id: int, scorecard_id: int):
         scorecard_metrics = self.scorecardMetrics.get_metric(scorecard_id)

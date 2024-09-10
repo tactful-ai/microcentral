@@ -41,9 +41,7 @@ class ServiceMetricInDBBase(ServiceMetricBase):
 # Properties to return to client
 class ServiceMetric(ServiceMetricInDBBase):
     metricId: int
-    metric_name: str
-    value:float
-    weight:int    
+    value:Union[float, int, str, bool]
     date: datetime
 
     class Config:

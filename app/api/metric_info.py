@@ -1,11 +1,11 @@
 from fastapi import APIRouter, Depends
-from app.schemas import MicroserviceInDBBase, ScoreCardBase , MicroserviceInfoBase
-from app.crud import CRUDMicroservice, CRUDMicroserviceInfo, CRUDTeam, CRUDScoreCard, CRUDMicroserviceScoreCard
 from typing import List
 from app import dependencies
 from pydantic import BaseModel, Field
 from .exceptions import ExceptionCustom
-import re
+from app.schemas import MetricInfoBase
+from app.crud import CRUDMetricInfo
+
 
 class Value(BaseModel):
     value: int | bool | float | str = Field(
@@ -13,5 +13,14 @@ class Value(BaseModel):
 
 
 router = APIRouter()
+
+
+@router.get("/services/{service_id}/scorecards/{scorecard_id}", response_model=List[MetricInfoBase])
+def get_latest_metrics(service_id: int, scorecard_id: int, metricInfo:CRUDMetricInfo = Depends(dependencies.getMetricInfoCrud)):
+    metrics = metricInfo.get_latest_metric_readings(service_id, scorecard_id)
+    print(metrics)
+    if metrics is None:
+        raise ExceptionCustom(status_code=404, detail="metrics not found")
+    return metrics
 
 
