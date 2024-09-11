@@ -1,7 +1,7 @@
 
 from sqlalchemy.orm import Session
 from ..models import ServiceMetric, scoreCardMetrics
-from ..schemas import ServiceMetricCreate, ServiceMetricUpdate
+from ..schemas import ServiceMetricCreate, ServiceMetricUpdate , ServiceMetricCL
 from .base import CRUDBase
 from . import CRUDScoreCardMetric, CRUDMetric
 from app.utils.utility_functions import main_calculate_error, calculate_score
@@ -26,6 +26,15 @@ class CRUDServiceMetric(CRUDBase[ServiceMetric, ServiceMetricCreate, ServiceMetr
         ).all()
         return metrics
     
+    def get_metric_values_by_service(self, service_id: int) -> list[ServiceMetricCL]:
+        metrics = (
+            self.db_session.query(ServiceMetric.metricId,ServiceMetric.value,ServiceMetric.timestamp)
+            .filter(ServiceMetric.serviceId == service_id)
+            .order_by(ServiceMetric.timestamp.desc())
+            .all()
+        )
+        return metrics
+     
     def get_last_metrics(self, scorecard_id: int, service_id: int)-> list[ServiceMetric]:
         #metricweight= self.scorecardMetrics.getMetricWeight(scorecard_id)
         last_timestamp = (
@@ -37,7 +46,7 @@ class CRUDServiceMetric(CRUDBase[ServiceMetric, ServiceMetricCreate, ServiceMetr
             ),
         )
         .order_by(ServiceMetric.timestamp.desc())
-        .scalar()
+        .frist().scalar()
     )
 
         latest_metrics = self.db_session.query(

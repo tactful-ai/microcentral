@@ -14,7 +14,7 @@ class CRUDMetricInfo:
               
      
     def get_latest_metric_readings(self, service_id: int, scorecard_id: int) -> list[MetricInfoBase]:
-      metricweight= self.scorecardmetric.getMetricWeight(scorecard_id)
+      metricweights= self.scorecardmetric.getMetricWeight(scorecard_id)
       metriclist= self.servicemetric.get_last_metrics(service_id,scorecard_id)       
      
       output = []
@@ -25,7 +25,7 @@ class CRUDMetricInfo:
             'metricName': self.Metric.getMetricName(metric.metricId),  
             'value': metric.value,                 
             'timestamp': metric.timestamp.strftime('%Y-%m-%d %H:%M:%S'), 
-            'weight': metricweight             
+            'weight': metricweights             
         })
       print("metricinfo:", output)
       return output
