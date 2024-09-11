@@ -45,5 +45,5 @@ def main_calculate_error(measured: str, desired: str, weight: float, criteria: s
         raise ValueError("Unsupported metric type for error calculation.")
       
       
-def calculate_score(error_value: float) -> float:
-    return 100 - error_value if error_value is not None else 0
+def calculate_score(error_value: float , weight: int) -> float:
+    return weight - error_value if error_value is not None else 0

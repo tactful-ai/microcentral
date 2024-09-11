@@ -64,19 +64,20 @@ class CRUDServiceMetric(CRUDBase[ServiceMetric, ServiceMetricCreate, ServiceMetr
      ).order_by(ServiceMetric.metricId, ServiceMetric.timestamp.desc()).distinct(ServiceMetric.metricId).all()
 
      print("Service metrics:", service_metrics)
-
+     scorevalue = 0
      for service_metric in service_metrics:
         criteria, desired_value , weight, metric_type  = metric_info_dict.get(service_metric.metricId)
         
         if criteria is not None and desired_value is not None:
 
             error = main_calculate_error(service_metric.value, desired_value,weight, criteria, metric_type)
-            score = calculate_score(error)
-
-            return score
-
-     return None 
+            score = calculate_score(error, weight)
+            scorevalue+= score
+            print( score )
+            print(scorevalue)
+            print(service_metric.metricId)
+     return scorevalue
   
-  
+     
  
 
