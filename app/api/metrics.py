@@ -159,6 +159,7 @@ def editMetric(metricID: int, metricInput: schemas.MetricUpdate, metricCrud: cru
 def getAllMetrics(metricCrud: crud.CRUDMetric = Depends(dependencies.getMetricsCrud)) -> Any:
     metrics = metricCrud.list()
     metricsOBJ = []
+    print (metrics)
     for metric in metrics:
         metric.area = json.loads(metric.area)
         metricsOBJ.append(metric)

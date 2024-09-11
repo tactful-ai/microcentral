@@ -5,8 +5,9 @@ import { Container, Row, Col, Button, Card, Carousel } from 'react-bootstrap';
 import { Doughnut } from 'react-chartjs-2';
 import { Chart as ChartJS, ArcElement, Tooltip, Legend } from 'chart.js';
 import '../styles/pages/ServiceInfo.css';
-ChartJS.register(ArcElement, Tooltip, Legend);
 
+
+ChartJS.register(ArcElement, Tooltip, Legend);
 
 
 const scorecards = [
@@ -120,7 +121,7 @@ const ServiceInfo = () => {
             <h2>Scorecards List</h2>
           </Col>
           <Col xs={3} className="text-end">
-            <NavLink to="/dashboard/scorecards/create" 
+            <NavLink to="/dashboard/services/create" 
               className={( (navData) => navData.isActive? 'active': '')}>
               <Button className="assign-btn">
                 Assign New
