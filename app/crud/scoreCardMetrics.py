@@ -14,8 +14,10 @@ class CRUDScoreCardMetric(CRUDBase[ScoreCardMetrics, ScoreCardMetricsCreate, Sco
         return self.db_session.query(ScoreCardMetrics.metricId).filter(ScoreCardMetrics.scoreCardId == scorecard_id).subquery() 
     
     def getMetricWeight(self, scorecard_id: int)->list[ScoreCardMetrics] :
-        return self.db_session.query(ScoreCardMetrics.weight , ScoreCardMetrics.metricId).filter(ScoreCardMetrics.scoreCardId == scorecard_id).all() 
-       
+        return self.db_session.query(ScoreCardMetrics.metricId, ScoreCardMetrics.weight)\
+                          .filter(ScoreCardMetrics.scoreCardId == scorecard_id)\
+                          .all()   
+                              
     def get_metric(self, scorecard_id: int):
         metric = self.db_session.query(
             ScoreCardMetrics.metricId,

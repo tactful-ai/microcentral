@@ -52,12 +52,3 @@ def getScoreCards(
     return microserviceScoreCardService.getByTeamId(teamId)
 
 
-@router.get("/{service_id}/services", response_model=list[ServiceMetricCL])
-def get_metrics(service_id: int, service_metric_crud: CRUDServiceMetric = Depends(dependencies.getServiceMetricsCrud)):
-
-    metrics = service_metric_crud.get_metric_values_by_service(service_id)
-    
-    if not metrics:
-        raise ExceptionCustom(status_code=404, detail="Metrics not found for this service and metric.")
-
-    return metrics
