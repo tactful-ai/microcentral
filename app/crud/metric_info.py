@@ -33,25 +33,4 @@ class CRUDMetricInfo:
         })
       print("metricinfo:", output)
       return output
-    #def get_latest_metric_readings(self, service_id: int, scorecard_id: int):
-    ## Get the list of latest metrics
-    # metriclist = self.servicemetric.get_last_metrics(service_id, scorecard_id)
-
-    # metric_ids = [metric.metricId for metric in metriclist]
-
-    # metric_names = self.Metric.getMetricNamesByIds(metric_ids)  
-
-    # metric_name_map = {metric_id: metric_names[metric_id] for metric_id in metric_ids}
-
-    # output = []
-
-    # for metric in metriclist:
-    #    output.append({
-    #        'metricId': metric.metricId,
-    #        'metricName': metric_name_map.get(metric.metricId, 'Unknown'),  
-    #        'value': metric.value,
-    #        'timestamp': metric.timestamp.strftime('%Y-%m-%d %H:%M:%S'),
-    #        'weight': metric.weight
-    #    })
-
-    # return output
+    
