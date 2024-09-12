@@ -60,7 +60,7 @@ class CRUDServiceMetric(CRUDBase[ServiceMetric, ServiceMetricCreate, ServiceMetr
      ).filter(
         ServiceMetric.serviceId == service_id,
         ServiceMetric.metricId.in_(metric_info_dict)
-    # ).all()   
+       
      ).order_by(ServiceMetric.metricId, ServiceMetric.timestamp.desc()).distinct(ServiceMetric.metricId).all()
 
      print("Service metrics:", service_metrics)
