@@ -55,6 +55,13 @@ const InfoCard = ({ serviceName, teamName }) => {
     );
 };
 
+const GraphController = ({metricType, data}) => {
+    if (metricType == "integer"){
+        return (<Line data={data} />);
+    }
+}
+
+
 const ScorecardMetrics = () => {
     const metricsData = [
         {
@@ -113,7 +120,6 @@ const ScorecardMetrics = () => {
         console.log("display");
         console.log(metricsData)
     }
-
       
   return (
     <Layout>
@@ -153,9 +159,12 @@ const ScorecardMetrics = () => {
                             <InfoCard serviceName={'Visa Auth'} teamName={'Team 1'} />
                         </Col>
                         <Col xs={12}>
-                            <Form.Control type="text" placeholder="Enter Interval" 
+                            <h3>Enter Time Interval: </h3>
+                            <Form.Control type="text" placeholder="Enter From Timestamp" 
+                            className='mb-1' />
+                            <Form.Control type="text" placeholder="Enter To Timestamp" 
                             className='mb-4' />
-                            <Line data={lineData} />
+                            <GraphController metricType={"integer"} data={lineData}/>
                         </Col>
                     </Row>
                 </Col>
