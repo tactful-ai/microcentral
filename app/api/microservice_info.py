@@ -16,10 +16,6 @@ class Value(BaseModel):
 router = APIRouter()
 
 
-#def format_code(name):
-#    code = re.sub(r'\s+', '-', name.strip())
-#    return code
-
 @router.get("/{service_id}", response_model=MicroserviceInfoBase)
 async def getmicroservice_info(service_id: int, microServiceinfo: CRUDMicroserviceInfo = Depends(dependencies.getMicroserviceInfoCrud)):
     service = microServiceinfo.getServiceInfo(
