@@ -18,8 +18,8 @@ class CRUDScoreCardMetric(CRUDBase[ScoreCardMetrics, ScoreCardMetricsCreate, Sco
                           .filter(ScoreCardMetrics.scoreCardId == scorecard_id)\
                           .all()   
                               
-    def get_metric(self, scorecard_id: int):
-        metric = self.db_session.query(
+    def get_metrics(self, scorecard_id: int) -> list[ScoreCardMetrics]:
+        metrics = self.db_session.query(
             ScoreCardMetrics.metricId,
             ScoreCardMetrics.criteria,
             ScoreCardMetrics.desiredValue,
@@ -28,4 +28,4 @@ class CRUDScoreCardMetric(CRUDBase[ScoreCardMetrics, ScoreCardMetricsCreate, Sco
             ScoreCardMetrics.scoreCardId == scorecard_id
         ).all()
 
-        return metric
+        return metrics

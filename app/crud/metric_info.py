@@ -1,6 +1,6 @@
 import sqlalchemy
 from sqlalchemy.orm import Session
-from ..schemas import serviceMetric , metric_info , scoreCardMetrics,MetricInfoBase
+from ..schemas import MetricInfoBase
 from .base import CRUDBase
 from . import CRUDServiceMetric , CRUDMetric ,CRUDScoreCardMetric
 
@@ -14,15 +14,13 @@ class CRUDMetricInfo:
               
      
     def get_latest_metric_readings(self, service_id: int, scorecard_id: int) -> list[MetricInfoBase]:
-      #metricweights= self.scorecardmetric.getMetricWeight(scorecard_id)
-      metricweights = {weight.metricId: weight.weight for weight in self.scorecardmetric.getMetricWeight(scorecard_id)}
+      metricobjects = self.scorecardmetric.get_metrics(scorecard_id)
       metriclist= self.servicemetric.get_last_metrics(service_id,scorecard_id)       
-     
+      metric_data = {metric.metricId: metric.weight for metric in metricobjects} 
       output = []
-    
       for metric in metriclist:
         metric_id = metric.metricId
-        weight = metricweights.get(metric_id)  
+        weight = metric_data.get(metric_id)
         
         output.append({
             'metricId': metric.metricId,          
@@ -34,3 +32,4 @@ class CRUDMetricInfo:
       print("metricinfo:", output)
       return output
     
+  

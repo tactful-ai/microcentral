@@ -20,19 +20,16 @@ class CRUDServiceMetric(CRUDBase[ServiceMetric, ServiceMetricCreate, ServiceMetr
     def getByServiceId(self, serviceId: int) -> list[ServiceMetric]:
         return self.db_session.query(ServiceMetric).filter(ServiceMetric.serviceId == serviceId).all()
 
-    def get_metrics_by_scorecard_and_service(self, scorecard_id: int, service_id: int) -> list[ServiceMetric]:
-        metrics = self.db_session.query(ServiceMetric).filter(
-            ServiceMetric.serviceId == service_id,
-            scoreCardMetrics.scoreCardId == scorecard_id
-        ).all()
-        return metrics
+    #def get_metrics_by_scorecard_and_service(self, scorecard_id: int, service_id: int) -> list[ServiceMetric]:
+    #    metrics = self.db_session.query(ServiceMetric).filter(
+    #        ServiceMetric.serviceId == service_id,
+    #        scoreCardMetrics.scoreCardId == scorecard_id
+    #    ).all()
+    #    return metrics
     
-    # fun for get metric list with range time
     def get_metric_values_by_service(self, service_id: int,from_date: Optional[datetime], to_date: Optional[datetime]) -> list[ServiceMetricCL]:
-        metrics = (
-            self.db_session.query(ServiceMetric.metricId,ServiceMetric.value,ServiceMetric.timestamp)
-        )
-        query = self.db_session.query(ServiceMetric.metricId, ServiceMetric.value, ServiceMetric.timestamp)  # Query initialized here
+        
+        query = self.db_session.query(ServiceMetric.metricId, ServiceMetric.value, ServiceMetric.timestamp).filter(ServiceMetric.serviceId == service_id)  
         if from_date and to_date:
           query = query.filter(ServiceMetric.timestamp >= from_date, ServiceMetric.timestamp <= to_date)
         elif from_date:
@@ -40,14 +37,12 @@ class CRUDServiceMetric(CRUDBase[ServiceMetric, ServiceMetricCreate, ServiceMetr
         elif to_date:
           query = query.filter(ServiceMetric.timestamp <= to_date)
         
-        query = query.filter(ServiceMetric.serviceId == service_id).order_by(ServiceMetric.timestamp.desc())
+        query = query.order_by(ServiceMetric.timestamp.desc())
         metrics = query.all()
         return metrics
-     
-     
+    
       
     def get_last_metrics(self, scorecard_id: int, service_id: int)-> list[ServiceMetric]:
-        
         subquery = (
         self.db_session.query(
             ServiceMetric.metricId,
@@ -60,7 +55,6 @@ class CRUDServiceMetric(CRUDBase[ServiceMetric, ServiceMetricCreate, ServiceMetr
         .group_by(ServiceMetric.metricId)
         .subquery()
     )
-
         latest_metrics = self.db_session.query(
         ServiceMetric.metricId,
         ServiceMetric.value,
@@ -71,12 +65,8 @@ class CRUDServiceMetric(CRUDBase[ServiceMetric, ServiceMetricCreate, ServiceMetr
             ServiceMetric.metricId == subquery.c.metricId,
             ServiceMetric.timestamp == subquery.c.latest_timestamp
         )
-     ).filter(
-        ServiceMetric.serviceId == service_id
      ).all()
 
-   
-        print("servicemetric:", latest_metrics)
         return latest_metrics
      
     
@@ -97,23 +87,22 @@ class CRUDServiceMetric(CRUDBase[ServiceMetric, ServiceMetricCreate, ServiceMetr
  
 
     def get_calculated_value(self, service_id: int, scorecard_id: int):
-        scorecard_metrics = self.scorecardMetrics.get_metric(scorecard_id)
-        print("Scorecard metrics:", scorecard_metrics)
-        metric_info_dict = {
-            metric.metricId: (
-                metric.criteria, metric.desiredValue, metric.weight)
-            for metric in scorecard_metrics
-        }
+        scorecard_metrics = self.scorecardMetrics.get_metrics(scorecard_id)
+        #metric_info_dict = {
+        #    metric.metricId: (
+        #        metric.criteria, metric.desiredValue, metric.weight)
+        #    for metric in scorecard_metrics
+        #}
 
-        metric_info_dict = {}
-        for metric in scorecard_metrics:
-            metric_type = self.Metric.getMetricType(metric.metricId)
-            metric_info_dict[metric.metricId] = (
+        metric_info_dict = {
+            metric.metricId (
                 metric.criteria,
                 metric.desiredValue,
                 metric.weight,
-                metric_type
+                metric_type = self.Metric.get(metric.metricId)
             )
+            for metric in scorecard_metrics
+            }
 
         service_metrics = self.db_session.query(
             ServiceMetric.metricId,
@@ -122,10 +111,8 @@ class CRUDServiceMetric(CRUDBase[ServiceMetric, ServiceMetricCreate, ServiceMetr
         ).filter(
             ServiceMetric.serviceId == service_id,
             ServiceMetric.metricId.in_(metric_info_dict)
-            # ).all()
-        ).order_by(ServiceMetric.metricId, ServiceMetric.timestamp.desc()).distinct(ServiceMetric.metricId).all()
 
-        print("Service metrics:", service_metrics)
+        ).order_by(ServiceMetric.metricId, ServiceMetric.timestamp.desc()).distinct(ServiceMetric.metricId).all()
 
         for service_metric in service_metrics:
             criteria, desired_value, weight, metric_type = metric_info_dict.get(

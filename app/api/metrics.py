@@ -1,4 +1,4 @@
-from app.schemas import ServiceMetricCreate , ServiceMetricCL
+from app.schemas import ServiceMetricCreate
 from fastapi import APIRouter, Depends
 from pydantic import BaseModel, Field
 from app.crud import CRUDMetric, CRUDServiceMetric, CRUDMicroserviceScoreCard, CRUDMicroservice

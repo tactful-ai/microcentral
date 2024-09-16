@@ -25,7 +25,4 @@ class CRUDMetric(CRUDBase[Metric, MetricCreate, MetricUpdate]):
         print("metric:", subquery)
         return subquery
  
-    #def getMetricNamesByIds(self, metric_ids: list[int]) -> dict[int, str]:
-    #  metrics = self.db_session.query(Metric.metricId, Metric.name).filter(Metric.metricId.in_(metric_ids)).all()
-
-    #  return {metric.metricId: metric.name for metric in metrics}
+    
