@@ -1,18 +1,21 @@
-import React from 'react';
+import React, { useState } from 'react';
 import Layout from '../layouts/Layout.jsx';
-import { NavLink } from 'react-router-dom';
 import { Container, Row, Col, Form, Card, ListGroup } from 'react-bootstrap';
-import { Line } from 'react-chartjs-2';
+import { Line, Bar } from 'react-chartjs-2';
+import { metricsData, stringData, lineData, booleanData } from '../utils/data.js';
+// import ChartDataLabels from 'chartjs-plugin-datalabels';
 import {
     Chart as ChartJS,
     CategoryScale,
     LinearScale,
     PointElement,
     LineElement,
+    BarElement,
     Title,
     Tooltip,
     Legend,
   } from 'chart.js';
+import DateTimePicker from '../components/DateTimePicker.jsx';
   
   ChartJS.register(
     CategoryScale,
@@ -21,7 +24,9 @@ import {
     LineElement,
     Title,
     Tooltip,
-    Legend
+    Legend,
+    BarElement,
+    // ChartDataLabels
   );
 
 
@@ -35,7 +40,7 @@ const ScorecardMetricRows = ({metricsData, handleDisplay}) => {
             <td>{metric.weight}</td>
             <td>{metric.lastUpdate}</td>
             <th>
-                <button className="action-btn mx-1" onClick={()=>handleDisplay(metricsData)}>
+                <button className="action-btn mx-1" onClick={()=>handleDisplay(metric)}>
                     <i className="fa-solid fa-eye"></i>
                 </button>
             </th>
@@ -55,70 +60,51 @@ const InfoCard = ({ serviceName, teamName }) => {
     );
 };
 
-const GraphController = ({metricType, data}) => {
-    if (metricType == "integer"){
-        return (<Line data={data} />);
+const options = {
+    responsive: true,
+    scales: {
+      x: {
+        title: {
+          display: true,
+          text: 'Time', 
+        },
+      },
+      y: {
+        beginAtZero: true,
+        title: {
+          display: true,
+          text: 'Count', 
+        },
+      },
+    },
+    plugins: {
+      legend: {
+        position: 'top',
+      },
+    },
+  };
+  
+const GraphController = ({metricType}) => {
+    let data = [];
+    if (metricType == null) return;
+    if (metricType == "integer" || metricType == "float"){
+        return <Line data={lineData} />;
+    }
+    else if(metricType == "string" || metricType == "boolean") {
+        return <Bar data={stringData} options={options} />;
+    }
+    else if(metricType == "boolean") {
+        return <Bar data={booleanData} options={options} />;
+        
     }
 }
 
-
 const ScorecardMetrics = () => {
-    const metricsData = [
-        {
-            name: "CPU Usage",
-            value: 75,
-            weight: 50,
-            lastUpdate: "2024-09-01"
-        },
-        {
-            name: "Memory Usage",
-            value: 60,
-            weight: 70,
-            lastUpdate: "2024-09-02"
-        },
-        {
-            name: "Network Latency",
-            value: 30,
-            weight: 80,
-            lastUpdate: "2024-09-03"
-        },
-        {
-            name: "Database Queries",
-            value: 90,
-            weight: 60,
-            lastUpdate: "2024-09-04"
-        },
-        {
-            name: "API Response Time",
-            value: 45,
-            weight: 90,
-            lastUpdate: "2024-09-05"
-        }
-    ];
-    
+    const [metricType, setMetricType] = useState(null);
 
-    const lineData = {
-        labels: ["Jan", "Feb", "Mar", "Apr", "May", "Jun"],
-        datasets: [
-          {
-            label: "First dataset",
-            data: [33, 53, 85, 41, 44, 65],
-            fill: true,
-            backgroundColor: "rgba(75,192,192,0.2)",
-            borderColor: "rgba(75,192,192,1)"
-          },
-          {
-            label: "Second dataset",
-            data: [33, 25, 35, 51, 54, 76],
-            fill: false,
-            borderColor: "#742774"
-          }
-        ]
-      };
-
-    const handleDisplay = (metricsData) => {
-        console.log("display");
-        console.log(metricsData)
+    const handleDisplay = (metric) => {
+        console.log(metric);
+        setMetricType(metric.type)
     }
       
   return (
@@ -154,17 +140,14 @@ const ScorecardMetrics = () => {
                     </Row>
                 </Col>
                 <Col lg={6} className='px-5'>
-                    <Row className='text-center vh-100'>
-                        <Col xs={12}>
+                    <Row className='vh-100'>
+                        <Col xs={12} className='text-center'>
                             <InfoCard serviceName={'Visa Auth'} teamName={'Team 1'} />
                         </Col>
                         <Col xs={12}>
-                            <h3>Enter Time Interval: </h3>
-                            <Form.Control type="text" placeholder="Enter From Timestamp" 
-                            className='mb-1' />
-                            <Form.Control type="text" placeholder="Enter To Timestamp" 
-                            className='mb-4' />
-                            <GraphController metricType={"integer"} data={lineData}/>
+                            <h4>Select data time interval</h4>
+                            <DateTimePicker/>
+                            <GraphController metricType={metricType}/>
                         </Col>
                     </Row>
                 </Col>
