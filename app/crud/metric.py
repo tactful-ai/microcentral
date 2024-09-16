@@ -17,12 +17,10 @@ class CRUDMetric(CRUDBase[Metric, MetricCreate, MetricUpdate]):
         subquery=self.db_session.query(Metric.type).filter(
         Metric.id == metricId
       ).scalar()
-        print(subquery)
         return subquery
        
     def getMetricName(self, metricId:int) -> str:
         subquery = self.db_session.query(Metric.name).filter(Metric.id == metricId).scalar()
-        print("metric:", subquery)
         return subquery
  
     
