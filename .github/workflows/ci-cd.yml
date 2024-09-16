@@ -2,6 +2,8 @@ name: CI/CD Pipeline
 
 on:
   push:
+    branches:
+      - CI-CD-pipline
     tags:
       - v*
 
