@@ -22,8 +22,8 @@ export const metricsData = [
     },
     {
         name: "Database Queries",
-        type: "boolean",
-        value: 1,
+        type: "string",
+        value: "test",
         weight: 10,
         lastUpdate: "2024-09-04"
     },
@@ -35,38 +35,55 @@ export const metricsData = [
         lastUpdate: "2024-09-05"
     }
 ];
+
 export const booleanData = {
-    labels: ['2024-09-01', '2024-09-02', '2024-09-03'], 
+    labels: ['1.00', '2.00', '3.00', '4.00', '5.00', '6.00', '7.00', '8.00', '9.00', '10.00'], 
     datasets: [
       {
         label: 'True',
-        data: [10, 15, 8], 
+        data: [0, 1, 1, 1, 0, 1, 0, 0, 0, 1], 
         backgroundColor: 'rgba(54, 162, 235, 0.6)',
-      },
-      {
-        label: 'False',
-        data: [5, 7, 12], 
-        backgroundColor: 'rgba(255, 99, 132, 0.6)',
+        barThickness: 1
       },
     ],
   };
   
+export const scatterData = (points) => {
+    let categories = ['A', 'B', 'C'];
+    return ({
+        categories: categories,
+        labels: ['1.00', '2.00', '3.00', '4.00', '5.00', '6.00', '7.00', '8.00', '9.00', '10.00'],
+        datasets: [
+            {
+                label: 'Scatter Dataset',
+                data: points.map((point, index) => ({
+                    x: index+1,  // x is constant since we want to display rectangles aligned vertically
+                    y: categories.indexOf(point), // map data to the index of the category
+                })),
+                backgroundColor: 'rgba(75, 192, 192, 0.6)',
+                pointStyle: 'rect', // Use 'rect' to display rectangles
+                pointRadius: 10,    // Radius of the rectangle (size)
+            },
+        ],
+    })
+}
+
 export const stringData = {
-    labels: ['2024-09-01', '2024-09-02', '2024-09-03', '2024-09-04'],
+    labels: ['1.00', '2.00', '3.00', '4.00', '5.00', '6.00', '7.00', '8.00', '9.00', '10.00'],
+    categories: ['A', 'B', 'C'],
     datasets: [
         {
-            label: 'Category A',
-            data: [12, 19, 3, 5], 
+            data: [''], 
             backgroundColor: 'rgba(255, 99, 132, 0.6)',
         },
         {
             label: 'Category B',
-            data: [8, 15, 20, 10], 
+            data: [''], 
             backgroundColor: 'rgba(54, 162, 235, 0.6)',
         },
         {
             label: 'Category C',
-            data: [5, 10, 15, 22], 
+            data: [''], 
             backgroundColor: 'rgba(75, 192, 192, 0.6)',
         },
     ],

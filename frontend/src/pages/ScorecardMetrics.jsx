@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
 import Layout from '../layouts/Layout.jsx';
 import { Container, Row, Col, Form, Card, ListGroup } from 'react-bootstrap';
-import { Line, Bar } from 'react-chartjs-2';
-import { metricsData, stringData, lineData, booleanData } from '../utils/data.js';
+import { Line, Bar, Scatter } from 'react-chartjs-2';
+import { metricsData, stringData, lineData, booleanData, scatterData } from '../utils/data.js';
+import DateTimePicker from '../components/DateTimePicker.jsx';
 // import ChartDataLabels from 'chartjs-plugin-datalabels';
 import {
     Chart as ChartJS,
@@ -15,7 +16,6 @@ import {
     Tooltip,
     Legend,
   } from 'chart.js';
-import DateTimePicker from '../components/DateTimePicker.jsx';
   
   ChartJS.register(
     CategoryScale,
@@ -60,20 +60,30 @@ const InfoCard = ({ serviceName, teamName }) => {
     );
 };
 
-const options = {
+const booleanOptions = {
     responsive: true,
     scales: {
       x: {
         title: {
           display: true,
-          text: 'Time', 
+          text: 'Time',
         },
       },
       y: {
-        beginAtZero: true,
+        min: 0,
+        max: 1,
+        ticks: {
+            callback: function(value) {
+            // Show only 0 and 1 on the y-axis
+            if (value === 0 || value === 1) {
+                return value;
+            }
+            return '';
+            }
+        },
         title: {
           display: true,
-          text: 'Count', 
+          text: 'Value', 
         },
       },
     },
@@ -84,17 +94,48 @@ const options = {
     },
   };
   
+  const stringOptions = (labels=[]) => {
+    return ({
+        scales: {
+            x: {
+                type: 'linear',
+                position: 'bottom',
+                min: 0.00, // Set minimum x value
+                max: 10.00, // Set maximum x value
+                position: 'bottom',
+                ticks: {
+                    stepSize: 1, // Ensure the ticks show in steps of 1
+                },
+            },
+            y: {
+                type: 'category',
+                labels: labels
+            }
+        },
+        plugins: {
+            legend: {
+              labels: {
+                padding: 20, // Add margin or padding to the legend items
+              },
+            },
+        },
+    });
+  }
+
 const GraphController = ({metricType}) => {
     let data = [];
     if (metricType == null) return;
     if (metricType == "integer" || metricType == "float"){
         return <Line data={lineData} />;
     }
-    else if(metricType == "string" || metricType == "boolean") {
-        return <Bar data={stringData} options={options} />;
-    }
+    else if(metricType == "string") {
+        // return <Bar data={stringData} options={stringOptions(stringData.categories)} />;
+        return (
+        <Scatter data={scatterData(['A', 'C'])} 
+        options={stringOptions(stringData.categories)} />);
+}
     else if(metricType == "boolean") {
-        return <Bar data={booleanData} options={options} />;
+        return <Bar data={booleanData} options={booleanOptions} />;
         
     }
 }
