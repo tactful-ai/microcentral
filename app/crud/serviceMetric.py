@@ -1,10 +1,10 @@
 
 from sqlalchemy.orm import Session
-from sqlalchemy import func ,and_
-from ..models import ServiceMetric, scoreCardMetrics
+from sqlalchemy import select
+from ..models import ServiceMetric, Metric
 from ..schemas import ServiceMetricCreate, ServiceMetricUpdate
 from .base import CRUDBase
-from . import CRUDScoreCardMetric ,CRUDMetric
+from . import CRUDScoreCardMetric, CRUDMetric
 from app.utils.utility_functions import main_calculate_error, calculate_score
 
 
@@ -13,24 +13,29 @@ class CRUDServiceMetric(CRUDBase[ServiceMetric, ServiceMetricCreate, ServiceMetr
         super(CRUDServiceMetric, self).__init__(ServiceMetric, db_session)
         self.scorecardMetrics = CRUDScoreCardMetric(db_session)
         self.Metric = CRUDMetric(db_session)
-
+        
+    def get_all_by_ids(self, metric_ids: set):
+     metrics = self.db_session.query(Metric).filter(Metric.id.in_(metric_ids)).all()
+     return metrics
+    
     def getByScorecardId(self, scorecardId: int) -> list[ServiceMetric]:
         return self.db_session.query(ServiceMetric).filter(ServiceMetric.scorecardId == scorecardId).all()
 
     def getByServiceId(self, serviceId: int) -> list[ServiceMetric]:
         return self.db_session.query(ServiceMetric).filter(ServiceMetric.serviceId == serviceId).all()
-   
-    def get_last_metrics(self, scorecard_id: int, service_id: int)-> list[ServiceMetric]:
+
+    def get_last_metrics(self, scorecard_id: int, service_id: int) -> list[ServiceMetric]:
         subquery = self.db_session.query(
-        ServiceMetric.metricId,
-        ServiceMetric.value,
-        ServiceMetric.timestamp
+            ServiceMetric.metricId,
+            ServiceMetric.value,
+            ServiceMetric.timestamp
         ).filter(
-        ServiceMetric.serviceId == service_id,
-        ServiceMetric.metricId.in_(self.scorecardMetrics.getMetricByScoreCradId(scorecard_id))
+            ServiceMetric.serviceId == service_id,
+            ServiceMetric.metricId.in_(
+                self.scorecardMetrics.getMetricByScoreCradId(scorecard_id))
         ).order_by(ServiceMetric.metricId, ServiceMetric.timestamp.desc()).distinct(ServiceMetric.metricId).all()
         return subquery
-   
+
     def get_timestamp(self, service_id: int, scorecard_id: int):
         subquery = self.scorecardMetrics.getMetricByScoreCradId(scorecard_id)
 
@@ -40,34 +45,38 @@ class CRUDServiceMetric(CRUDBase[ServiceMetric, ServiceMetricCreate, ServiceMetr
             .first()
 
         if update_time:
-          formatted_time = update_time.timestamp.strftime('%Y-%m-%d %H:%M:%S')
-          return formatted_time
+            formatted_time = update_time.timestamp.strftime(
+                '%Y-%m-%d %H:%M:%S')
+            return formatted_time
         else:
-         return None
+            return None
 
- 
     def get_calculated_value(self, service_id: int, scorecard_id: int):
-     scorecard_metrics = self.scorecardMetrics.get_metric(scorecard_id)
-     metric_info_dict = {
+        scorecard_metrics = self.scorecardMetrics.get_metric(scorecard_id)
+        metric_ids = {metric.metricId for metric in scorecard_metrics}
+        metric_types = {
+            metric.id: metric.type for metric in self.get_all_by_ids(metric_ids)}
+
+        metric_info_dict = {
 
             metric.metricId: (
                 metric.criteria,
                 metric.desiredValue,
                 metric.weight,
-                self.Metric.get(metric.metricId).type
+                metric_types[metric.metricId]
             )
             for metric in scorecard_metrics
-            }
-     service_metrics= self.get_last_metrics(scorecard_id, service_id) 
-     scorevalue = 0
-     for service_metric in service_metrics:
-        criteria, desired_value , weight, metric_type  = metric_info_dict.get(service_metric.metricId)
-        
-        if criteria is not None and desired_value is not None:
+        }
+        service_metrics = self.get_last_metrics(scorecard_id, service_id)
+        scorevalue = 0
+        for service_metric in service_metrics:
+            criteria, desired_value, weight, metric_type = metric_info_dict.get(
+                service_metric.metricId)
 
-            error = main_calculate_error(service_metric.value, desired_value,weight, criteria, metric_type)
-            score = calculate_score(error, weight)
-            scorevalue+= score
-        return scorevalue
-  
- 
+            if criteria is not None and desired_value is not None:
+
+                error = main_calculate_error(
+                    service_metric.value, desired_value, weight, criteria, metric_type)
+                score = calculate_score(error, weight)
+                scorevalue += score
+            return scorevalue
