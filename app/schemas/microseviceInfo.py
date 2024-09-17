@@ -14,9 +14,3 @@ class MicroserviceInfoBase(BaseModel):
         orm_mode = True
 
 
-class MicroserviceInfoCreate(MicroserviceInfoBase):
-    pass
-
-
-class MicroserviceInfoUpdate(MicroserviceInfoBase):
-    pass

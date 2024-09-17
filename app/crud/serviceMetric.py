@@ -37,21 +37,16 @@ class CRUDServiceMetric(CRUDBase[ServiceMetric, ServiceMetricCreate, ServiceMetr
  
     def get_calculated_value(self, service_id: int, scorecard_id: int):
      scorecard_metrics = self.scorecardMetrics.get_metric(scorecard_id)
-     print("Scorecard metrics:", scorecard_metrics)
      metric_info_dict = {
-        metric.metricId: (metric.criteria, metric.desiredValue, metric.weight)
-        for metric in scorecard_metrics
-      }
 
-     metric_info_dict = {}
-     for metric in scorecard_metrics:
-        metric_type = self.Metric.getMetricType(metric.metricId) 
-        metric_info_dict[metric.metricId] = (
-            metric.criteria,
-            metric.desiredValue,
-            metric.weight,
-            metric_type
-        )
+            metric.metricId: (
+                metric.criteria,
+                metric.desiredValue,
+                metric.weight,
+                self.Metric.get(metric.metricId).type
+            )
+            for metric in scorecard_metrics
+            }
      
      service_metrics = self.db_session.query(
         ServiceMetric.metricId,
@@ -59,11 +54,9 @@ class CRUDServiceMetric(CRUDBase[ServiceMetric, ServiceMetricCreate, ServiceMetr
         ServiceMetric.timestamp
      ).filter(
         ServiceMetric.serviceId == service_id,
-        ServiceMetric.metricId.in_(metric_info_dict)
-       
+        ServiceMetric.metricId.in_(metric_info_dict.keys())
      ).order_by(ServiceMetric.metricId, ServiceMetric.timestamp.desc()).distinct(ServiceMetric.metricId).all()
 
-     print("Service metrics:", service_metrics)
      scorevalue = 0
      for service_metric in service_metrics:
         criteria, desired_value , weight, metric_type  = metric_info_dict.get(service_metric.metricId)
@@ -73,11 +66,6 @@ class CRUDServiceMetric(CRUDBase[ServiceMetric, ServiceMetricCreate, ServiceMetr
             error = main_calculate_error(service_metric.value, desired_value,weight, criteria, metric_type)
             score = calculate_score(error, weight)
             scorevalue+= score
-            print( score )
-            print(scorevalue)
-            print(service_metric.metricId)
-     return scorevalue
+        return scorevalue
   
-     
  
-

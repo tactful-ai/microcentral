@@ -21,7 +21,6 @@ class CRUDMicroserviceInfo:
 
     # Get one with scorecard list and team name
     def getServiceInfo(self, service_id: int) -> MicroserviceInfoBase:
-        print(datetime.now())
         microservice = self.microsService.get(service_id)
 
         if not microservice:

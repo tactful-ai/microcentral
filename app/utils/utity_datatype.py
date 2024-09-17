@@ -1,6 +1,6 @@
 
 def parse_stringified_value(value: str, target_type: str)-> int | float | bool| str :
-  try:
+
     if target_type == 'boolean':
         if value.lower() in ('true', '1'):
             return True
@@ -22,10 +22,12 @@ def parse_stringified_value(value: str, target_type: str)-> int | float | bool| 
             raise ValueError(f"Cannot convert {value} to float.")
     
     elif target_type == 'string':
-        return value
-  except : 
-      raise ValueError(f"Unsupported target type: {target_type}")
-
+        try:
+            return value
+        except ValueError:
+            raise ValueError(f"Cannot convert {value} to string.")
+    
+  
 
 def stringify_value(value) -> str:
    

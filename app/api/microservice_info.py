@@ -4,7 +4,6 @@ from app.crud import CRUDMicroservice, CRUDMicroserviceInfo, CRUDTeam, CRUDScore
 from typing import List
 from app import dependencies
 from pydantic import BaseModel, Field
-#from sqlalchemy.orm import Session
 from .exceptions import ExceptionCustom
 import re
 

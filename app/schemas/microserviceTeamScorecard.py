@@ -12,11 +12,3 @@ class MicroserviceTeamScorecardBase(BaseModel):
 
     class Config:
         orm_mode = True
-
-class MicroserviceTeamScorecardCreate(MicroserviceTeamScorecardBase):
-    pass
-
-
-# Properties to receive on microserviceScoreCard update
-class MicroserviceTeamScorecardUpdate(MicroserviceTeamScorecardBase):
-    pass
