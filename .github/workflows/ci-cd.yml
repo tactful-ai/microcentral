@@ -27,7 +27,8 @@ jobs:
         run: echo "TAG=$(git describe --tags --abbrev=0)" >> $GITHUB_ENV 
 
       - name: Build and Push Backend Image
-        # if: github.ref == 'refs/heads/CI-CD-pipline' main-backend
+        if: github.ref == 'refs/heads/CI-CD-pipline' 
+        # main-backend
         uses: docker/build-push-action@v6
         with:
           push: true
