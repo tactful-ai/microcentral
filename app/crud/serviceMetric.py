@@ -1,5 +1,6 @@
 
 from sqlalchemy.orm import Session
+from sqlalchemy import func ,and_
 from ..models import ServiceMetric, scoreCardMetrics
 from ..schemas import ServiceMetricCreate, ServiceMetricUpdate
 from .base import CRUDBase
@@ -18,8 +19,43 @@ class CRUDServiceMetric(CRUDBase[ServiceMetric, ServiceMetricCreate, ServiceMetr
 
     def getByServiceId(self, serviceId: int) -> list[ServiceMetric]:
         return self.db_session.query(ServiceMetric).filter(ServiceMetric.serviceId == serviceId).all()
-    
+   
+    def get_last_metrics(self, scorecard_id: int, service_id: int)-> list[ServiceMetric]:
+        subquery = self.db_session.query(
+        ServiceMetric.metricId,
+        ServiceMetric.value,
+        ServiceMetric.timestamp
+        ).filter(
+        ServiceMetric.serviceId == service_id,
+        ServiceMetric.metricId.in_(self.scorecardMetrics.getMetricByScoreCradId(scorecard_id))
+        ).order_by(ServiceMetric.metricId, ServiceMetric.timestamp.desc()).distinct(ServiceMetric.metricId).all()
+        return subquery
+    #    subquery = (
+    #    self.db_session.query(
+    #        ServiceMetric.metricId,
+    #        func.max(ServiceMetric.timestamp).label('latest_timestamp')
+    #    )
+    #    .filter(
+    #        ServiceMetric.serviceId == service_id,
+    #        ServiceMetric.metricId.in_(self.scorecardMetrics.getMetricByScoreCradId(scorecard_id))
+    #    )
+    #    .group_by(ServiceMetric.metricId)
+    #    .subquery()
+    #)
+    #    latest_metrics = self.db_session.query(
+    #    ServiceMetric.metricId,
+    #    ServiceMetric.value,
+    #    ServiceMetric.timestamp
+    # ).join(
+    #    subquery,
+    #    and_(
+    #        ServiceMetric.metricId == subquery.c.metricId,
+    #        ServiceMetric.timestamp == subquery.c.latest_timestamp
+    #    )
+    # ).all()
 
+    #    return latest_metrics
+    
     def get_timestamp(self, service_id: int, scorecard_id: int):
         subquery = self.scorecardMetrics.getMetricByScoreCradId(scorecard_id)
 
@@ -47,7 +83,7 @@ class CRUDServiceMetric(CRUDBase[ServiceMetric, ServiceMetricCreate, ServiceMetr
             )
             for metric in scorecard_metrics
             }
-     
+     servicemetric2= self.get_last_metrics(scorecard_id, service_id) 
      service_metrics = self.db_session.query(
         ServiceMetric.metricId,
         ServiceMetric.value,
@@ -56,7 +92,9 @@ class CRUDServiceMetric(CRUDBase[ServiceMetric, ServiceMetricCreate, ServiceMetr
         ServiceMetric.serviceId == service_id,
         ServiceMetric.metricId.in_(metric_info_dict.keys())
      ).order_by(ServiceMetric.metricId, ServiceMetric.timestamp.desc()).distinct(ServiceMetric.metricId).all()
-
+     
+     print(servicemetric2)
+     print(service_metrics)
      scorevalue = 0
      for service_metric in service_metrics:
         criteria, desired_value , weight, metric_type  = metric_info_dict.get(service_metric.metricId)
