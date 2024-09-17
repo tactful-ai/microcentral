@@ -24,7 +24,6 @@ jobs:
           password: ${{ secrets.DOCKER_ACCESS_TOKEN}}
 
       - name: Extract the latest Git tag
-        id: git_tag
         run: echo "TAG=$(git describe --tags --abbrev=0)" >> $GITHUB_ENV
 
       - name: Build and Push Backend Image
