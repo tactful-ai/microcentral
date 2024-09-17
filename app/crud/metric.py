@@ -20,6 +20,9 @@ class CRUDMetric(CRUDBase[Metric, MetricCreate, MetricUpdate]):
         #return self.db_session.query(Metric).filter(Metric.id.in_(id)).all()
         return self.db_session.query(Metric).filter(Metric.id == id).first()
     
+    def getByIds(self , ids:list[int]):
+        return self.db_session.query(Metric).filter(Metric.id.in_(ids)).all()
+    
     def getByName(self, name: str):
         return self.db_session.query(Metric).filter(Metric.name == name).first()
     

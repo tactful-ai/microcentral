@@ -21,8 +21,10 @@ class CRUDMicroservice(CRUDBase[Microservice, MicroserviceCreate, MicroserviceUp
 
     
     def getByServiceId(self, serviceID: int) -> Microservice:
-        #return self.db_session.query(Microservice).filter(Microservice.id.in_(serviceID)).all()
         return self.db_session.query(Microservice).filter(Microservice.id == serviceID).first()
+    
+    def getByServiceIds(self, serviceID: list[int]) -> list[Microservice]:
+        return self.db_session.query(Microservice).filter(Microservice.id.in_(serviceID)).all()
     
     def getAllServicesWithTeamName(self) -> list[MicroserviceInDBBase]:
         

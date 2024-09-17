@@ -10,9 +10,8 @@ class CRUDScoreCardMetric(CRUDBase[ScoreCardMetrics, ScoreCardMetricsCreate, Sco
     def __init__(self, db_session: Session):
         super(CRUDScoreCardMetric, self).__init__(ScoreCardMetrics, db_session)
     
-    def getbyscorecardID(self, scorecardID: list[int]) -> list[ScoreCardMetrics]:
-        return self.db_session.query(ScoreCardMetrics).filter(ScoreCardMetrics.scoreCardId.in_(scorecardID)).all()
-        #return self.db_session.query(ScoreCardMetrics).filter(ScoreCardMetrics.scoreCardId == scorecardID).all()
+    def getbyscorecardID(self, scorecardID: int) -> ScoreCardMetrics:
+        return self.db_session.query(ScoreCardMetrics).filter(ScoreCardMetrics.scoreCardId == scorecardID).all()
 
     def getbymetricID(self, metricID: int) -> ScoreCardMetrics :
         return self.db_session.query(ScoreCardMetrics).filter(ScoreCardMetrics.metricId == metricID).first()
@@ -23,6 +22,12 @@ class CRUDScoreCardMetric(CRUDBase[ScoreCardMetrics, ScoreCardMetricsCreate, Sco
             .filter(ScoreCardMetrics.metricId == metricID, ScoreCardMetrics.scoreCardId == scorecardID)
             .first()
         )
+    
+    def getByMetricIdsandScorecardId(self , metricIds: list[int], scorecardId: int):
+        return (self.db_session.query(ScoreCardMetrics)
+                .filter(ScoreCardMetrics.metricId.in_(metricIds), 
+                        ScoreCardMetrics.scoreCardId == scorecardId)).all()
+
     
     def deleteByScorecardId(self, scorecardID:int):
         self.db_session.query(ScoreCardMetrics).filter(ScoreCardMetrics.scoreCardId == scorecardID).delete()

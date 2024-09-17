@@ -13,6 +13,8 @@ from .exceptions import HTTPResponseCustomized
 from app.core.security import JWTBearer, decodeJWT
 from app.utils.base import format_code
 from collections import OrderedDict
+from app.schemas.apiResponse import CustomResponse
+from .responses import ResponseCustomized
 
 
 metric_type = ["integer", "boolean", "string", "float"]
@@ -69,9 +71,7 @@ def getScoreCards(
 """
 
 # ADD NEW METRIC HERE
-
-
-@router.post("/", response_model=schemas.Metric)
+@router.post("/", response_model=schemas.Metric, response_class=ResponseCustomized)
 def createMetric(metric: schemas.MetricCreate, metricCrud: crud.CRUDMetric = Depends(dependencies.getMetricsCrud)) -> schemas.Metric:
     metricObj = metric
     # change ' ' with '-'
@@ -98,13 +98,10 @@ def createMetric(metric: schemas.MetricCreate, metricCrud: crud.CRUDMetric = Dep
         raise HTTPResponseCustomized(
             status_code=422, detail="type must be integer or boolean")
     metricCrud.create(metricObj)
-    raise HTTPResponseCustomized(
-        status_code=200, detail="Success in creating metric")
+    return ResponseCustomized("Success in creating metric")
 
 # Get Any Metric Here By ID with parsing the list to be a real list not just stringified
-
-
-@router.get("/{metricID}", response_model=schemas.Metric)
+@router.get("/{metricID}", response_model=schemas.Metric, response_class=ResponseCustomized)
 def getMetric(metricID: int, metricCrud: crud.CRUDMetric = Depends(dependencies.getMetricsCrud)) -> Any:
     metric = metricCrud.get(metricID)
     try:
@@ -113,20 +110,18 @@ def getMetric(metricID: int, metricCrud: crud.CRUDMetric = Depends(dependencies.
         metric.area = []
         metric.area = json.loads(metric.area)
     metricOBJ = jsonable_encoder(metric)
-    raise HTTPResponseCustomized(status_code=200, detail=metricOBJ)
+    return ResponseCustomized(metricOBJ)
 
 # Delete any metric using its own ID
-@router.delete("/{metricID}")
+@router.delete("/{metricID}", response_model=CustomResponse, response_class=ResponseCustomized)
 def deleteMetric(metricID: int, metricCrud: crud.CRUDMetric = Depends(dependencies.getMetricsCrud)) -> Any:
     # this line is used to check if the metric is found to be deleted as
     # if it is not found this will auto raise an error "Not Found"
     metric = metricCrud.get(metricID)
     metricCrud.delete(metricID)
-    raise HTTPResponseCustomized(
-        status_code=200, detail="deleted successfully")
+    return ResponseCustomized("Metric is deleted successfully")
 
-
-@router.put("/{metricID}")
+@router.put("/{metricID}", response_model=CustomResponse, response_class=ResponseCustomized)
 def editMetric(metricID: int, metricInput: schemas.MetricUpdate, metricCrud: crud.CRUDMetric = Depends(dependencies.getMetricsCrud)) -> Any:
     metric = metricCrud.get(metricID)
     metricObj = metricInput
@@ -145,19 +140,20 @@ def editMetric(metricID: int, metricInput: schemas.MetricUpdate, metricCrud: cru
             metricObj.area = json.dumps(metricInput.area)
         except (TypeError, ValueError) as e:
             raise ValueError(f"Invalid area datatype: {e}")
+    elif(metric.area != None):
+        metricObj.area = metric.area
     else:
         metric.area = []
         metricObj.area = json.dumps(metric.area)
     metricCrud.update(metricID, metricObj)
-    raise HTTPResponseCustomized(status_code=200, detail="Success in Editing")
+    return ResponseCustomized(f"Success, The metric {metricID} has been edited successfully.")
 
 # get all the metrics
-@router.get("/", response_model=schemas.List[schemas.Metric])
+@router.get("/", response_model=schemas.List[schemas.Metric], response_class=ResponseCustomized)
 def getAllMetrics(metricCrud: crud.CRUDMetric = Depends(dependencies.getMetricsCrud)) -> Any:
     metrics = metricCrud.list()
     metricsOBJ = []
     for metric in metrics:
         metric.area = json.loads(metric.area)
         metricsOBJ.append(metric)
-    raise HTTPResponseCustomized(
-        status_code=200, detail=jsonable_encoder(metricsOBJ))
+    return ResponseCustomized(jsonable_encoder(metricsOBJ))

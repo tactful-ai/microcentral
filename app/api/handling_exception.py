@@ -3,6 +3,7 @@ from fastapi.responses import JSONResponse
 from starlette import status
 from fastapi.encoders import jsonable_encoder
 from fastapi.exceptions import RequestValidationError
+from app.schemas.apiException import CustomException
 
 
 def my_exception_handler(request: Request, exc: HTTPException):
@@ -28,5 +29,8 @@ def validation_exception_handler(request: Request, exc: RequestValidationError):
         )
     return JSONResponse(
         status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
-        content=jsonable_encoder({"message": "error in the datatypes", "details" : modified_details}),
+        content = jsonable_encoder(CustomException(
+            message="error in the datatypes",
+            details=modified_details
+        ))
     )

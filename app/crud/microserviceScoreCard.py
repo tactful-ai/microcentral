@@ -23,9 +23,8 @@ class CRUDMicroserviceScoreCard(CRUDBase[MicroserviceScoreCard, MicroserviceScor
         self.db_session.query(MicroserviceScoreCard).filter(MicroserviceScoreCard.microserviceId == serviceid).delete()
         self.db_session.commit()
 
-    def getservice(self, scorecardId: list[int]) -> list[MicroserviceScoreCard]:
-        return self.db_session.query(MicroserviceScoreCard).filter(MicroserviceScoreCard.id.in_(scorecardId)).all()
-        #return self.db_session.query(MicroserviceScoreCard).filter(MicroserviceScoreCard.scoreCardId == scorecardId).all()
+    def getservice(self, scorecardId: int) -> MicroserviceScoreCard:
+        return self.db_session.query(MicroserviceScoreCard).filter(MicroserviceScoreCard.scoreCardId == scorecardId).all()
     
     def deleteByScorecardId(self, scorecardID:int):
         self.db_session.query(MicroserviceScoreCard).filter(MicroserviceScoreCard.scoreCardId == scorecardID).delete()
