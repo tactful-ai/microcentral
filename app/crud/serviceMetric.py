@@ -54,9 +54,8 @@ class CRUDServiceMetric(CRUDBase[ServiceMetric, ServiceMetricCreate, ServiceMetr
     def get_calculated_value(self, service_id: int, scorecard_id: int):
         scorecard_metrics = self.scorecardMetrics.get_metric(scorecard_id)
         metric_ids = {metric.metricId for metric in scorecard_metrics}
-        metric_types = {
-            metric.id: metric.type for metric in self.get_all_by_ids(metric_ids)}
-
+        metrics = self.get_all_by_ids(metric_ids)
+        metric_types = {metric.id: metric.type for metric in metrics}
         metric_info_dict = {
 
             metric.metricId: (
