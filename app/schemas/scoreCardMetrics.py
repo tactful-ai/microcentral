@@ -12,7 +12,6 @@ class ScoreCardMetricsBase(BaseModel):
     desiredValue: Optional[Union[str,float,int,bool]] = None
     weight: Optional[int] = None
     
-# class ScoreCardMetricsGet(ScoreCardMetricsBase):
 
 # Properties to receive on ScoreCardMetrics creation
 class ScoreCardMetricsCreate(ScoreCardMetricsBase):

@@ -6,18 +6,15 @@ from ..schemas import ServiceMetricCreate, ServiceMetricUpdate
 from .base import CRUDBase
 from . import CRUDScoreCardMetric, CRUDMetric
 from app.utils.utility_functions import main_calculate_error, calculate_score
-
+from datetime import datetime
 
 class CRUDServiceMetric(CRUDBase[ServiceMetric, ServiceMetricCreate, ServiceMetricUpdate]):
     def __init__(self, db_session: Session):
         super(CRUDServiceMetric, self).__init__(ServiceMetric, db_session)
         self.scorecardMetrics = CRUDScoreCardMetric(db_session)
         self.Metric = CRUDMetric(db_session)
-        
-    def get_all_by_ids(self, metric_ids: set):
-     metrics = self.db_session.query(Metric).filter(Metric.id.in_(metric_ids)).all()
-     return metrics
-    
+
+
     def getByScorecardId(self, scorecardId: int) -> list[ServiceMetric]:
         return self.db_session.query(ServiceMetric).filter(ServiceMetric.scorecardId == scorecardId).all()
 
@@ -52,9 +49,9 @@ class CRUDServiceMetric(CRUDBase[ServiceMetric, ServiceMetricCreate, ServiceMetr
             return None
 
     def get_calculated_value(self, service_id: int, scorecard_id: int):
-        scorecard_metrics = self.scorecardMetrics.get_metric(scorecard_id)
+        scorecard_metrics = self.scorecardMetrics.get_metrics(scorecard_id)
         metric_ids = {metric.metricId for metric in scorecard_metrics}
-        metrics = self.get_all_by_ids(metric_ids)
+        metrics = self.Metric.get_all_by_ids(metric_ids)
         metric_types = {metric.id: metric.type for metric in metrics}
         metric_info_dict = {
 
@@ -68,6 +65,7 @@ class CRUDServiceMetric(CRUDBase[ServiceMetric, ServiceMetricCreate, ServiceMetr
         }
         service_metrics = self.get_last_metrics(scorecard_id, service_id)
         scorevalue = 0
+        updatetime = datetime.min
         for service_metric in service_metrics:
             criteria, desired_value, weight, metric_type = metric_info_dict.get(
                 service_metric.metricId)
@@ -78,4 +76,5 @@ class CRUDServiceMetric(CRUDBase[ServiceMetric, ServiceMetricCreate, ServiceMetr
                     service_metric.value, desired_value, weight, criteria, metric_type)
                 score = calculate_score(error, weight)
                 scorevalue += score
-            return scorevalue
+                updatetime= max(service_metric.timestamp , updatetime)
+        return (scorevalue , updatetime)

@@ -44,7 +44,7 @@ class ServiceMetric(ServiceMetricInDBBase):
     metric_name: str
     value: Union[float, int, str, bool]
     date: datetime
-    weight: Optional[int]
+    weight: int
    
     class Config:
         orm_mode = True

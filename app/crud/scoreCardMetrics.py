@@ -13,7 +13,7 @@ class CRUDScoreCardMetric(CRUDBase[ScoreCardMetrics, ScoreCardMetricsCreate, Sco
     def getMetricByScoreCradId(self, scorecard_id: int) :
         return self.db_session.query(ScoreCardMetrics.metricId).filter(ScoreCardMetrics.scoreCardId == scorecard_id).subquery() 
         
-    def get_metric(self, scorecard_id: int):
+    def get_metrics(self, scorecard_id: int):
         metric = self.db_session.query(
             ScoreCardMetrics.metricId,
             ScoreCardMetrics.criteria,

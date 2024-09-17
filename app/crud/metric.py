@@ -13,7 +13,10 @@ class CRUDMetric(CRUDBase[Metric, MetricCreate, MetricUpdate]):
     def getByCode(self, code: str):
         return self.db_session.query(Metric).filter(Metric.code == code).first()
     
-  
+    def get_all_by_ids(self, metric_ids: set):
+        metrics = self.db_session.query(Metric).filter(
+            Metric.id.in_(metric_ids)).all()
+        return metrics
        
 
 

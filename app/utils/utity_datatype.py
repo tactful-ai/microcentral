@@ -25,9 +25,9 @@ def parse_stringified_value(value: str, target_type: str)-> int | float | bool| 
         try:
             return value
         except ValueError:
-            raise ValueError(f"Cannot convert {value} to string.")
-    
-  
+            raise ValueError(f"Cannot convert {value} to string.") 
+    else:
+        raise ValueError(f"Unsupported value type: {type(value)}") 
 
 def stringify_value(value) -> str:
    

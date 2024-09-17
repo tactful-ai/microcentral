@@ -33,8 +33,7 @@ class CRUDMicroserviceInfo:
         
         service_scorecards = []
         for sc in scorecards:
-           update_time = self.serviceMetric.get_timestamp(service_id, sc.id)
-           calculated_scores = self.serviceMetric.get_calculated_value(service_id, sc.id)
+           (calculated_scores, update_time) = self.serviceMetric.get_calculated_value(service_id, sc.id)
            service_scorecards.append({
              'id': sc.id,
              'name': sc.name,
