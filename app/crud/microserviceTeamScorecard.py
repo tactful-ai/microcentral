@@ -27,8 +27,7 @@ class CRUDMicroserviceTeamScorecard:
 
         teamobject = self.teamService.get(microservice.teamId)
         scorecardIds = self.scoreCardService.getByServiceId(microservice.id)
-        scorecards = []
-
+        scorecards = [] 
         scorecard_ids = [sc_id.scoreCardId for sc_id in scorecardIds]
         scorecards = self.scoreCard.getByScoreCradIds(scorecard_ids)
 

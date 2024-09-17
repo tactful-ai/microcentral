@@ -1,14 +1,15 @@
 from datetime import datetime
-from typing import Optional
+from typing import Optional, Union
 
 from pydantic import BaseModel
+
 
 
 # Shared properties
 class ServiceMetricBase(BaseModel):
     serviceId: Optional[int] = None
     metricId: Optional[int] = None
-    value: Optional[float] = None
+    value: Optional[Union[float, int, str, bool]] = None
     date: Optional[datetime] = None
 
 
@@ -16,7 +17,7 @@ class ServiceMetricBase(BaseModel):
 class ServiceMetricCreate(ServiceMetricBase):
     serviceId: int
     metricId: int
-    value: float
+    value: Union[float, int, str, bool]
     date: datetime
 
 
@@ -30,7 +31,7 @@ class ServiceMetricInDBBase(ServiceMetricBase):
     id: int
     serviceId: int
     metricId: int
-    value: float
+    value: Union[float, int, str, bool]
     date: datetime
 
     class Config:
@@ -39,8 +40,14 @@ class ServiceMetricInDBBase(ServiceMetricBase):
 
 # Properties to return to client
 class ServiceMetric(ServiceMetricInDBBase):
-    pass
-
+    metricId: int
+    metric_name: str
+    value: Union[float, int, str, bool]
+    date: datetime
+    weight: int
+   
+    class Config:
+        orm_mode = True
 
 # Properties properties stored in DB
 class ServiceMetricInDB(ServiceMetricInDBBase):
