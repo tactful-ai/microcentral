@@ -82,7 +82,6 @@ class CRUDServiceMetric(CRUDBase[ServiceMetric, ServiceMetricCreate, ServiceMetr
         }
         service_metrics = self.get_last_metrics(scorecard_id, service_id)
         scorevalue = 0
-
         updatetime = datetime.min
         for service_metric in service_metrics:
             criteria, desired_value, weight, metric_type = metric_info_dict.get(

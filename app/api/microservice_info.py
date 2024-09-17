@@ -4,7 +4,7 @@ from app.crud import CRUDMicroserviceInfo
 from typing import List
 from app import dependencies
 from pydantic import BaseModel, Field
-from .exceptions import ExceptionCustom
+from .exceptions import HTTPResponseCustomized
 
 
 class Value(BaseModel):
@@ -20,5 +20,5 @@ async def getmicroservice_info(service_id: int, microServiceinfo: CRUDMicroservi
     service = microServiceinfo.getServiceInfo(
         service_id)
     if service is None:
-        raise ExceptionCustom(status_code=404, detail="Service not found")
+        raise HTTPResponseCustomized(status_code=404, detail="Service not found")
     return service

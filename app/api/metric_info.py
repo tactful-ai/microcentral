@@ -2,7 +2,7 @@ from fastapi import APIRouter, Depends
 from typing import List
 from app import dependencies
 from pydantic import BaseModel, Field
-from .exceptions import ExceptionCustom
+from .exceptions import HTTPResponseCustomized
 from app.schemas import MetricInfoBase
 from app.crud import CRUDMetricInfo
 
@@ -19,7 +19,7 @@ router = APIRouter()
 def get_latest_metrics(service_id: int, scorecard_id: int, metricInfo:CRUDMetricInfo = Depends(dependencies.getMetricInfoCrud)):
     metrics = metricInfo.get_latest_metric_readings(service_id, scorecard_id)
     if not metrics:
-        raise ExceptionCustom(status_code=404, detail="metrics not found")
+        raise HTTPResponseCustomized(status_code=404, detail="metrics not found")
     return metrics
 
 

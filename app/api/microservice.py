@@ -129,8 +129,7 @@ def create_microservice(newmicroservice: MicroserviceCreateApi,
                     scoreCardId=scorecard_obj.id
                 ))
             except Exception as x:
-                error_message = f"Failed to create relationship for ScoreCard ID: {
-                    scorecard_obj.id}. Reason: {str(x)}"
+                error_message = f"Failed to create relationship for ScoreCard ID: {scorecard_obj.id}. Reason: {str(x)}"
                 raise HTTPResponseCustomized(
                     status_code=400, detail=error_message)
     return created_microservice
@@ -226,6 +225,6 @@ def get_metrics(service_id: int, from_date: Optional[datetime] = None,
     metrics = service_metric_crud.get_metric_values_by_service(service_id, from_date,to_date)
     
     if not metrics:
-        raise ExceptionCustom(status_code=404, detail="Metrics not found for this service and metric.")
+        raise HTTPResponseCustomized(status_code=404, detail="Metrics not found for this service and metric.")
 
     return metrics

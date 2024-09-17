@@ -10,7 +10,7 @@ from app import schemas, models, crud, dependencies
 from typing import Any, Callable
 import json
 from fastapi.routing import APIRoute
-from .exceptions import HTTPResponseCustomized, ExceptionCustom
+from .exceptions import HTTPResponseCustomized
 from app.utils.base import format_code
 
 
