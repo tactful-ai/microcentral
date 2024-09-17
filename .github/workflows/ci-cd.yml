@@ -32,7 +32,7 @@ jobs:
         uses: docker/build-push-action@v6
         with:
           push: true
-          tags: ${{ secrets.DOCKER_USERNAME }}/backend:${{ env.TAG }}
+          tags: noraali/back_end_project:${{ env.TAG }}
           context: .
           file: ./Dockerfile
 
@@ -42,7 +42,7 @@ jobs:
         uses: docker/build-push-action@v6
         with: 
           push: true
-          tags: ${{ secrets.DOCKER_USERNAME }}/frontend:${{ env.TAG }}
+          tags: noraali/front_end_project:${{ env.TAG }}
           context: ./templates  #frontend folder
           file: ./templates/Dockerfile
 
