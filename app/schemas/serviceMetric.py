@@ -4,7 +4,6 @@ from typing import Optional, Union
 from pydantic import BaseModel
 
 
-
 # Shared properties
 class ServiceMetricBase(BaseModel):
     serviceId: Optional[int] = None
@@ -45,7 +44,7 @@ class ServiceMetricReading(BaseModel):
     timestamp: datetime
 
     class Config:
-        orm_mode = True 
+        orm_mode = True
 
 
 # Properties properties stored in DB

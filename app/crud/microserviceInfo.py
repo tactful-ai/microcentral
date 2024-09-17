@@ -21,7 +21,6 @@ class CRUDMicroserviceInfo:
 
     # Get one with scorecard list and team name
     def getServiceInfo(self, service_id: int) -> MicroserviceInfoBase:
-        print(datetime.now())
         microservice = self.microsService.get(service_id)
 
         if not microservice:
@@ -34,8 +33,7 @@ class CRUDMicroserviceInfo:
         
         service_scorecards = []
         for sc in scorecards:
-           update_time = self.serviceMetric.get_timestamp(service_id, sc.id)
-           calculated_scores = self.serviceMetric.get_calculated_value(service_id, sc.id)
+           (calculated_scores, update_time) = self.serviceMetric.get_calculated_value(service_id, sc.id)
            service_scorecards.append({
              'id': sc.id,
              'name': sc.name,

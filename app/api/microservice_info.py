@@ -14,6 +14,7 @@ class Value(BaseModel):
 
 router = APIRouter()
 
+
 @router.get("/{service_id}", response_model=MicroserviceInfoBase)
 async def getmicroservice_info(service_id: int, microServiceinfo: CRUDMicroserviceInfo = Depends(dependencies.getMicroserviceInfoCrud)):
     service = microServiceinfo.getServiceInfo(

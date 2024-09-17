@@ -22,4 +22,3 @@ class CRUDMicroserviceScoreCard(CRUDBase[MicroserviceScoreCard, MicroserviceScor
         self.db_session.query(MicroserviceScoreCard).filter(MicroserviceScoreCard.microserviceId == serviceid).delete()
         self.db_session.commit()
     
-  
