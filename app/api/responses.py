@@ -28,18 +28,3 @@ class ResponseCustomized(JSONResponse):
             indent=None,
             separators=(",", ":"),
         ).encode("utf-8")
-    """
-    def response_handler(exc :JSONResponse):
-        exc = jsonable_encoder(exc)
-        print("Hello")
-        print(exc)
-        if isinstance(exc.detail, str):
-            content = {"message": exc.detail}
-        else:
-            content = exc.detail
-
-        return JSONResponse(
-            status_code= exc.status_code,
-            content = content
-        )
-    """

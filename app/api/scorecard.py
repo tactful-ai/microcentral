@@ -13,17 +13,6 @@ from app.crud.scorecardServiceMetric import CRUDScoreCardServiceMetric
 
 
 router = APIRouter()
-# VALIDATIONS DONE
-# 1) scorecard is already found or not using its code
-# 2) if the list of serviceIDs contains duplicated IDs it will be cleared as it is gonna be set not list
-# 3) if the scorecard is found or that id is just dummy id
-# 4) made the func check_unique_id to check if the metrics passed is the same object passed twice or not
-# 5) check_metric_weight to see the sum of the weights of the metrics
-# 6) check if the metric is found or not
-# 7) check the criteria if it is in the enum
-# FINISHED
-
-
 @router.post("/", response_model=CustomResponse, response_class=ResponseCustomized)
 def createScoreCard(scoreCardInput: ScorecardServiceMetricCreate,
                     scoreCardCrud: crud.CRUDScoreCard = Depends(
@@ -58,10 +47,10 @@ def createScoreCard(scoreCardInput: ScorecardServiceMetricCreate,
     # if the scorecardids are passed duplicated
     servicesIDsSet = list(set(scoreCardInput.services))
     # i need to check if the serviceid is found or not
+    service = serviceCrud.getByServiceIds(servicesIDsSet)
     serviceListToBeCreated = []
     for serviceid in servicesIDsSet:
-        service = serviceCrud.getByServiceId(serviceid)
-        if (service):
+        if (len(service) == len(servicesIDsSet)):
             serviceScorecard = schemas.MicroserviceScoreCardCreate(
                 scoreCardId=scorecardID,
                 microserviceId=serviceid
