@@ -8,16 +8,11 @@ class ScoreCardBase(BaseModel):
     name: Optional[str] = None
     description: Optional[str] = None
     code: Optional[str] = None
-    services: list[microservice.MicroserviceCreateApi]
-    metrics: list[scoreCardMetrics.ScoreCardMetricsCreate]
 
 # Properties to receive on scorecard creation
 class ScoreCardCreate(ScoreCardBase):
     name: str
     description: str
-    
-
-
 
 # Properties to receive on scorecard update
 class ScoreCardUpdate(ScoreCardBase):
@@ -35,9 +30,20 @@ class ScoreCardInDBBase(ScoreCardBase):
     class Config:
         orm_mode = True
 
-class GetScoreCard(ScoreCardBase):
+class GetScoreCard(BaseModel):
     id: int
-    services: microservice.MicroserviceBase
+    name: str
+    code: str
+    description: str
+    services: list[microservice.MicroserviceBase]
+
+class listScoreCard(BaseModel):
+    id: int
+    name: str
+    code: str
+    description: str
+    services: list[microservice.Microserviceforscorecard]
+    metrics: list[scoreCardMetrics.MetricListforScorecardGet]
 
 # Properties to return to client
 class ScoreCard(ScoreCardInDBBase):

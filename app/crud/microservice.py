@@ -21,6 +21,7 @@ class CRUDMicroservice(CRUDBase[Microservice, MicroserviceCreate, MicroserviceUp
 
     
     def getByServiceId(self, serviceID: int) -> Microservice:
+        #return self.db_session.query(Microservice).filter(Microservice.id.in_(serviceID)).all()
         return self.db_session.query(Microservice).filter(Microservice.id == serviceID).first()
     
     def getAllServicesWithTeamName(self) -> list[MicroserviceInDBBase]:
@@ -51,7 +52,11 @@ class CRUDMicroservice(CRUDBase[Microservice, MicroserviceCreate, MicroserviceUp
         return result
 
     def get_by_code (self , code:str):
-        return self.db_session.query(Microservice).filter(Microservice.code == code).first()
+        service = self.db_session.query(Microservice).filter(Microservice.code == code).first()
+        return service
+    
+    def getByCodeReturnIDs (self , code:str):
+        return self.db_session.query(Microservice).filter(Microservice.code == code).first().id()
 
 
     def check_service_name_exists(self, name: str):

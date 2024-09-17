@@ -25,9 +25,18 @@ class MicroserviceCreateApi(MicroserviceBase):
     teamId:Optional[uuid.UUID] = None
     scorecardids: Optional [list[int]] = None
     
+    
     class Config:
         orm_mode = True
 
+class Microserviceforscorecard(BaseModel):
+    name: str
+    description: str
+    teamId:uuid.UUID = None
+    id: int
+
+    class Config:
+        orm_mode = True
 # Properties to receive on microservice update
 class MicroserviceUpdate(MicroserviceBase):
     name: str

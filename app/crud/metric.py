@@ -13,6 +13,16 @@ class CRUDMetric(CRUDBase[Metric, MetricCreate, MetricUpdate]):
     def getByCode(self, code: str):
         return self.db_session.query(Metric).filter(Metric.code == code).first()
     
+    def getIdByCode(self, code: str):
+        return self.db_session.query(Metric).filter(Metric.code == code).first().id()
+    
+    def getById(self, id:int):
+        #return self.db_session.query(Metric).filter(Metric.id.in_(id)).all()
+        return self.db_session.query(Metric).filter(Metric.id == id).first()
+    
     def getByName(self, name: str):
         return self.db_session.query(Metric).filter(Metric.name == name).first()
+    
+    def getnamebyid(self, metricID: int):
+        return self.db_session.query(Metric).filter(Metric.id == metricID).first().name
 

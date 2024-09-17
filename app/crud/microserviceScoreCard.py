@@ -1,4 +1,5 @@
 
+from typing import Any
 from sqlalchemy.orm import Session
 from ..models import MicroserviceScoreCard
 from ..schemas import MicroserviceScoreCardCreate, MicroserviceScoreCardUpdate
@@ -22,5 +23,10 @@ class CRUDMicroserviceScoreCard(CRUDBase[MicroserviceScoreCard, MicroserviceScor
         self.db_session.query(MicroserviceScoreCard).filter(MicroserviceScoreCard.microserviceId == serviceid).delete()
         self.db_session.commit()
 
-    def getservice(self, scorecardId: int) -> list[MicroserviceScoreCard]:
-        return self.db_session.query(MicroserviceScoreCard).filter(MicroserviceScoreCard.scoreCardId == scorecardId).all()
+    def getservice(self, scorecardId: list[int]) -> list[MicroserviceScoreCard]:
+        return self.db_session.query(MicroserviceScoreCard).filter(MicroserviceScoreCard.id.in_(scorecardId)).all()
+        #return self.db_session.query(MicroserviceScoreCard).filter(MicroserviceScoreCard.scoreCardId == scorecardId).all()
+    
+    def deleteByScorecardId(self, scorecardID:int):
+        self.db_session.query(MicroserviceScoreCard).filter(MicroserviceScoreCard.scoreCardId == scorecardID).delete()
+        self.db_session.commit()

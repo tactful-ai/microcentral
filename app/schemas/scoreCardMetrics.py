@@ -15,9 +15,8 @@ class ScoreCardMetricsBase(BaseModel):
 # Properties to receive on ScoreCardMetrics creation
 class ScoreCardMetricsCreate(ScoreCardMetricsBase):
     scoreCardId: int
-    metricId: int
     criteria: str
-    desiredValue: Optional[Union[str,float,int,bool]] = None
+    desiredValue: Union[str,float,int,bool]
     weight: int
 
 # Properties to receive on ScoreCardMetrics update
@@ -38,6 +37,13 @@ class ScoreCardMetricsInDBBase(ScoreCardMetricsBase):
     class Config:
         orm_mode = True
 
+class MetricListforScorecardGet(BaseModel):
+    id: int # This one is metricID
+    criteria: str
+    desiredValue: Optional[Union[str,float,int,bool]] = None
+    weight: int
+    
+    
 # Properties to return to client
 class ScoreCardMetrics(ScoreCardMetricsInDBBase):
     pass
@@ -48,7 +54,15 @@ class ScoreCardMetricsInDB(ScoreCardMetricsInDBBase):
 
 
 class metric4scorecard(ScoreCardMetricsBase):
-    name: Optional[str]
     criteria: Optional[str]
     desiredValue: Optional[Union[str,float,int,bool]]
     weight: Optional[int]
+
+class metricCreateScorecard(BaseModel):
+    criteria: str
+    desiredValue: Union[str,float,int,bool]
+    weight: int
+    id: int
+
+class metricTypeScorecard(metricCreateScorecard):
+    type: str
