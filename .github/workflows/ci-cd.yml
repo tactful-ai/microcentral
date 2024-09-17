@@ -2,10 +2,10 @@ name: CI/CD Pipeline
 
 on:
   push:
-    branches:
-      - CI-CD-pipline
-      - main-backend
-      - main-frontend
+    # branches:
+    #   - CI-CD-pipline
+    #   - main-backend
+    #   - main-frontend
     tags:
       - v*
 
@@ -33,7 +33,6 @@ jobs:
           push: true
           tags: noraali/backend:${{ env.TAG }}
           context: .
-          
           file: ./Dockerfile
 
       # - name: Build and Push Frontend Image
