@@ -66,17 +66,20 @@ class CRUDServiceMetric(CRUDBase[ServiceMetric, ServiceMetricCreate, ServiceMetr
 
     def get_calculated_value(self, service_id: int, scorecard_id: int):
         scorecard_metrics = self.scorecardMetrics.get_metric(scorecard_id)
+        metric_ids = {metric.metricId for metric in scorecard_metrics}
+        metrics = self.get_all_by_ids(metric_ids)
+        metric_types = {metric.id: metric.type for metric in metrics}
         metric_info_dict = {
 
             metric.metricId: (
                 metric.criteria,
                 metric.desiredValue,
                 metric.weight,
-                self.Metric.get(metric.metricId).type
+                metric_types[metric.metricId]
             )
             for metric in scorecard_metrics
         }
-        service_metrics = self.get_last_metrics(scorecard_id , service_id)
+        service_metrics = self.get_last_metrics(scorecard_id, service_id)
         scorevalue = 0
         for service_metric in service_metrics:
             criteria, desired_value, weight, metric_type = metric_info_dict.get(
