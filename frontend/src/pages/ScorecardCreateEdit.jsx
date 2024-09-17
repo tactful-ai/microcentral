@@ -3,6 +3,7 @@ import { useParams } from 'react-router-dom';
 import TagsBox from '../components/TagsBox';
 import axios from 'axios';
 import Layout from '../layouts/Layout';
+import '../styles/pages/Scorecards.css';
 
 const ScorecardCreateEdit = (props) => {
     const {scorecard_id} = useParams();
@@ -74,7 +75,7 @@ const ScorecardCreateEdit = (props) => {
   
     return (
       <Layout>
-        <div className="content mt-4 mb-5" style={{width: '100%'}}>
+        <div className="content mt-4 mb-5 w-100">
             <div className="container">
                 <div className="row">
                     <div className="col-sm-6 m-auto mb-5">
@@ -93,7 +94,7 @@ const ScorecardCreateEdit = (props) => {
                                 <label for="scorecard-description" className="form-label">Scorecard Description </label>
                                 <textarea ref={scorecardDescRef} className="form-control" placeholder="Write a brief descriptoin here" 
                                 maxlength="{{char_limit}}" id="scorecard-description" 
-                                style={{height: '100px'}} onChange={(e)=>setCharLimit(e.target.value.length)}
+                                rows={4} onChange={(e)=>setCharLimit(e.target.value.length)}
                                 ></textarea>
                                 <div className="float-end"><span className="counter">{charLimit}</span>/100</div>
                                 <span className="error-msg text-danger d-none">error</span>
@@ -111,8 +112,7 @@ const ScorecardCreateEdit = (props) => {
                                 <span className="error-msg text-danger d-none">error</span>
                             </div>
                             <div className="col-12">
-                                <button type="submit" className="btn btn-primary col-12" id="create-btn" 
-                                style={{backgroundColor: '#6482AD'}}>
+                                <button type="submit" className="btn btn-primary col-12" id="create-btn">
                                     {props.mode == "create"? "Create": "Save"}
                                 </button>
                             </div>

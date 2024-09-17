@@ -1,7 +1,9 @@
 import React, { useState, useEffect, useRef } from 'react'
 import { useParams, useNavigate } from 'react-router-dom';
+import { Container, Row, Col, Button, Card, Carousel } from 'react-bootstrap';
 import TagsBox from '../components/TagsBox';
 import Layout from '../layouts/Layout';
+import '../styles/pages/Metrics.css';
 
 
 const MetricCreateEdit = (props) => {
@@ -101,7 +103,7 @@ const MetricCreateEdit = (props) => {
 
   };
 
-  const handleFormClick = async (e) => {
+  const handleFormSubmit = async (e) => {
     e.preventDefault();
     if (props.mode == "create"){
         await postMetric();
@@ -112,27 +114,22 @@ const MetricCreateEdit = (props) => {
     navigate('/dashboard/metrics', {state: { forceRender: true }});
   }
 
-  let disable = 'false'
-
   useEffect(()=> {
     if(props.mode == 'edit'){
         getMetricById(metric_id)
-        if(props.mode == 'view'){
-            disable = 'true'
-        }
     }
   }, [metric_id])
 
   return (
     <Layout>
-        <div className="content mt-4 mb-5" style={{width: '100%'}}>
+        <div className="content mt-4 mb-5 w-100">
             <div className="container">
                 <div className="row">
                     <div className="col-sm-6 m-auto mb-5">
                         <h1 className="text-capitalize">{props.mode} Metric</h1>
                         <form data-mode="create" className="row g-3" id="metric-form"
                         onKeyDown={(e)=> {return e.key !== 'Enter'}}
-                        onSubmit={(e) => e.preventDefault()}
+                        onSubmit={(e) => handleFormSubmit(e)}
                         >
                             <div className="col-12">
                                 <label htmlFor="metric-name" className="form-label">Metric Name</label>
@@ -155,17 +152,17 @@ const MetricCreateEdit = (props) => {
                             </div>
                             <div className="col-md-12">
                                 <label htmlFor="metric-description" className="form-label">Metric Description </label>
-                                <textarea  ref={metricDescRef} className="form-control" 
+                                <textarea ref={metricDescRef} className="form-control" 
                                 placeholder="Write a brief descriptoin here" maxLength="100" 
-                                id="metric-description" style={{height: '100px'}}
+                                id="metric-description" rows={4}
                                 onChange={(e)=>setCharLimit(e.target.value.length)}></textarea>
                                 <div className="float-end"><span className="counter">{charLimit}</span>/100</div>
                                 <span className="error-msg text-danger d-none">error</span>
                             </div>
                             <div className="col-12">
                                 <button type="submit" className="btn btn-primary col-12" 
-                                id="create-btn" style={{backgroundColor: '#6482AD'}}
-                                onClick={(e)=>handleFormClick(e)}>
+                                id="create-btn"
+                                >
                                     {props.mode == "create"? "Create": "Save"}
                                 </button>
                             </div>

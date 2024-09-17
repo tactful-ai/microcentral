@@ -25,7 +25,7 @@ const MetricRaws = (props) => {
     }
 
     return props.metricData.map((metric, index) => (
-        <tr key={index}>
+        <tr key={metric.id}>
             <th scope="row">{index + 1}</th>
             <td>{metric.name}</td>
             <td>{metric.description}</td>
@@ -83,10 +83,10 @@ const Metrics = () => {
         <div className="container my-5 px-5">
             <div className="row">
                 <div className="col-md-12 d-flex justify-content-between">
-                    <h1 className="mb-5" style={{ lineHeight: '.6' }}>Metrics List</h1>
+                    <h1 className="mb-5">Metrics List</h1>
                     <NavLink to="/dashboard/metrics/create" 
                     className={( (navData) => navData.isActive? 'active': '')}>
-                        <button className="btn btn-primary" style={{ height: '40px', backgroundColor: '#6482AD' }}
+                        <button className="btn btn-primary" id="add-new-btn"
                         type="button" value="Input">
                             Add New
                         </button>
