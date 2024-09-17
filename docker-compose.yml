@@ -14,8 +14,8 @@ services:
     app:
         profiles:   # will start only if `docker-compose --profile prod up` is used
             - prod
-        build: .
-        image: microcentral:latest
+        # build: .
+        image: noraali/back_end_project:latest
         command: poetry run uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload
         volumes:
             - .:/usr/src/app

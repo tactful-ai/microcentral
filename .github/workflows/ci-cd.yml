@@ -7,6 +7,9 @@ on:
     tags:
       - v*
 
+env:
+  IMAGE_TAG:
+
 jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
@@ -20,12 +23,17 @@ jobs:
         with:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_ACCESS_TOKEN}}
+      
+      - name: Extract the latest Git tag
+        id: git_tag
+        run: echo "TAG=$(git describe --tags --abbrev=0)" >> $IMAGE_TAG    
+
 
       - name: Build and Push Backend Image
         uses: docker/build-push-action@v6
         with:
           push: true
-          tags: noraali/back_end_project:latest
+          tags:  ${{ secrets.DOCKER_USERNAME }}/back_end_project:latest
 
       # - name: Build and Push Frontend Image
       #   uses: docker/build-push-action@v6
