@@ -1,7 +1,7 @@
 from sqlalchemy.orm import Session 
 from sqlalchemy import func, and_
 from ..models import ServiceMetric, scoreCardMetrics
-from ..schemas import ServiceMetricCreate, ServiceMetricUpdate , ServiceMetricCL
+from ..schemas import ServiceMetricCreate, ServiceMetricUpdate , ServiceMetricReading
 from .base import CRUDBase
 from . import CRUDScoreCardMetric, CRUDMetric
 from app.utils.utility_functions import main_calculate_error, calculate_score
@@ -27,7 +27,7 @@ class CRUDServiceMetric(CRUDBase[ServiceMetric, ServiceMetricCreate, ServiceMetr
     #    ).all()
     #    return metrics
     
-    def get_metric_values_by_service(self, service_id: int,from_date: Optional[datetime], to_date: Optional[datetime]) -> list[ServiceMetricCL]:
+    def get_metric_values_by_service(self, service_id: int,from_date: Optional[datetime], to_date: Optional[datetime]) -> list[ServiceMetricReading]:
         
         query = self.db_session.query(ServiceMetric.metricId, ServiceMetric.value, ServiceMetric.timestamp).filter(ServiceMetric.serviceId == service_id)  
         if from_date and to_date:
@@ -93,7 +93,6 @@ class CRUDServiceMetric(CRUDBase[ServiceMetric, ServiceMetricCreate, ServiceMetr
         #        metric.criteria, metric.desiredValue, metric.weight)
         #    for metric in scorecard_metrics
         #}
-
         metric_info_dict = {
             metric.metricId (
                 metric.criteria,
@@ -112,8 +111,15 @@ class CRUDServiceMetric(CRUDBase[ServiceMetric, ServiceMetricCreate, ServiceMetr
             ServiceMetric.serviceId == service_id,
             ServiceMetric.metricId.in_(metric_info_dict)
 
-        ).order_by(ServiceMetric.metricId, ServiceMetric.timestamp.desc()).distinct(ServiceMetric.metricId).all()
-
+        ).group_by(
+        ServiceMetric.metricId,  
+        ServiceMetric.value 
+        ).order_by(
+        ServiceMetric.metricId,ServiceMetric.timestamp.desc()).all()
+        #).distinct(ServiceMetric.metricId).all()
+        
+        
+        scorevalue = 0
         for service_metric in service_metrics:
             criteria, desired_value, weight, metric_type = metric_info_dict.get(
                 service_metric.metricId)
@@ -123,7 +129,7 @@ class CRUDServiceMetric(CRUDBase[ServiceMetric, ServiceMetricCreate, ServiceMetr
                 error = main_calculate_error(
                     service_metric.value, desired_value, weight, criteria, metric_type)
                 score = calculate_score(error)
-
-                return score
+                scorevalue += score
+                return scorevalue
 
         return None

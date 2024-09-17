@@ -39,7 +39,7 @@ class ServiceMetricInDBBase(ServiceMetricBase):
 
 
 # Properties to return to client
-class ServiceMetricCL(BaseModel):
+class ServiceMetricReading(BaseModel):
     metricId: int
     value: Union[float, int, str, bool]
     timestamp: datetime

@@ -1,5 +1,5 @@
 from fastapi import APIRouter, Depends, status
-from app.schemas import MicroserviceInDBBase, MicroserviceCreate, MicroserviceTeamScorecardBase, MicroserviceCreateApi, MicroserviceScoreCardCreate, MicroserviceUpdate,ServiceMetricCL 
+from app.schemas import MicroserviceInDBBase, MicroserviceCreate, MicroserviceTeamScorecardBase, MicroserviceCreateApi, MicroserviceScoreCardCreate, MicroserviceUpdate,ServiceMetricReading 
 from app.crud import CRUDMicroservice, CRUDMicroserviceTeamScorecard, CRUDTeam, CRUDScoreCard, CRUDMicroserviceScoreCard ,CRUDServiceMetric
 from typing import List , Optional
 from datetime import datetime
@@ -215,7 +215,7 @@ def delete_microservice(
     return {"message": "Microservice and associated scorecards successfully deleted"}
  
  
-@router.get("/{service_id}/metric_reading", response_model=list[ServiceMetricCL])
+@router.get("/{service_id}/metric_reading", response_model=list[ServiceMetricReading])
 def get_metrics(service_id: int, from_date: Optional[datetime] = None, 
     to_date: Optional[datetime] = None,  service_metric_crud: CRUDServiceMetric = Depends(dependencies.getServiceMetricsCrud)):
 
