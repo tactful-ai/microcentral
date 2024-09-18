@@ -1,5 +1,5 @@
 import React from 'react';
-import {BrowserRouter, Routes, Route, Navigate, RouterProvider} from 'react-router-dom';
+import { RouterProvider } from 'react-router-dom';
 import MainRouter from './routes/MainRouter';
 
 function App() {
