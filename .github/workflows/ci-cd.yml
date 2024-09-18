@@ -12,8 +12,8 @@ jobs:
     steps:
       - name: Checkout Initial Branch
         uses: actions/checkout@v4
-        with:
-          ref: CI-CD-pipline
+        # with:
+        #   ref: CI-CD-pipline
 
       # - name: Switch to Backend Branch
       #   run: |
@@ -47,8 +47,8 @@ jobs:
     steps:
       - name: Checkout Initial Branch
         uses: actions/checkout@v4
-        with:
-          ref: CI-CD-pipline
+        # with:
+        #   ref: CI-CD-pipline
 
       # - name: Switch to frontend Branch
       #   run: |
