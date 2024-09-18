@@ -15,10 +15,11 @@ jobs:
         with:
           ref: CI-CD-pipline
 
-      # - name: Switch to Backend Branch
-      #   run: |
-      #     git fetch origin
-      #     git checkout main-backend
+      - name: Switch to Backend Branch
+        run: |
+          git fetch origin
+          git checkout CI-CD-pipline  
+        #  main-backend
 
       - name: Log in to Docker Hub
         uses: docker/login-action@v3
@@ -38,38 +39,42 @@ jobs:
           tags: noraali/backend:${{ env.TAG }}
           context: . #./backend
           file: ./Dockerfile #./backend/Dockerfile
+          
+
+  build-frontend:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Initial Branch
+        uses: actions/checkout@v4
+        with:
+          ref: CI-CD-pipline
+
+      - name: Switch to frontend Branch
+        run: |
+          git fetch origin
+          git checkout CI-CD-pipline
+        # main-frontend
+
+      - name: Log in to Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_ACCESS_TOKEN}}
+
+      - name: Extract the latest Git tag
+        run: echo "TAG=$(git describe --tags --abbrev=0)" >> $GITHUB_ENV
+
+      - name: Build and Push frontend Image
+        uses: docker/build-push-action@v6
+        with:
+          push: true
+          tags: noraali/frontend:${{ env.TAG }}
+          context: .  #./frontend
+          file: ./Dockerfile #./frontend/Dockerfile
 
 
-  # build-frontend:
-  #   runs-on: ubuntu-latest
 
-  #   steps:
-  #     - name: Checkout Initial Branch
-  #       uses: actions/checkout@v4
-  #       with:
-  #         ref: CI-CD-pipline
-
-  #     - name: Switch to frontend Branch
-  #       run: |
-  #         git fetch origin
-  #         git checkout main-frontend
-
-  #     - name: Log in to Docker Hub
-  #       uses: docker/login-action@v3
-  #       with:
-  #         username: ${{ secrets.DOCKER_USERNAME }}
-  #         password: ${{ secrets.DOCKER_ACCESS_TOKEN}}
-
-  #     - name: Extract the latest Git tag
-  #       run: echo "TAG=$(git describe --tags --abbrev=0)" >> $GITHUB_ENV
-
-  #     - name: Build and Push frontend Image
-  #       uses: docker/build-push-action@v6
-  #       with:
-  #         push: true
-  #         tags: noraali/frontend:${{ env.TAG }}
-  #         context: .  #./frontend
-  #         file: ./Dockerfile #./frontend/Dockerfile
 # branches:
 #   - CI-CD-pipline
 #   - main-backend
