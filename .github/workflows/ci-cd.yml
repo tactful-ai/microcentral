@@ -44,7 +44,7 @@ jobs:
 
   build-frontend:
     runs-on: ubuntu-latest
-    if: github.ref == 'refs/heads/CI-CD-pipline'
+    if: github.ref_name == 'refs/heads/CI-CD-pipline'
     
     steps:
       - name: Checkout Initial Branch
