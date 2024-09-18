@@ -34,11 +34,8 @@ export const getMetricById = async (metric_id, navigate) => {
             // replace path history to a 404 not found page
             navigate('/404');
         }
-
         var metric_data = data;
         console.log(metric_data);
-
-        
         return metric_data;
 
     } catch (error) {

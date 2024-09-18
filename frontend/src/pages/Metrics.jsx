@@ -5,27 +5,9 @@ import { getAllMetrics, handleDelete } from '../api/metrics/index.js'
 import '../styles/pages/Metrics.css'
 import '@fortawesome/fontawesome-free/css/all.min.css';
 
-const MetricRaws = (props) => {
-    useEffect(() => {
-        const fetchMetrics = async () => {
-            const data = await getAllMetrics();
-            console.log("get data:: ", data);
-            props.setMetricData(data);
-            props.setLoading(false); 
-        };
+const MetricRaws = ({metricData, setMetricData}) => {
 
-        fetchMetrics(); 
-    }, []);
-
-    if (props.loading) {
-        return <div>Loading...</div>; 
-    }
-
-    if (!props.metricData) {
-        return <div>No data available</div>;
-    }
-
-    return props.metricData.map((metric, index) => (
+    return metricData.map((metric, index) => (
         <tr key={metric.id}>
             <th scope="row">{index + 1}</th>
             <td>{metric.name}</td>
@@ -42,21 +24,31 @@ const MetricRaws = (props) => {
                 <button className="action-btn mx-1" 
                 onClick={async () => {
                     const updatedMetrics = await handleDelete(metric.id);
-                    props.setMetricData(updatedMetrics); // Set the updated metric data after delete
+                    setMetricData(updatedMetrics); // Set the updated metric data after delete
                 }}>
                     <i className="fa-solid fa-trash"></i>
                 </button>
             </th>
         </tr>
     ))
-        
 };
 
 
 const Metrics = () => {
     const [metricData, setMetricData] = useState(null);
     const [loading, setLoading] = useState(true);
-    
+
+    useEffect(() => {
+        const fetchMetrics = async () => {
+            const data = await getAllMetrics();
+            console.log("get data:: ", data);
+            setMetricData(data);
+            setLoading(false); 
+        };
+
+        fetchMetrics(); 
+    }, []);
+
     return (
     <Layout>
         <div className="container my-5 px-5">
@@ -83,8 +75,15 @@ const Metrics = () => {
                         </tr>
                     </thead>
                     <tbody>
-                        <MetricRaws metricData={metricData} setMetricData={setMetricData}
-                        loading={loading} setLoading={setLoading}/>
+                        {loading ? (
+                            <div>Loading...</div> 
+                            ) : (
+                            !metricData ? (
+                                <div>Data is loaded</div>
+                            ) : (
+                                <MetricRaws metricData={metricData} setMetricData={setMetricData} />
+                            )
+                        )}
                     </tbody>
                 </table>
             </div>
