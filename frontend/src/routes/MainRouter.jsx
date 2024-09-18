@@ -6,8 +6,6 @@ import Services from '../pages/Services.jsx';
 import ServiceInfo from "../pages/ServiceInfo.jsx";
 import ServiceCreateEdit from '../pages/ServiceCreateEdit';
 import ScorecardMetrics from '../pages/ScorecardMetrics';
-import Metrics from '../pages/Metrics';
-import Scorecards from '../pages/Scorecards';
 import NotFound from '../pages/NotFound';
 
 const MainRouter = createBrowserRouter([
@@ -38,16 +36,6 @@ const MainRouter = createBrowserRouter([
             {
               path: "services/edit/:service_id",
               element: <ServiceCreateEdit mode="edit"/>
-            },
-            // Scorecards routes
-            {
-              path: "scorecards",
-              element: <Scorecards />
-            },
-            // Metrics routes
-            {
-              path: "metrics",
-              element: <Metrics />
             },
         ]
     },
