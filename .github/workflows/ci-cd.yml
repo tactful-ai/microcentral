@@ -33,7 +33,7 @@ jobs:
         uses: docker/build-push-action@v6
         with:
           push: true
-          tags: ${{ github.ref }}
+          tags: noraali/backend:${{ github.ref }}
           context: .  #./backend
           file: ./Dockerfile #./backend/Dockerfile
 
@@ -64,7 +64,7 @@ jobs:
         uses: docker/build-push-action@v6
         with:
           push: true
-          tags: ${{ github.ref }}
+          tags: noraali/frontend:${{ github.ref }}
           context: .  #./frontend
           file: ./Dockerfile #./frontend/Dockerfile
 
