@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import Layout from '../layouts/Layout.jsx'
 import { NavLink, useParams } from 'react-router-dom'
+import { getAllMetrics, handleDelete } from '../api/metrics/index.js'
 import '../styles/pages/Metrics.css'
 import '@fortawesome/fontawesome-free/css/all.min.css';
 
@@ -38,7 +39,11 @@ const MetricRaws = (props) => {
                         <i className="fa-solid fa-pen-to-square"></i>
                     </button>
                 </NavLink>
-                <button className="action-btn mx-1" onClick={()=>props.handleDelete(metric.id)}>
+                <button className="action-btn mx-1" 
+                onClick={async () => {
+                    const updatedMetrics = await props.handleDelete(metric.id);
+                    props.setMetricData(updatedMetrics); // Set the updated metric data after delete
+                }}>
                     <i className="fa-solid fa-trash"></i>
                 </button>
             </th>
@@ -51,32 +56,6 @@ const MetricRaws = (props) => {
 const Metrics = () => {
     const [metricData, setMetricData] = useState(null);
     const [loading, setLoading] = useState(true);
-
-    useEffect(() => {console.log("re-rendered")}, []);
-    const getAllMetrics = async () => {
-        try {
-            const response = await fetch(`http://127.0.0.1:8000/api/v1/metrics`);
-            const data = await response.json();
-            return data; // Return the data array
-        } catch (error) {
-            console.error('Error fetching metrics:', error);
-        }
-    };
-
-    const handleDelete = async (metric_id) => {
-        try {
-            const response = await fetch(`http://127.0.0.1:8000/api/v1/metrics/${metric_id}`, {
-                method: 'DELETE',
-            });
-            
-            const data = await getAllMetrics();
-            setMetricData(data);
-
-            console.log(`Metric with id ${metric_id} deleted successfully`);
-        } catch (error) {
-            console.error('Error deleting metric:', error);
-        }
-    };
     
     return (
     <Layout>
