@@ -8,6 +8,7 @@ on:
 jobs:
   build-backend:
     runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/norhan-updates'
 
     steps:
       - name: Checkout Initial Branch
@@ -43,7 +44,8 @@ jobs:
 
   build-frontend:
     runs-on: ubuntu-latest
-
+    if: github.ref == 'refs/heads/CI-CD-pipline'
+    
     steps:
       - name: Checkout Initial Branch
         uses: actions/checkout@v4
