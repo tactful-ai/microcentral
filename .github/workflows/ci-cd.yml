@@ -12,13 +12,13 @@ jobs:
     steps:
       - name: Checkout Initial Branch
         uses: actions/checkout@v4
-        # with:
-        #   ref: CI-CD-pipline
+        with:
+          ref: CI-CD-pipline
 
-      - name: Switch to Backend Branch
-        run: |
-          git fetch origin
-          git checkout CI-CD-pipline  
+      # - name: Switch to Backend Branch
+      #   run: |
+      #     git fetch origin
+      #     git checkout CI-CD-pipline  
         #  main-backend
 
       - name: Log in to Docker Hub
@@ -47,13 +47,13 @@ jobs:
     steps:
       - name: Checkout Initial Branch
         uses: actions/checkout@v4
-        # with:
-        #   ref: CI-CD-pipline
+        with:
+          ref: CI-CD-pipline
 
-      - name: Switch to frontend Branch
-        run: |
-          git fetch origin
-          git checkout CI-CD-pipline
+      # - name: Switch to frontend Branch
+      #   run: |
+      #     git fetch origin
+      #     git checkout CI-CD-pipline
         # main-frontend
 
       - name: Log in to Docker Hub
@@ -80,6 +80,5 @@ jobs:
 #   - main-backend
 #   - main-frontend
 
-# if: github.ref == 'refs/heads/CI-CD-pipline'
-# main-backend
+
 
