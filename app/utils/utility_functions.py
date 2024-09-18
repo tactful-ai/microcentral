@@ -1,18 +1,18 @@
-from app.api.exceptions import ExceptionCustom
+from app.api.exceptions import HTTPResponseCustomized
 from app.utils.utity_datatype import parse_stringified_value
 
 def calculate_error_for_strings(value: str, desired: str, weight: float, criteria: str) -> float:
     if criteria == 'equal':
         return weight if value != desired else 0
     else:
-        raise ExceptionCustom(status_code=422, detail="Invalid criteria for string type.")
+        raise HTTPResponseCustomized(status_code=422, detail="Invalid criteria for string type.")
 
 
 def calculate_error_for_booleans(value: bool, desired: bool, weight: float, criteria: str) -> float:
     if criteria == 'equal':
         return weight if value != desired else 0
     else:
-        raise ExceptionCustom(status_code=422, detail="Invalid criteria for boolean type.")
+        raise HTTPResponseCustomized(status_code=422, detail="Invalid criteria for boolean type.")
 
 def calculate_error_for_numbers(value: float, desired: float, weight: float, criteria: str) -> float:
     if criteria == 'equal':
@@ -26,7 +26,7 @@ def calculate_error_for_numbers(value: float, desired: float, weight: float, cri
     elif criteria == 'smaller or equal':
         return max(0, ((value - desired) / desired) * weight) if value > desired else 0
     else:
-        raise ExceptionCustom(status_code=422, detail="Invalid criteria for number type.")
+        raise HTTPResponseCustomized(status_code=422, detail="Invalid criteria for number type.")
 
   
 def main_calculate_error(measured: str, desired: str, weight: float, criteria: str, metric_type: str) -> float:

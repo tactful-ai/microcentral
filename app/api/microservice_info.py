@@ -1,11 +1,11 @@
 from fastapi import APIRouter, Depends
-from app.schemas import MicroserviceInDBBase, ScoreCardBase , MicroserviceInfoBase
-from app.crud import CRUDMicroservice, CRUDMicroserviceInfo, CRUDTeam, CRUDScoreCard, CRUDMicroserviceScoreCard
+from app.schemas import  MicroserviceInfoBase
+from app.crud import CRUDMicroserviceInfo
 from typing import List
 from app import dependencies
 from pydantic import BaseModel, Field
-from .exceptions import ExceptionCustom
-import re
+from .exceptions import HTTPResponseCustomized
+
 
 class Value(BaseModel):
     value: int | bool | float | str = Field(
@@ -20,5 +20,5 @@ async def getmicroservice_info(service_id: int, microServiceinfo: CRUDMicroservi
     service = microServiceinfo.getServiceInfo(
         service_id)
     if service is None:
-        raise ExceptionCustom(status_code=404, detail="Service not found")
+        raise HTTPResponseCustomized(status_code=404, detail="Service not found")
     return service

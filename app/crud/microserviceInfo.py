@@ -1,12 +1,12 @@
 import sqlalchemy
 from sqlalchemy.orm import Session
 from ..models import Microservice
-from ..schemas import MicroserviceInfoBase, team, scoreCard, scoreCardMetrics, serviceMetric
+from ..schemas import MicroserviceInfoBase
 from .base import CRUDBase
 from typing import List 
 from datetime import datetime
 from sqlalchemy.sql import func
-from app.api.exceptions import ExceptionCustom
+from app.api.exceptions import HTTPResponseCustomized
 from . import CRUDTeam, CRUDMicroserviceScoreCard, CRUDScoreCard, CRUDMicroservice, CRUDScoreCardMetric, CRUDServiceMetric
 
 
@@ -24,7 +24,7 @@ class CRUDMicroserviceInfo:
         microservice = self.microsService.get(service_id)
 
         if not microservice:
-            raise ExceptionCustom(
+            raise HTTPResponseCustomized(
                 f"Microservice with id {service_id} not found")
 
         scorecardIds = self.scoreCardService.getByServiceId(microservice.id)

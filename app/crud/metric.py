@@ -20,3 +20,4 @@ class CRUDMetric(CRUDBase[Metric, MetricCreate, MetricUpdate]):
 
     def getByName(self, name: str):
         return self.db_session.query(Metric).filter(Metric.name == name).first()
+

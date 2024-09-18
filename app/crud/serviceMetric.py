@@ -1,12 +1,14 @@
-
 from sqlalchemy.orm import Session
-from sqlalchemy import select
-from ..models import ServiceMetric, Metric
-from ..schemas import ServiceMetricCreate, ServiceMetricUpdate
+
+from sqlalchemy import func, and_, select
+from ..models import ServiceMetric, scoreCardMetrics, Metric
+from ..schemas import ServiceMetricCreate, ServiceMetricUpdate, ServiceMetricReading
 from .base import CRUDBase
 from . import CRUDScoreCardMetric, CRUDMetric
 from app.utils.utility_functions import main_calculate_error, calculate_score
+from typing import Optional
 from datetime import datetime
+
 
 class CRUDServiceMetric(CRUDBase[ServiceMetric, ServiceMetricCreate, ServiceMetricUpdate]):
     def __init__(self, db_session: Session):
@@ -14,12 +16,27 @@ class CRUDServiceMetric(CRUDBase[ServiceMetric, ServiceMetricCreate, ServiceMetr
         self.scorecardMetrics = CRUDScoreCardMetric(db_session)
         self.Metric = CRUDMetric(db_session)
 
-
     def getByScorecardId(self, scorecardId: int) -> list[ServiceMetric]:
         return self.db_session.query(ServiceMetric).filter(ServiceMetric.scorecardId == scorecardId).all()
 
     def getByServiceId(self, serviceId: int) -> list[ServiceMetric]:
         return self.db_session.query(ServiceMetric).filter(ServiceMetric.serviceId == serviceId).all()
+
+    def get_metric_values_by_service(self, service_id: int, from_date: Optional[datetime], to_date: Optional[datetime]) -> list[ServiceMetricReading]:
+
+        query = self.db_session.query(ServiceMetric.metricId, ServiceMetric.value, ServiceMetric.timestamp).filter(
+            ServiceMetric.serviceId == service_id)
+        if from_date and to_date:
+            query = query.filter(ServiceMetric.timestamp >=
+                                 from_date, ServiceMetric.timestamp <= to_date)
+        elif from_date:
+            query = query.filter(ServiceMetric.timestamp >= from_date)
+        elif to_date:
+            query = query.filter(ServiceMetric.timestamp <= to_date)
+
+        query = query.order_by(ServiceMetric.timestamp.desc())
+        metrics = query.all()
+        return metrics
 
     def get_last_metrics(self, scorecard_id: int, service_id: int) -> list[ServiceMetric]:
         subquery = self.db_session.query(
@@ -76,5 +93,5 @@ class CRUDServiceMetric(CRUDBase[ServiceMetric, ServiceMetricCreate, ServiceMetr
                     service_metric.value, desired_value, weight, criteria, metric_type)
                 score = calculate_score(error, weight)
                 scorevalue += score
-                updatetime= max(service_metric.timestamp , updatetime)
-        return (scorevalue , updatetime)
+                updatetime = max(service_metric.timestamp, updatetime)
+        return (scorevalue, updatetime)
