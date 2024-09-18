@@ -8,7 +8,9 @@ on:
 jobs:
   build-backend:
     runs-on: ubuntu-latest
-    if: github.action_ref == 'norhan-updates'
+    if: github.ref_name == '.ref_name'
+    
+
 
     steps:
       - name: Checkout Initial Branch
@@ -22,6 +24,9 @@ jobs:
       #     git checkout CI-CD-pipline  
         #  main-backend
 
+      # - name: Print github.ref_name
+      #   run: echo "${{ github.ref_name }}"
+
       - name: Log in to Docker Hub
         uses: docker/login-action@v3
         with:
@@ -32,6 +37,7 @@ jobs:
         run: |
           echo "TAG=$(git describe --tags --abbrev=0)" >> $GITHUB_ENV
           echo $TAG
+
 
       - name: Build and Push Backend Image
         uses: docker/build-push-action@v6
@@ -44,7 +50,7 @@ jobs:
 
   build-frontend:
     runs-on: ubuntu-latest
-    if: github.action_ref == 'CI-CD-pipline'
+    if: github.ref_name == '.ref_name'
     
     steps:
       - name: Checkout Initial Branch
