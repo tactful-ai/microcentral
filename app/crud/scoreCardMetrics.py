@@ -1,6 +1,4 @@
-
 from sqlalchemy.orm import Session
-
 from ..models import ScoreCardMetrics
 from ..schemas import ScoreCardMetricsCreate, ScoreCardMetricsUpdate
 from .base import CRUDBase
@@ -13,9 +11,6 @@ class CRUDScoreCardMetric(CRUDBase[ScoreCardMetrics, ScoreCardMetricsCreate, Sco
     def getbyscorecardID(self, scorecardID: int) -> ScoreCardMetrics:
         return self.db_session.query(ScoreCardMetrics).filter(ScoreCardMetrics.scoreCardId == scorecardID).all()
 
-    def getbymetricID(self, metricID: int) -> ScoreCardMetrics :
-        return self.db_session.query(ScoreCardMetrics).filter(ScoreCardMetrics.metricId == metricID).first()
-    
     def getbymetricIDandScorecardID(self, metricID: int, scorecardID: int):
         return (
             self.db_session.query(ScoreCardMetrics)

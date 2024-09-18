@@ -1,4 +1,4 @@
-from fastapi import Request, HTTPException, FastAPI
+from fastapi import Request, HTTPException
 from fastapi.responses import JSONResponse
 from starlette import status
 from fastapi.encoders import jsonable_encoder

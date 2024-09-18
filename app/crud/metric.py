@@ -1,6 +1,4 @@
-
 from sqlalchemy.orm import Session
-
 from ..models import Metric
 from ..schemas import MetricCreate, MetricUpdate
 from .base import CRUDBase

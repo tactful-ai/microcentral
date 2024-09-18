@@ -27,7 +27,6 @@ class ScoreCardMetricsUpdate(ScoreCardMetricsBase):
 
 # Properties shared by models stored in DB
 
-
 class ScoreCardMetricsInDBBase(ScoreCardMetricsBase):
     id: int
     scoreCardId: int

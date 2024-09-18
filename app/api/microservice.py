@@ -1,10 +1,9 @@
-from fastapi import APIRouter, Depends, status
+from fastapi import APIRouter, Depends
 from app.schemas import MicroserviceInDBBase, MicroserviceCreate, MicroserviceTeamScorecardBase, MicroserviceCreateApi, MicroserviceScoreCardCreate, MicroserviceUpdate, MicroserviceScoreCardUpdate
 from app.crud import CRUDMicroservice, CRUDMicroserviceTeamScorecard, CRUDTeam, CRUDScoreCard, CRUDMicroserviceScoreCard
 from typing import List
 from app import dependencies
 from pydantic import BaseModel, Field
-from sqlalchemy.orm import Session
 from .exceptions import HTTPResponseCustomized
 from app.utils.base import format_code
 

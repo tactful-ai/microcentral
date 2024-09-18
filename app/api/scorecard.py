@@ -1,12 +1,10 @@
 from app import dependencies
 from fastapi import APIRouter, Depends
-from fastapi.encoders import jsonable_encoder
 from app import schemas, crud
 from typing import Any, List
 from app.utils.base import format_code, check_metric, stringify_value
 from .exceptions import HTTPResponseCustomized
 from .responses import ResponseCustomized
-from fastapi.responses import ORJSONResponse
 from app.schemas.apiResponse import CustomResponse
 from app.schemas.scorecardServiceMetric import ScorecardServiceMetricCreate
 from app.crud.scorecardServiceMetric import CRUDScoreCardServiceMetric
@@ -35,6 +33,22 @@ def createScoreCard(scoreCardInput: ScorecardServiceMetricCreate,
         code=scoreCardInput.code,
         description=scoreCardInput.description
     )
+    # if the scorecardids are passed duplicated
+    servicesIDsSet = list(set(scoreCardInput.services))
+    # i need to check if the serviceid is found or not
+    services = serviceCrud.getByServiceIds(servicesIDsSet)
+    serviceListToBeCreated = []
+    if (len(services) != len(servicesIDsSet)):
+        raise HTTPResponseCustomized(status_code=400, detail="Service not found")
+    
+    metricIds = []
+    for metric in scoreCardInput.metrics:    
+        metricIds.append(metric.id)
+    metricIds = list(set(metricIds))
+    metric_data = metricCrud.getByIds(metricIds)
+    if (len(metric_data) != len(metricIds)):
+        raise HTTPResponseCustomized(status_code=404, detail="Metric is not found")
+    
     if (scoreCardCrud.getByScoreCardCode(scoreCardInput.code)):
         raise HTTPResponseCustomized(
             status_code=400, detail="Scorecard already found")
@@ -44,71 +58,44 @@ def createScoreCard(scoreCardInput: ScorecardServiceMetricCreate,
     except Exception as e:
         raise HTTPResponseCustomized(status_code=422, detail=f"Error: {e}")
 
-    # if the scorecardids are passed duplicated
-    servicesIDsSet = list(set(scoreCardInput.services))
-    # i need to check if the serviceid is found or not
-    service = serviceCrud.getByServiceIds(servicesIDsSet)
-    serviceListToBeCreated = []
+    metric_type_map = {metric.id:metric.type for metric in metric_data}
     for serviceid in servicesIDsSet:
-        if (len(service) == len(servicesIDsSet)):
-            serviceScorecard = schemas.MicroserviceScoreCardCreate(
-                scoreCardId=scorecardID,
-                microserviceId=serviceid
-            )
-            serviceListToBeCreated.append(serviceScorecard)
-        else:
-            scoreCardCrud.delete(scorecardID)
-            raise HTTPResponseCustomized(
-                status_code=400, detail="Service not found")
+        serviceScorecard = schemas.MicroserviceScoreCardCreate(
+            scoreCardId=scorecardID,
+            microserviceId=serviceid
+        )
+        serviceListToBeCreated.append(serviceScorecard)
+
+
 
     objects = []
     for metric in scoreCardInput.metrics:
-        metric_data = metricCrud.getById(metric.id)  # Get the metric data
-        if (metric_data == None):
-            scoreCardCrud.delete(scorecardID)
-            raise HTTPResponseCustomized(
-                status_code=404, detail="Metric is not found")
         metricCreate = schemas.MetricTypeScorecard(
             id=metric.id,
             weight=metric.weight,
             desiredValue=metric.desiredValue,
             criteria=metric.criteria,
-            type=metric_data.type  # Add the type directly from retrieved metric
+            type=metric_type_map[metric.id]  # Add the type directly from retrieved metric
         )
         objects.append(metricCreate)
     try:
-        if (objects):
-            check_metric(objects)
+        check_metric(objects)
     except Exception as e:
         scoreCardCrud.delete(scorecardID)
-        check_metric(objects)  # Return the error message
+        raise e  # Return the error message
     for metric in scoreCardInput.metrics:
-        if (metricCrud.getById(metric.id)):
-            metric.desiredValue = stringify_value(metric.desiredValue)
-            scorecardmetric = schemas.ScoreCardMetricsCreate(
-                scoreCardId=scorecardID,
-                metricId=metric.id,
-                criteria=metric.criteria,
-                weight=metric.weight,
-                desiredValue=metric.desiredValue
-            )
-        else:
-            scoreCardCrud.delete(scorecardID)
-            raise HTTPResponseCustomized(
-                status_code=404, detail="Metric not found")
-        try:
-            scorecardMetricCrud.create(scorecardmetric)
-        except Exception as e:
-            scoreCardCrud.delete(scorecardID)
-            raise HTTPResponseCustomized(status_code=422, detail=f"Error: {e}")
+        metric.desiredValue = stringify_value(metric.desiredValue)
+        scorecardmetric = schemas.ScoreCardMetricsCreate(
+            scoreCardId=scorecardID,
+            metricId=metric.id,
+            criteria=metric.criteria,
+            weight=metric.weight,
+            desiredValue=metric.desiredValue
+        )
+        scorecardMetricCrud.create(scorecardmetric)
 
     for service in serviceListToBeCreated:
-        try:
-            serviceScorecardCrud.create(service)
-        except Exception as e:
-            scorecardMetricCrud.deleteByScorecardId(scorecardID)
-            scoreCardCrud.delete(scorecardID)
-            raise HTTPResponseCustomized(status_code=422, detail=f"Error: {e}")
+        serviceScorecardCrud.create(service)
 
     return ResponseCustomized("Scorecard created successfully")
 
@@ -119,7 +106,7 @@ def getAllScoreCard(scoreCardCrud: CRUDScoreCardServiceMetric = Depends(dependen
     return ResponseCustomized(scorecard)
 
 
-@router.get("/{scorecardID}", response_model=schemas.ScoreCard)
+@router.get("/{scorecardID}", response_model=schemas.ScorecardServiceMetric, response_class=ResponseCustomized)
 def getScoreCard(scorecardID: int, scoreCardCrud: CRUDScoreCardServiceMetric = Depends(dependencies.getScorecardServiceMetric)):
     scorecard = scoreCardCrud.getwithscorecardIDmetricandservice(scorecardID)
     return ResponseCustomized(scorecard)

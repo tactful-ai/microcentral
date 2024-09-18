@@ -14,6 +14,7 @@ from app import schemas, models, crud
 from typing import Any, List
 import json
 from fastapi.routing import APIRoute
+from app.models.scoreCardMetrics import criteriaStates
 
 db_session = dependencies.get_db()
 metricCrud: crud.CRUDMetric = CRUDMetric(db_session)
@@ -64,10 +65,11 @@ def check_metric_type(objects):
             if (not isinstance(obj.desiredValue, float)):
                 raise HTTPResponseCustomized(
                     status_code=400, detail="desierdValue is not correct for float metric")
+        else:
+            raise HTTPResponseCustomized(status_code=400, detail="desiredValue is not correct for anytype of metric")
 
 
-criteriaStates = ("greater", "smaller", "equal",
-                  "greater or equal", "smaller or equal")
+#criteriaStates = ("greater", "smaller", "equal", "greater or equal", "smaller or equal")
 
 
 def check_metric_criteria(objects):

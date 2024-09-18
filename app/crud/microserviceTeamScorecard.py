@@ -1,8 +1,5 @@
-import sqlalchemy
 from sqlalchemy.orm import Session
-from ..models import Microservice
 from ..schemas import MicroserviceTeamScorecardBase, team, scoreCard
-from .base import CRUDBase
 from typing import List
 from sqlalchemy.sql import func
 from app.api.exceptions import HTTPResponseCustomized

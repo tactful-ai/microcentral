@@ -1,9 +1,7 @@
-import sqlalchemy
 from sqlalchemy.orm import Session
 from fastapi import status
-from fastapi.responses import JSONResponse 
-from ..models import Microservice ,Team ,Scorecard ,MicroserviceScoreCard
-from ..schemas import MicroserviceCreate, MicroserviceUpdate ,MicroserviceInDBBase , TeamInDBBase ,ScoreCardInDBBase
+from ..models import Microservice ,Team
+from ..schemas import MicroserviceCreate, MicroserviceUpdate ,MicroserviceInDBBase
 from .base import CRUDBase
 from typing import List
 from sqlalchemy.sql import func

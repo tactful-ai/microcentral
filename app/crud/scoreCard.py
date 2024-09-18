@@ -1,6 +1,4 @@
-
 from sqlalchemy.orm import Session
-
 from ..models import Scorecard
 from ..schemas.scoreCard import ScoreCardCreate, ScoreCardUpdate
 from .base import CRUDBase

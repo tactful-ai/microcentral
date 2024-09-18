@@ -1,18 +1,11 @@
-from fastapi.exceptions import RequestValidationError
-from app.schemas import ServiceMetricCreate, MetricCreate
-from fastapi import APIRouter, Depends, Request, exception_handlers, status, Response, HTTPException, FastAPI
-from fastapi.responses import JSONResponse, PlainTextResponse
+from fastapi import APIRouter, Depends
 from fastapi.encoders import jsonable_encoder
 from pydantic import BaseModel, Field
-from app.crud import CRUDMetric, CRUDServiceMetric, CRUDMicroserviceScoreCard, CRUDMicroservice
-from app import schemas, models, crud, dependencies
-from typing import Any, Callable
+from app import schemas, crud, dependencies
+from typing import Any
 import json
-from fastapi.routing import APIRoute
 from .exceptions import HTTPResponseCustomized
-from app.core.security import JWTBearer, decodeJWT
 from app.utils.base import format_code
-from collections import OrderedDict
 from app.schemas.apiResponse import CustomResponse
 from .responses import ResponseCustomized
 
@@ -96,7 +89,7 @@ def createMetric(metric: schemas.MetricCreate, metricCrud: crud.CRUDMetric = Dep
     # Handling the datatype of the field type to be integer or boolean
     if (metricObj.type not in metric_type):
         raise HTTPResponseCustomized(
-            status_code=422, detail="type must be integer or boolean")
+            status_code=422, detail="type must be valid")
     metricCrud.create(metricObj)
     return ResponseCustomized("Success in creating metric")
 
