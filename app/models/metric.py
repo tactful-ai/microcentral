@@ -1,7 +1,7 @@
 from sqlalchemy import Column, Enum, Integer, String
 from ..database.base_class import Base
 
-typeStates = ('integer', 'boolean')
+typeStates = ('integer', 'boolean', 'string', 'float')
 
 class Metric(Base):
     id = Column(Integer, primary_key=True, index=True)
