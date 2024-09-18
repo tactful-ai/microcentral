@@ -7,4 +7,5 @@ from .scoreCardMetrics import CRUDScoreCardMetric
 from .serviceMetric import CRUDServiceMetric
 from .team import CRUDTeam
 from .microserviceTeamScorecard import CRUDMicroserviceTeamScorecard
-
+from .microserviceInfo import CRUDMicroserviceInfo
+from .metric_info import CRUDMetricInfo

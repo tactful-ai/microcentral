@@ -1,5 +1,4 @@
 from sqlalchemy.orm import Session
-
 from ..models import Team
 from ..schemas import TeamCreate, TeamUpdate
 from .base import CRUDBase
