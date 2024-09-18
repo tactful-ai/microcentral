@@ -8,7 +8,7 @@ import '@fortawesome/fontawesome-free/css/all.min.css';
 const MetricRaws = (props) => {
     useEffect(() => {
         const fetchMetrics = async () => {
-            const data = await props.getAllMetrics();
+            const data = await getAllMetrics();
             console.log("get data:: ", data);
             props.setMetricData(data);
             props.setLoading(false); 
@@ -41,7 +41,7 @@ const MetricRaws = (props) => {
                 </NavLink>
                 <button className="action-btn mx-1" 
                 onClick={async () => {
-                    const updatedMetrics = await props.handleDelete(metric.id);
+                    const updatedMetrics = await handleDelete(metric.id);
                     props.setMetricData(updatedMetrics); // Set the updated metric data after delete
                 }}>
                     <i className="fa-solid fa-trash"></i>
@@ -83,8 +83,7 @@ const Metrics = () => {
                         </tr>
                     </thead>
                     <tbody>
-                        <MetricRaws getAllMetrics={getAllMetrics} handleDelete={handleDelete}
-                        metricData={metricData} setMetricData={setMetricData}
+                        <MetricRaws metricData={metricData} setMetricData={setMetricData}
                         loading={loading} setLoading={setLoading}/>
                     </tbody>
                 </table>

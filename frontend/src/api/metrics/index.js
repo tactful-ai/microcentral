@@ -1,7 +1,9 @@
+export const BASE_URL = "http://127.0.0.1:8000";
+export const API_URL = "/api/v1";
 
 export const getAllMetrics = async () => {
     try {
-        const response = await fetch(`http://127.0.0.1:8000/api/v1/metrics`);
+        const response = await fetch(`${BASE_URL}${API_URL}/metrics`);
         const data = await response.json();
         return data; // Return the data array
     } catch (error) {
@@ -11,7 +13,7 @@ export const getAllMetrics = async () => {
 
 export const handleDelete = async (metric_id) => {
     try {
-        const response = await fetch(`http://127.0.0.1:8000/api/v1/metrics/${metric_id}`, {
+        const response = await fetch(`${BASE_URL}${API_URL}/metrics/${metric_id}`, {
             method: 'DELETE',
         });
         
@@ -25,7 +27,7 @@ export const handleDelete = async (metric_id) => {
 
 export const getMetricById = async (metric_id, navigate) => {
     try{
-        var data = await fetch(`http://127.0.0.1:8000/api/v1/metrics/${metric_id}`)
+        var data = await fetch(`${BASE_URL}${API_URL}/metrics/${metric_id}`)
         .then((response) => response.json());
         
         if( data.message == "Not Found") {
@@ -53,7 +55,7 @@ export const editMetric = async (metric_id, metricName, metricType, tags, metric
         description: metricDesc
     }
 
-    var data = await fetch(`http://127.0.0.1:8000/api/v1/metrics/${metric_id}`, {
+    var data = await fetch(`${BASE_URL}${API_URL}/metrics/${metric_id}`, {
         method: 'PUT',
         headers: {
             'Content-Type': 'application/json',
@@ -76,7 +78,7 @@ export const postMetric = async (metricName, metricType, tags, metricDesc) => {
       description: metricDesc
   }
 
-  var data = await fetch('http://127.0.0.1:8000/api/v1/metrics', {
+  var data = await fetch(`${BASE_URL}${API_URL}/metrics`, {
       method: 'POST',
       headers: {
           'Content-Type': 'application/json',

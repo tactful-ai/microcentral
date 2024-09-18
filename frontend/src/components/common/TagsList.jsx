@@ -6,12 +6,16 @@ const TagsList = ({ tags, setTags }) => {
     setTags((tags) => tags.filter(tag => tag != tagName));
   };
 
-  return tags?.map((tag, index) => (
-    <li key={index}>
-      {tag} <button type="button" className="tag-cancel" onClick={() => removeTag(tag)}>
-        <i className="fas fa-times"></i></button>
-    </li>
-  ))
+  return (
+    <ul id="metric-area">
+      {tags?.map((tag, index) => (
+        <li key={index}>
+          {tag} <button type="button" className="tag-cancel" onClick={() => removeTag(tag)}>
+            <i className="fas fa-times"></i></button>
+        </li>
+      ))}
+    </ul>
+  );
 
 }
 export default TagsList
