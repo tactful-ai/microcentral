@@ -1,7 +1,10 @@
 import React, { useState, useEffect, useRef } from 'react'
 import { useParams, useNavigate } from 'react-router-dom';
-import TagsBox from '../components/TagsBox';
+import { Container, Row, Col, Button, Card, Carousel } from 'react-bootstrap';
 import Layout from '../layouts/Layout';
+import TagsBox from '../components/TagsBox';
+import { getMetricById, editMetric, postMetric } from '../api/metrics';
+import '../styles/pages/Metrics.css';
 
 
 const MetricCreateEdit = (props) => {
@@ -11,138 +14,71 @@ const MetricCreateEdit = (props) => {
   const [tags, setTags] = useState([]);
   const [charLimit, setCharLimit] = useState(0);
   
-  const metricNameRef = useRef(null);
-  const metricTypeRef = useRef(null);
-  const metricDescRef = useRef(null);
-    
+  const [metricName, setMetricName] = useState('');
+  const [metricType, setMetricType] = useState("integer");
+  const [metricDesc, setMetricDesc] = useState('');
 
-  const postMetric = async (e) => {
-    
-    const metricName = metricNameRef.current;
-    const metricType = metricTypeRef.current;
-    const metricDesc = metricDescRef.current; 
-
-    let formData = {
-        name: metricName.value,
-        type: metricType.value,
-        area: tags,
-        description: metricDesc.value
-    }
-
-    var data = await fetch('http://127.0.0.1:8000/api/v1/metrics', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(formData),
-    })
-    .then((response) => response.json())
-    var responseData = {
-        message: data.message,
-        object: data.object
-    }
-    console.log(responseData);
-  }
-  
-  const editMetric = async () => {
-    
-    const metricName = metricNameRef.current;
-    const metricType = metricTypeRef.current;
-    const metricDesc = metricDescRef.current; 
-
-    let formData = {
-        name: metricName.value,
-        type: metricType.value,
-        area: tags,
-        description: metricDesc.value
-    }
-
-    var data = await fetch(`http://127.0.0.1:8000/api/v1/metrics/${metric_id}`, {
-        method: 'PUT',
-        headers: {
-            'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(formData),
-    })
-    .then((response) => response.json())
-    var responseData = {
-        message: data.message,
-        object: data
-    }
-    console.log(responseData)
-  }
-
-  const getMetricById = async (metric_id) => {
-    try{
-        var data = await fetch(`http://127.0.0.1:8000/api/v1/metrics/${metric_id}`)
-        .then((response) => response.json());
-        
-        if( data.message == "Not Found") {
-            // replace path history to a 404 not found page
-            navigate('/404');
-        }
-
-        var metric_data = data;
-        console.log(metric_data);
-        
-        const metricName = metricNameRef.current;
-        const metricType = metricTypeRef.current;
-        const metricDesc = metricDescRef.current; 
-
-        metricName.value = metric_data.name;
-        metricType.value = metric_data.type;
-        metricDesc.value = metric_data.description;
-
-        setTags([...metric_data.area]);
-
-    } catch (error) {
-        console.log(error);
-    }
-
-  };
-
-  const handleFormClick = async (e) => {
+  const handleFormSubmit = async (e) => {
     e.preventDefault();
     if (props.mode == "create"){
-        await postMetric();
+        await postMetric(metricName, metricType, tags, metricDesc);
     }
     else if (props.mode == "edit"){
-        await editMetric(metric_id);
+        await editMetric(metric_id, metricName, metricType, tags, metricDesc);
     }
     navigate('/dashboard/metrics', {state: { forceRender: true }});
   }
 
-  let disable = 'false'
+  const handleNameChange = (e) => {
+    setMetricName(e.target.value);
+  }
+  const handleTypeChange = (e) => {
+    setMetricType(e.target.value);
+  }
+  const handleDescChange = (e) => {
+    setCharLimit(e.target.value.length);
+    setMetricDesc(e.target.value);
+  }
 
-  useEffect(()=> {
-    if(props.mode == 'edit'){
-        getMetricById(metric_id)
-        if(props.mode == 'view'){
-            disable = 'true'
-        }
+useEffect(() => {
+    if (props.mode === 'edit') {
+        const fetchMetricData = async () => {
+            try {
+                const metric_data = await getMetricById(metric_id, navigate);
+                setMetricName(metric_data.name);
+                setMetricType(metric_data.type);
+                setMetricDesc(metric_data.description);
+                setTags([...metric_data.area]);
+            } catch (error) {
+                console.error("Error fetching metric data:", error);
+            }
+        };
+        fetchMetricData();
     }
-  }, [metric_id])
+}, [metric_id, props.mode]);
+
 
   return (
     <Layout>
-        <div className="content mt-4 mb-5" style={{width: '100%'}}>
+        <div className="content mt-4 mb-5 w-100">
             <div className="container">
                 <div className="row">
                     <div className="col-sm-6 m-auto mb-5">
                         <h1 className="text-capitalize">{props.mode} Metric</h1>
                         <form data-mode="create" className="row g-3" id="metric-form"
                         onKeyDown={(e)=> {return e.key !== 'Enter'}}
-                        onSubmit={(e) => e.preventDefault()}
+                        onSubmit={(e) => handleFormSubmit(e)}
                         >
                             <div className="col-12">
                                 <label htmlFor="metric-name" className="form-label">Metric Name</label>
-                                <input ref={metricNameRef} type="text" className="form-control"
-                                placeholder="" id="metric-name"></input>
+                                <input value={metricName} onChange={(e) => handleNameChange(e)}
+                                type="text" className="form-control"placeholder="" 
+                                id="metric-name" required></input>
                                 <span className="error-msg text-danger d-none">error</span>
                             </div>
                             <div className="col-12">
                                 <label htmlFor="metric-type" className="form-label">Metric Type</label>
-                                <select ref={metricTypeRef}
+                                <select value={metricType} onChange={(e) => handleTypeChange(e)}
                                 className="form-select" name="" id="metric-type">
                                     <option value="integer">integer</option>
                                     <option value="boolean">boolean</option>
@@ -155,17 +91,16 @@ const MetricCreateEdit = (props) => {
                             </div>
                             <div className="col-md-12">
                                 <label htmlFor="metric-description" className="form-label">Metric Description </label>
-                                <textarea  ref={metricDescRef} className="form-control" 
-                                placeholder="Write a brief descriptoin here" maxLength="100" 
-                                id="metric-description" style={{height: '100px'}}
-                                onChange={(e)=>setCharLimit(e.target.value.length)}></textarea>
+                                <textarea value={metricDesc} onChange={(e) => handleDescChange(e)}
+                                className="form-control" placeholder="Write a brief descriptoin here" maxLength="100" 
+                                id="metric-description" rows={4}></textarea>
                                 <div className="float-end"><span className="counter">{charLimit}</span>/100</div>
                                 <span className="error-msg text-danger d-none">error</span>
                             </div>
                             <div className="col-12">
                                 <button type="submit" className="btn btn-primary col-12" 
-                                id="create-btn" style={{backgroundColor: '#6482AD'}}
-                                onClick={(e)=>handleFormClick(e)}>
+                                id="create-btn"
+                                >
                                     {props.mode == "create"? "Create": "Save"}
                                 </button>
                             </div>

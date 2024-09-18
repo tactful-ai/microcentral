@@ -22,11 +22,6 @@ button {
 
 /* Sidebar Styling */
 #main-sidebar {
-    /* position: fixed;
-    top: 0;
-    bottom: 0;
-    left: 0;
-    width: 20%; */
     height: 100%;
     padding: 0 10px;
     border-right: 1px solid #6482AD;
@@ -70,6 +65,10 @@ background-color: #6482AD;
     width: 100%;
     padding: 20px 0
 }
+#main-navbar #welcome-msg #user-name {
+    color: #a1a1a1
+}
+
 #main-navbar #user-tools #user-pic {
     width: 40px;
     height: 40px;
@@ -79,6 +78,8 @@ background-color: #6482AD;
     background-position: center;
 }
 #main-navbar #user-tools .user-icon:hover {
+    border-radius: 3px;
+    padding: 3px;
     background-color: #E2DAD6 !important;
 }
 
