@@ -36,7 +36,8 @@ class MetricInDBBase(MetricBase):
 
 # Properties to return to client
 class Metric(MetricInDBBase):
-    pass
+  pass
+   
 
 # Properties properties stored in DB
 class MetricInDB(MetricInDBBase):

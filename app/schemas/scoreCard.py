@@ -1,6 +1,7 @@
 from typing import Optional
 from . import microservice, scoreCardMetrics, microservice
 from pydantic import BaseModel
+from datetime import datetime
 
 
 # Shared properties
@@ -47,7 +48,15 @@ class listScoreCard(BaseModel):
 
 # Properties to return to client
 class ScoreCard(ScoreCardInDBBase):
-    pass
+    id: int
+    name: str
+    code: str
+    update_time:Optional[datetime] = datetime.now() 
+    score_value: float
+
+    class Config:
+        orm_mode = True
+ 
 
 # Properties properties stored in DB
 class ScoreCardInDB(ScoreCardInDBBase):

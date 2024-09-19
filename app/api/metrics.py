@@ -21,48 +21,6 @@ class Value(BaseModel):
 router = APIRouter()
 
 
-"""
-# OLD ONES NOT USED ANYMORE
-@router.post("/{service_code}/{metric_code}")
-def create(service_code: str, metric_code: str, value: Value,
-    metricsService: CRUDMetric = Depends(dependencies.getMetricsCrud),
-    microservicesService: CRUDMicroservice = Depends(dependencies.getMicroservicesCrud),
-    serviceMetricsService: CRUDServiceMetric = Depends(dependencies.getServiceMetricsCrud),
-    token = Depends(JWTBearer())
-    ):
-    service_code = service_code.replace(" ", "-").lower()
-    metric_code = metric_code.replace(" ", "-").lower()
-
-    teamId = decodeJWT(token)["teamId"]
-
-    service = microservicesService.getByTeamIdAndCode(teamId, service_code)
-    if service is None:
-        return {"error": "Service not found"}
-
-    metric = metricsService.getByCode(metric_code)
-    if metric is None:
-        return {"error": "Metric not found"}
-
-    serviceMetricsService.create(ServiceMetricCreate(serviceId=service.id, metricId=metric.id, value=value.value))
-
-    return {"message": "Metric created"}
-
-
-@router.get("/allMetrics")
-def get_all_metrics(serviceMetricsService: CRUDServiceMetric = Depends(dependencies.getServiceMetricsCrud)):
-    return serviceMetricsService.list()
-
-@router.get("/allScorecards")
-def getScoreCards(
-    microserviceScoreCardService: CRUDMicroserviceScoreCard = Depends(dependencies.getMicroserviceScoreCardsCrud),
-    token = Depends(JWTBearer())
-    ):
-
-    teamId = decodeJWT(token)["teamId"]
-
-    return microserviceScoreCardService.getByTeamId(teamId)
-"""
-
 # ADD NEW METRIC HERE
 @router.post("/", response_model=schemas.Metric, response_class=ResponseCustomized)
 def createMetric(metric: schemas.MetricCreate, metricCrud: crud.CRUDMetric = Depends(dependencies.getMetricsCrud)) -> schemas.Metric:
@@ -138,6 +96,9 @@ def editMetric(metricID: int, metricInput: schemas.MetricUpdate, metricCrud: cru
     else:
         metric.area = []
         metricObj.area = json.dumps(metric.area)
+    if (metricObj.type not in metric_type):
+        raise HTTPResponseCustomized(
+            status_code=422, detail="type must be valid")
     metricCrud.update(metricID, metricObj)
     return ResponseCustomized(f"Success, The metric {metricID} has been edited successfully.")
 

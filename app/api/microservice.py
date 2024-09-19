@@ -1,7 +1,8 @@
-from fastapi import APIRouter, Depends
-from app.schemas import MicroserviceInDBBase, MicroserviceCreate, MicroserviceTeamScorecardBase, MicroserviceCreateApi, MicroserviceScoreCardCreate, MicroserviceUpdate, MicroserviceScoreCardUpdate
-from app.crud import CRUDMicroservice, CRUDMicroserviceTeamScorecard, CRUDTeam, CRUDScoreCard, CRUDMicroserviceScoreCard
-from typing import List
+from fastapi import APIRouter, Depends, status
+from app.schemas import MicroserviceInDBBase, MicroserviceCreate, MicroserviceTeamScorecardBase, MicroserviceCreateApi, MicroserviceScoreCardCreate, MicroserviceUpdate,ServiceMetricReading 
+from app.crud import CRUDMicroservice, CRUDMicroserviceTeamScorecard, CRUDTeam, CRUDScoreCard, CRUDMicroserviceScoreCard ,CRUDServiceMetric
+from typing import List , Optional
+from datetime import datetime
 from app import dependencies
 from pydantic import BaseModel, Field
 from .exceptions import HTTPResponseCustomized
@@ -127,15 +128,12 @@ def create_microservice(newmicroservice: MicroserviceCreateApi,
                     scoreCardId=scorecard_obj.id
                 ))
             except Exception as x:
-                error_message = f"Failed to create relationship for ScoreCard ID: {
-                    scorecard_obj.id}. Reason: {str(x)}"
+                error_message = f"Failed to create relationship for ScoreCard ID: {scorecard_obj.id}. Reason: {str(x)}"
                 raise HTTPResponseCustomized(
                     status_code=400, detail=error_message)
     return created_microservice
 
     # update operation
-
-
 @router.put("/{servise_id}", response_model=None)
 def update_microservice(microservice_id: int, updatemicroservice: MicroserviceCreateApi,
                         microservice: CRUDMicroservice = Depends(
@@ -217,3 +215,15 @@ def delete_microservice(
             status_code=404, detail="Can't delete Microservice ScoreCard")
 
     return {"message": "Microservice and associated scorecards successfully deleted"}
+ 
+ 
+@router.get("/{service_id}/metric_reading", response_model=list[ServiceMetricReading])
+def get_metrics(service_id: int, from_date: Optional[datetime] = None, 
+    to_date: Optional[datetime] = None,  service_metric_crud: CRUDServiceMetric = Depends(dependencies.getServiceMetricsCrud)):
+
+    metrics = service_metric_crud.get_metric_values_by_service(service_id, from_date,to_date)
+    
+    if not metrics:
+        raise HTTPResponseCustomized(status_code=404, detail="Metrics not found for this service and metric.")
+
+    return metrics
