@@ -229,39 +229,41 @@ def get_metrics(service_id: int, from_date: Optional[datetime] = None,
     return metrics
 
 
-@router.post("/{service_id}/{metric_id}/reading", response_model=None) 
-def create_metric_reading(service_id:int ,metric_id:int,newmservicemetric: ServiceMetricCreate,
-                          db_session: Session = Depends(dependencies.get_db),
-                          microservice: CRUDMicroservice = Depends(dependencies.getMicroservicesCrud),
-                          servicemetric: CRUDServiceMetric = Depends(dependencies.getServiceMetricsCrud),
-                          metric: CRUDMetric = Depends(dependencies.getMetricsCrud)):
-   
-    microservice = microservice.get(service_id)
-    if  not microservice:
+@router.post("/{service_id}/{metric_id}/reading", response_model=None)
+def create_metric_reading(
+                            service_id: int,
+                            metric_id: int,
+                            newmservicemetric: ServiceMetricCreate,
+                            microservice: CRUDMicroservice = Depends(dependencies.getMicroservicesCrud),
+                            servicemetric: CRUDServiceMetric = Depends(dependencies.getServiceMetricsCrud),
+                            metric: CRUDMetric = Depends(dependencies.getMetricsCrud),
+                        ):
+    
+    microservice_obj = microservice.get(service_id)
+    if not microservice_obj:
         raise HTTPResponseCustomized(status_code=404, detail="Service not found")
     
-    metricobject = metric.get(metric_id) 
-    if not metricobject:
+    metric_obj = metric.get(metric_id)
+    if not metric_obj:
         raise HTTPResponseCustomized(status_code=404, detail="Metric not found")
-
-    metric_data = metricobject.type
-    metric_type = utity_datatype.parse_stringified_value(metric.type, metric_data)
     
+    
+    metric_value =utity_datatype.parse_stringified_value(newmservicemetric.value,metric_obj.type)
+    
+    date = newmservicemetric.timestamp or datetime.now()
+    if date > datetime.now():
+        raise HTTPResponseCustomized(status_code=400, detail="Timestamp cannot be in the future")
 
-    timestamp = servicemetric.timestamp
-    if timestamp:
-        if timestamp > datetime.now():
-            raise HTTPResponseCustomized(status_code=400, detail="Timestamp cannot be in the future")
-    else:
-        timestamp = datetime.now()
-
-    service_metric =servicemetric.create(ServiceMetricCreate(
-        serviceId=newmservicemetric.serviceId,
-        metricId=newmservicemetric.metricId,
-        value=metric_type,
-        timestamp=timestamp) 
+    service_metric = servicemetric.create(
+        ServiceMetricCreate(
+            serviceId=service_id,
+            metricId=metric_id,
+            value=metric_value,
+            timestamp=date,
+        )
     )
 
     return service_metric
+
     
                         

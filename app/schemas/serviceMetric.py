@@ -9,7 +9,7 @@ class ServiceMetricBase(BaseModel):
     serviceId: Optional[int] = None
     metricId: Optional[int] = None
     value: Optional[Union[float, int, str, bool]] = None
-    date: Optional[datetime] = None
+    timestamp: Optional[datetime] = None
 
 
 # Properties to receive on microservice creation
@@ -17,14 +17,14 @@ class ServiceMetricCreate(ServiceMetricBase):
     serviceId: int
     metricId: int
     value: Union[float, int, str, bool]
-    date: Optional[datetime]
+    timestamp: Optional[datetime]
 
 
 class ServiceMetricReading(ServiceMetricBase):
     serviceId: int
     metricId: int
     value: Union[float, int, str, bool]
-    date: datetime
+    timestamp: datetime
 
 # Properties to receive on microservice update
 class ServiceMetricUpdate(ServiceMetricBase):
@@ -37,7 +37,7 @@ class ServiceMetricInDBBase(ServiceMetricBase):
     serviceId: int
     metricId: int
     value: Union[float, int, str, bool]
-    date: datetime
+    timestamp: datetime
 
     class Config:
         orm_mode = True
