@@ -29,7 +29,7 @@ function DateTimeRangePicker() {
   }
 
   return (
-    <Form className='my-3'>
+    <Form className='my-5'>
       <Form.Group as={Row} controlId="formDateRange" className='mb-2'>
         <Form.Label column sm={2}>
           From

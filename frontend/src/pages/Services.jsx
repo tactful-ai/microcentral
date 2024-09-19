@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import Layout from '../layouts/Layout.jsx'
 import { NavLink } from 'react-router-dom'
-
+import { servicesData } from '../utils/data.js';
 
 const ServicesRaws = (props) => {
   useEffect(() => {
@@ -104,9 +104,26 @@ const Services = () => {
                         </tr>
                     </thead>
                     <tbody>
-                        <ServicesRaws getAllServices={getAllServices} handleDelete={handleDelete}
-                        serviceData={serviceData} setServiceData={setServiceData}
-                        loading={loading} setLoading={setLoading}/>
+                    {servicesData.map((service, index) => (
+                        <tr key={index}>
+                            <th scope="row">{service.id}</th>
+                            <td>{service.name}</td>
+                            <td>{service.description}</td>
+                            <td>{service.type}</td>
+                            <td>{service.area.join(',')}</td>
+                            <th>
+                                <NavLink to={`/dashboard/services/edit/${service.id}`} 
+                                    className={(navData) => navData.isActive ? 'active' : ''}>
+                                    <button className="action-btn mx-1">
+                                        <i className="fa-solid fa-pen-to-square"></i>
+                                    </button>
+                                </NavLink>
+                                <button className="action-btn mx-1" onClick={()=>handleDelete(service.id)}>
+                                    <i className="fa-solid fa-trash"></i>
+                                </button>
+                            </th>
+                        </tr>
+                    ))}
                     </tbody>
                 </table>
             </div>

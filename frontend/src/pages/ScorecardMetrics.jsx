@@ -4,7 +4,6 @@ import { Container, Row, Col, Form, Card, ListGroup } from 'react-bootstrap';
 import { Line, Bar, Scatter } from 'react-chartjs-2';
 import { metricsData, stringData, lineData, booleanData, scatterData } from '../utils/data.js';
 import DateTimePicker from '../components/DateTimePicker.jsx';
-// import ChartDataLabels from 'chartjs-plugin-datalabels';
 import {
     Chart as ChartJS,
     CategoryScale,
@@ -16,6 +15,7 @@ import {
     Tooltip,
     Legend,
   } from 'chart.js';
+import ScatterChart from '../components/common/ScatterChart.jsx';
   
   ChartJS.register(
     CategoryScale,
@@ -26,7 +26,6 @@ import {
     Tooltip,
     Legend,
     BarElement,
-    // ChartDataLabels
   );
 
 
@@ -122,18 +121,46 @@ const booleanOptions = {
     });
   }
 
+  const lineOptions = {
+    scales: {
+        x: {
+            title: {
+                display: true,
+                text: "Time"
+            }
+        },
+        y: {
+            title: {
+                display: true,
+                text: "Value"
+            }
+        },
+    },
+    plugins: {
+        legend: {
+          display: true,
+          labels: {
+            text: "metric",
+            padding: 20, // Add margin or padding to the legend items
+          },
+        },
+    },
+  }
+
 const GraphController = ({metricType}) => {
     let data = [];
     if (metricType == null) return;
     if (metricType == "integer" || metricType == "float"){
-        return <Line data={lineData} />;
+        return <Line data={lineData} options={lineOptions} />;
     }
     else if(metricType == "string") {
-        // return <Bar data={stringData} options={stringOptions(stringData.categories)} />;
         return (
-        <Scatter data={scatterData(['A', 'C'])} 
-        options={stringOptions(stringData.categories)} />);
-}
+            <div className='h-25'>
+                <ScatterChart points={['A', 'C', 'C', 'A', 'B', 'C']} 
+                categories={['A', 'B', 'C', 'D']} />
+            </div>
+        );
+    }
     else if(metricType == "boolean") {
         return <Bar data={booleanData} options={booleanOptions} />;
         
@@ -152,21 +179,26 @@ const ScorecardMetrics = () => {
     <Layout>
         <Container style={{ color: '#303030 !important' }}>
             <Row className='mt-5 '>
-                <Col lg={6}>
-                    <Row className="mb-3">
-                        <Col xs={12}>
-                            <h1 className='mb-3'>Performance</h1>
-                            <p className='info-desc w-100'>
-                            Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s. when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries.
-                            </p>
-                        </Col>
-                        <Col xs={12}>
-                        <table className="table table-striped my-4">
+                <Row className="mb-4">
+                    <Col xs={7}>
+                        <h1 className='mb-3'>Performance</h1>
+                        <p className='info-desc w-100'>
+                        Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s. when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries.
+                        </p>
+                    </Col>
+                    
+                    <Col xs={5} className='text-center px-5'>
+                        <InfoCard serviceName={'Visa Auth'} teamName={'Team 1'} />
+                    </Col>
+                </Row>
+                <Row>
+                    <Col xs={12}>
+                        <table className="table table-striped my-5 mt-2">
                             <thead>
                                 <tr>
                                     <th scope="col">#</th>
                                     <th scope="col">Name</th>
-                                    <th scope="col">Value</th>
+                                    <th scope="col">Last Value</th>
                                     <th scope="col">Weight</th>
                                     <th scope="col">Last Update</th>
                                     <th scope="col">Actions</th>
@@ -177,21 +209,19 @@ const ScorecardMetrics = () => {
                                 handleDisplay={handleDisplay} />
                             </tbody>
                         </table>
-                        </Col>
-                    </Row>
-                </Col>
-                <Col lg={6} className='px-5'>
-                    <Row className='vh-100'>
-                        <Col xs={12} className='text-center'>
-                            <InfoCard serviceName={'Visa Auth'} teamName={'Team 1'} />
-                        </Col>
-                        <Col xs={12}>
+                    </Col>
+                </Row>
+                <Row>
+                    <Col xs={12}>
+                        <div className='mx-auto w-50'>
                             <h4>Select data time interval</h4>
                             <DateTimePicker/>
+                        </div>
+                        <div className='mb-5'>
                             <GraphController metricType={metricType}/>
-                        </Col>
-                    </Row>
-                </Col>
+                        </div>
+                    </Col>
+                </Row>
             </Row>
         </Container>
     </Layout>

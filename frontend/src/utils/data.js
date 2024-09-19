@@ -36,6 +36,44 @@ export const metricsData = [
     }
 ];
 
+export const servicesData = [
+    {
+        id: '1',
+        name: 'Service A',
+        description: 'A comprehensive service for managing financial transactions.',
+        type: 'Financial',
+        area: ['North America', 'Europe']
+    },
+    {
+        id: '2',
+        name: 'Service B',
+        description: 'A service specializing in data analytics and business intelligence.',
+        type: 'Analytics',
+        area: ['Asia', 'Australia']
+    },
+    {
+        id: '3',
+        name: 'Service C',
+        description: 'Provides cloud computing resources and support.',
+        type: 'Cloud Computing',
+        area: ['South America', 'Africa']
+    },
+    {
+        id: '4',
+        name: 'Service D',
+        description: 'An advanced service for digital marketing and SEO.',
+        type: 'Marketing',
+        area: ['Middle East', 'Asia']
+    },
+    {
+        id: '5',
+        name: 'Service E',
+        description: 'Offers cybersecurity solutions and support.',
+        type: 'Security',
+        area: ['Europe', 'North America']
+    }
+];
+
 export const booleanData = {
     labels: ['1.00', '2.00', '3.00', '4.00', '5.00', '6.00', '7.00', '8.00', '9.00', '10.00'], 
     datasets: [
@@ -70,7 +108,7 @@ export const scatterData = (points) => {
 
 export const stringData = {
     labels: ['1.00', '2.00', '3.00', '4.00', '5.00', '6.00', '7.00', '8.00', '9.00', '10.00'],
-    categories: ['A', 'B', 'C'],
+    categories: ['A', 'B', 'C', 'D'],
     datasets: [
         {
             data: [''], 
@@ -100,11 +138,11 @@ export const lineData = {
         backgroundColor: "rgba(75,192,192,0.2)",
         borderColor: "rgba(75,192,192,1)"
       },
-      {
-        label: "Second dataset",
-        data: [33, 25, 35, 51, 54, 76],
-        fill: false,
-        borderColor: "#742774"
-      }
+    //   {
+    //     label: "Second dataset",
+    //     data: [33, 25, 35, 51, 54, 76],
+    //     fill: false,
+    //     borderColor: "#742774"
+    //   }
     ]
   };

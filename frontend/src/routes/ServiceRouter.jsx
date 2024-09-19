@@ -1,5 +1,5 @@
 import React from "react";
-import { createBrowserRouter } from "react-router-dom";
+import { createBrowserRouter, Navigate } from "react-router-dom";
 
 // All Pages
 import Services from '../pages/Services.jsx';
@@ -8,11 +8,11 @@ import ServiceCreateEdit from '../pages/ServiceCreateEdit';
 import ScorecardMetrics from '../pages/ScorecardMetrics';
 import NotFound from '../pages/NotFound';
 
-const MainRouter = createBrowserRouter([
+const ServiceRouter = createBrowserRouter([
     // Services routes
     {
       path: "/",
-      element: <Services />
+      element: <Navigate to="/dashboard/services" replace/>
     },
     {
         path: "/dashboard",
@@ -50,4 +50,4 @@ const MainRouter = createBrowserRouter([
     },
 ]);
 
-export default MainRouter;
+export default ServiceRouter;
