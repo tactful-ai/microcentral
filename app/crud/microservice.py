@@ -1,9 +1,7 @@
-import sqlalchemy
 from sqlalchemy.orm import Session
 from fastapi import status
-from fastapi.responses import JSONResponse 
-from ..models import Microservice ,Team ,Scorecard ,MicroserviceScoreCard
-from ..schemas import MicroserviceCreate, MicroserviceUpdate ,MicroserviceInDBBase , TeamInDBBase ,ScoreCardInDBBase
+from ..models import Microservice ,Team
+from ..schemas import MicroserviceCreate, MicroserviceUpdate ,MicroserviceInDBBase
 from .base import CRUDBase
 from typing import List
 from sqlalchemy.sql import func
@@ -19,6 +17,13 @@ class CRUDMicroservice(CRUDBase[Microservice, MicroserviceCreate, MicroserviceUp
     def getByTeamIdAndCode(self, teamId: str, code: str):
         return self.db_session.query(Microservice).filter(Microservice.teamId == teamId, Microservice.code == code).first()
 
+    
+    def getByServiceId(self, serviceID: int) -> Microservice:
+        return self.db_session.query(Microservice).filter(Microservice.id == serviceID).first()
+    
+    def getByServiceIds(self, serviceID: list[int]) -> list[Microservice]:
+        return self.db_session.query(Microservice).filter(Microservice.id.in_(serviceID)).all()
+    
     def getAllServicesWithTeamName(self) -> list[MicroserviceInDBBase]:
         
         microservices = self.list()
@@ -38,7 +43,7 @@ class CRUDMicroservice(CRUDBase[Microservice, MicroserviceCreate, MicroserviceUp
         return services
 
     #get one with team
-    def getByServiceId(self , service_id:int):
+    def getByServiceIdWithTeam(self , service_id:int):
         result = (
         self.db_session.query(Microservice.id, Microservice.name, Microservice.description, Microservice.code, Team.name.label("team_name"))
         .filter(Microservice.id == service_id)
@@ -47,7 +52,11 @@ class CRUDMicroservice(CRUDBase[Microservice, MicroserviceCreate, MicroserviceUp
         return result
 
     def get_by_code (self , code:str):
-        return self.db_session.query(Microservice).filter(Microservice.code == code).first()
+        service = self.db_session.query(Microservice).filter(Microservice.code == code).first()
+        return service
+    
+    def getByCodeReturnIDs (self , code:str):
+        return self.db_session.query(Microservice).filter(Microservice.code == code).first().id()
 
 
     def check_service_name_exists(self, name: str):
