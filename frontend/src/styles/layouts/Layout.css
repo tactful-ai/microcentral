@@ -1,0 +1,87 @@
+/* Main Pallete */
+/* #6482AD */
+/* #7FA1C3 */
+/* #E2DAD6 */
+/* #F5EDED */
+
+
+/* General styling */
+*{
+    margin: 0;
+    padding: 0;
+    color: #292727
+}
+h1, h1, h3, h4, h5 {
+    margin: 0 
+}
+button {
+    background: transparent;
+    outline: none;
+    border: none;
+}
+
+/* Sidebar Styling */
+#main-sidebar {
+    height: 100%;
+    padding: 0 10px;
+    border-right: 1px solid #6482AD;
+    overflow-x: hidden;
+    overflow-y: auto;
+    background-color: #fff;
+}
+
+#main-sidebar #sidebar-list {
+    margin: 0;
+    padding: 0;
+    list-style-type: none;
+}
+#main-sidebar #logo {
+    margin: 150px 0 50px 0;
+}
+#main-sidebar #sidebar-list .sidebar-item {
+    margin: 5px 0;
+}
+
+#main-sidebar #sidebar-list .sidebar-item a {
+    display: block;
+    text-decoration: none;
+    color: black;
+    padding: 10px 20px;
+    border-radius: 4px;
+}
+#main-sidebar #sidebar-list .sidebar-item a.active,
+#main-sidebar #sidebar-list .sidebar-item a.active:hover {
+background-color: #6482AD;
+    color: white
+}
+
+#main-sidebar #sidebar-list .sidebar-item a:hover {
+    background-color: #E2DAD6;
+    color: #3e3e3e
+}
+
+/* Navbar Styling */
+#main-navbar {
+    width: 100%;
+    padding: 20px 0
+}
+#main-navbar #welcome-msg #user-name {
+    color: #a1a1a1
+}
+
+#main-navbar #user-tools #user-pic {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: gray url('../../assets/profile.jpg');
+    background-size: cover;
+    background-position: center;
+}
+#main-navbar #user-tools .user-icon:hover {
+    border-radius: 3px;
+    padding: 3px;
+    background-color: #E2DAD6 !important;
+}
+
+
+
