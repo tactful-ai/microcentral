@@ -38,6 +38,7 @@ class CRUDMicroserviceInfo:
                 'id': sc.id,
                 'name': sc.name,
                 'code': sc.code,
+                'description':sc.description,
                 'update_time' : update_time,
                 'score_value' : calculated_scores
             })
@@ -45,9 +46,10 @@ class CRUDMicroserviceInfo:
         service = MicroserviceInfoBase(
             id=microservice.id,
             name=microservice.name,
-            description=microservice.description,
             code=microservice.code,
+            description=microservice.description,
             team_name=microservice.team.name,
             scorecards=service_scorecards
         )
+        print(service)
         return service
