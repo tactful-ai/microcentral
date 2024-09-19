@@ -17,8 +17,14 @@ class ServiceMetricCreate(ServiceMetricBase):
     serviceId: int
     metricId: int
     value: Union[float, int, str, bool]
-    date: datetime
+    date: Optional[datetime]
 
+
+class ServiceMetricReading(ServiceMetricBase):
+    serviceId: int
+    metricId: int
+    value: Union[float, int, str, bool]
+    date: datetime
 
 # Properties to receive on microservice update
 class ServiceMetricUpdate(ServiceMetricBase):
@@ -32,16 +38,6 @@ class ServiceMetricInDBBase(ServiceMetricBase):
     metricId: int
     value: Union[float, int, str, bool]
     date: datetime
-
-    class Config:
-        orm_mode = True
-
-
-# Properties to return to client
-class ServiceMetricReading(BaseModel):
-    metricId: int
-    value: Union[float, int, str, bool]
-    timestamp: datetime
 
     class Config:
         orm_mode = True

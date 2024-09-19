@@ -1,14 +1,14 @@
 from fastapi import APIRouter, Depends, status
-from app.schemas import MicroserviceInDBBase, MicroserviceCreate, MicroserviceTeamScorecardBase, MicroserviceCreateApi, MicroserviceScoreCardCreate, MicroserviceUpdate,ServiceMetricReading 
-from app.crud import CRUDMicroservice, CRUDMicroserviceTeamScorecard, CRUDTeam, CRUDScoreCard, CRUDMicroserviceScoreCard ,CRUDServiceMetric
+from app.schemas import MicroserviceInDBBase, MicroserviceCreate, MicroserviceTeamScorecardBase, MicroserviceCreateApi, MicroserviceScoreCardCreate, MicroserviceUpdate,ServiceMetricReading, ServiceMetricCreate 
+from app.crud import CRUDMicroservice, CRUDMicroserviceTeamScorecard, CRUDTeam, CRUDScoreCard, CRUDMicroserviceScoreCard ,CRUDMetric,CRUDServiceMetric
 from typing import List , Optional
 from datetime import datetime
 from app import dependencies
 from pydantic import BaseModel, Field
 from sqlalchemy.orm import Session
 from .exceptions import HTTPResponseCustomized
-from app.utils.base import format_code
-
+from app.utils.base import format_code 
+from app.utils import utity_datatype
 
 class Value(BaseModel):
     value: int | bool | float | str = Field(
@@ -31,8 +31,7 @@ async def get_one_service(service_id: int, microServices: CRUDMicroservice = Dep
     try:
         service = microServices.get(service_id)
         if service is None:
-            raise HTTPResponseCustomized(
-                status_code=404, detail="error_message")
+            raise HTTPResponseCustomized(status_code=404, detail="error_message")
     except Exception as x:
         error_message = "Service not found"
         raise HTTPResponseCustomized(status_code=404, detail=error_message)
@@ -218,7 +217,7 @@ def delete_microservice(
     return {"message": "Microservice and associated scorecards successfully deleted"}
  
  
-@router.get("/{service_id}/metric_reading", response_model=list[ServiceMetricReading])
+@router.get("/{                                                                                                                                                         }/metric_reading", response_model=list[ServiceMetricReading])
 def get_metrics(service_id: int, from_date: Optional[datetime] = None, 
     to_date: Optional[datetime] = None,  service_metric_crud: CRUDServiceMetric = Depends(dependencies.getServiceMetricsCrud)):
 
@@ -228,3 +227,41 @@ def get_metrics(service_id: int, from_date: Optional[datetime] = None,
         raise HTTPResponseCustomized(status_code=404, detail="Metrics not found for this service and metric.")
 
     return metrics
+
+
+@router.post("/{service_id}/{metric_id}/reading", response_model=None) 
+def create_metric_reading(service_id:int ,metric_id:int,newmservicemetric: ServiceMetricCreate,
+                          db_session: Session = Depends(dependencies.get_db),
+                          microservice: CRUDMicroservice = Depends(dependencies.getMicroservicesCrud),
+                          servicemetric: CRUDServiceMetric = Depends(dependencies.getServiceMetricsCrud),
+                          metric: CRUDMetric = Depends(dependencies.getMetricsCrud)):
+   
+    microservice = microservice.get(service_id)
+    if  not microservice:
+        raise HTTPResponseCustomized(status_code=404, detail="Service not found")
+    
+    metricobject = metric.get(metric_id) 
+    if not metricobject:
+        raise HTTPResponseCustomized(status_code=404, detail="Metric not found")
+
+    metric_data = metricobject.type
+    metric_type = utity_datatype.parse_stringified_value(metric.type, metric_data)
+    
+
+    timestamp = servicemetric.timestamp
+    if timestamp:
+        if timestamp > datetime.now():
+            raise HTTPResponseCustomized(status_code=400, detail="Timestamp cannot be in the future")
+    else:
+        timestamp = datetime.now()
+
+    service_metric =servicemetric.create(ServiceMetricCreate(
+        serviceId=newmservicemetric.serviceId,
+        metricId=newmservicemetric.metricId,
+        value=metric_type,
+        timestamp=timestamp) 
+    )
+
+    return service_metric
+    
+                        

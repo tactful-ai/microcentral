@@ -21,6 +21,7 @@ class CRUDServiceMetric(CRUDBase[ServiceMetric, ServiceMetricCreate, ServiceMetr
 
     def getByServiceId(self, serviceId: int) -> list[ServiceMetric]:
         return self.db_session.query(ServiceMetric).filter(ServiceMetric.serviceId == serviceId).all()
+    
 
     def get_metric_values_by_service(self, service_id: int, from_date: Optional[datetime], to_date: Optional[datetime]) -> list[ServiceMetricReading]:
 

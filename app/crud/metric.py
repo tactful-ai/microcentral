@@ -17,7 +17,10 @@ class CRUDMetric(CRUDBase[Metric, MetricCreate, MetricUpdate]):
         metrics = self.db_session.query(Metric).filter(
             Metric.id.in_(metric_ids)).all()
         return metrics
-
+    
+    def get_metric_by_id(self, metric_id: int):
+        return self.db_session.query(Metric.id).filter(Metric.id == metric_id).first() is not None
+    
     def getByName(self, name: str):
         return self.db_session.query(Metric).filter(Metric.name == name).first()
 
