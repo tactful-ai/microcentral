@@ -73,14 +73,13 @@ class CRUDScoreCardServiceMetric(CRUDBase[ScorecardServiceMetric, ScorecardServi
             services = self.microServiceScoreCard.getservice(scorecardID)
             metric_ids = [sc_id.metricId for sc_id in metrics]
             service_ids = [sc_id.microserviceId for sc_id in services]
-
+            
             metricOBJs = []
             serviceOBJs = []
 
             metrics = self.metric.getByIds(metric_ids)
             metrics_types_map = {metric.id : metric.type for metric in metrics}
-            metricList = self.scoreCardMetric.getByMetricIdsandScorecardId(
-                metric_ids, scorecardID)
+            metricList = self.scoreCardMetric.getByMetricIdsandScorecardId(metric_ids, scorecardID)
             for metric in metricList:
                 metrictype = metrics_types_map[metric.metricId]
                 metric.desiredValue = parse_stringified_value(metric.desiredValue, metrictype)
