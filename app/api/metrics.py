@@ -96,7 +96,7 @@ def editMetric(metricID: int, metricInput: schemas.MetricUpdate, metricCrud: cru
     else:
         metric.area = []
         metricObj.area = json.dumps(metric.area)
-    if (metricObj.type not in metric_type):
+    if (metricObj.type not in metric_type and metricObj.type):
         raise HTTPResponseCustomized(
             status_code=422, detail="type must be valid")
     metricCrud.update(metricID, metricObj)

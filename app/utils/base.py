@@ -1,19 +1,9 @@
 import re
 from app.api.exceptions import HTTPResponseCustomized
-from fastapi import Depends
 from app import crud, dependencies
 from app import dependencies
-from fastapi.exceptions import RequestValidationError
-from app.schemas import ServiceMetricCreate, MetricCreate, scoreCard, microserviceScoreCard, ScorecardServiceMetric
-from fastapi import APIRouter, Depends, Request, exception_handlers, status, Response, HTTPException
-from fastapi.responses import JSONResponse, PlainTextResponse
-from fastapi.encoders import jsonable_encoder
-from pydantic import BaseModel, Field
-from app.crud import CRUDMetric, CRUDServiceMetric, CRUDMicroserviceScoreCard, CRUDMicroservice
-from app import schemas, models, crud
-from typing import Any, List
-import json
-from fastapi.routing import APIRoute
+from app.crud import CRUDMetric
+from app import crud
 from app.models.scoreCardMetrics import criteriaStates
 
 db_session = dependencies.get_db()

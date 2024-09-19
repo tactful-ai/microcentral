@@ -25,11 +25,17 @@ class ScoreCardInDBBase(ScoreCardBase):
     name: str
     code: str
     description: str
-    services: list[microservice.MicroserviceCreate]
-    metrics: list[scoreCardMetrics.ScoreCardMetricsCreate]
 
     class Config:
         orm_mode = True
+
+class ScoreCardinBase(ScoreCardBase):
+    id: int
+    name: str
+    code: str
+    description: str
+    services: list[microservice.MicroserviceCreate]
+    metrics: list[scoreCardMetrics.ScoreCardMetricsCreate]
 
 class GetScoreCard(BaseModel):
     id: int
@@ -56,7 +62,7 @@ class ScoreCard(ScoreCardInDBBase):
 
     class Config:
         orm_mode = True
- 
+
 
 # Properties properties stored in DB
 class ScoreCardInDB(ScoreCardInDBBase):

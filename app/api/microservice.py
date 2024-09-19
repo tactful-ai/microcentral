@@ -108,7 +108,7 @@ def create_microservice(newmicroservice: MicroserviceCreateApi,
         pass
 
     if newmicroservice.scorecardids:
-        scorecard_objs = scorecard.getByScoreCradIds(
+        scorecard_objs = scorecard.getByScoreCardIds(
             newmicroservice.scorecardids)
         if len(scorecard_objs) != len(newmicroservice.scorecardids):
             missing_ids = set(newmicroservice.scorecardids) - \
@@ -171,7 +171,7 @@ def update_microservice(microservice_id: int, updatemicroservice: MicroserviceCr
 
     scorecard_objs = []
     if updatemicroservice.scorecardids:
-        scorecard_objs = scorecard.getByScoreCradIds(
+        scorecard_objs = scorecard.getByScoreCardIds(
             updatemicroservice.scorecardids)
         if len(scorecard_objs) != len(updatemicroservice.scorecardids):
             missing_ids = set(updatemicroservice.scorecardids) - \
