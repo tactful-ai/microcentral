@@ -1,8 +1,5 @@
-import sqlalchemy
 from sqlalchemy.orm import Session
-from ..models import Microservice
 from ..schemas import MicroserviceTeamScorecardBase, team, scoreCard
-from .base import CRUDBase
 from typing import List
 from sqlalchemy.sql import func
 from app.api.exceptions import HTTPResponseCustomized
@@ -29,7 +26,7 @@ class CRUDMicroserviceTeamScorecard:
         scorecardIds = self.scoreCardService.getByServiceId(microservice.id)
         scorecards = [] 
         scorecard_ids = [sc_id.scoreCardId for sc_id in scorecardIds]
-        scorecards = self.scoreCard.getByScoreCradIds(scorecard_ids)
+        scorecards = self.scoreCard.getByScoreCardIds(scorecard_ids)
 
         service = MicroserviceTeamScorecardBase(
             id=microservice.id,
@@ -39,6 +36,6 @@ class CRUDMicroserviceTeamScorecard:
             team=team.TeamBase(
                 id=teamobject.id, name=teamobject.name) if team else None,
             scorecards=[scoreCard.ScoreCardInDBBase(
-                id=sc.id, name=sc.name, description=sc.description) for sc in scorecards]
+                id=sc.id, name=sc.name, description=sc.description, code= sc.code) for sc in scorecards]
         )
         return service

@@ -5,7 +5,6 @@ from typing import List , Optional
 from datetime import datetime
 from app import dependencies
 from pydantic import BaseModel, Field
-from sqlalchemy.orm import Session
 from .exceptions import HTTPResponseCustomized
 from app.utils.base import format_code
 
@@ -109,7 +108,7 @@ def create_microservice(newmicroservice: MicroserviceCreateApi,
         pass
 
     if newmicroservice.scorecardids:
-        scorecard_objs = scorecard.getByScoreCradIds(
+        scorecard_objs = scorecard.getByScoreCardIds(
             newmicroservice.scorecardids)
         if len(scorecard_objs) != len(newmicroservice.scorecardids):
             missing_ids = set(newmicroservice.scorecardids) - \
@@ -172,7 +171,7 @@ def update_microservice(microservice_id: int, updatemicroservice: MicroserviceCr
 
     scorecard_objs = []
     if updatemicroservice.scorecardids:
-        scorecard_objs = scorecard.getByScoreCradIds(
+        scorecard_objs = scorecard.getByScoreCardIds(
             updatemicroservice.scorecardids)
         if len(scorecard_objs) != len(updatemicroservice.scorecardids):
             missing_ids = set(updatemicroservice.scorecardids) - \
