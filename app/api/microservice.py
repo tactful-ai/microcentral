@@ -2,7 +2,7 @@ from fastapi import APIRouter, Depends, status
 from app.schemas import MicroserviceInDBBase, MicroserviceCreate, MicroserviceTeamScorecardBase, MicroserviceCreateApi, MicroserviceScoreCardCreate, MicroserviceUpdate,ServiceMetricReading, ServiceMetricCreate 
 from app.crud import CRUDMicroservice, CRUDMicroserviceTeamScorecard, CRUDTeam, CRUDScoreCard, CRUDMicroserviceScoreCard ,CRUDMetric,CRUDServiceMetric
 from typing import List , Optional
-from datetime import datetime
+from datetime import datetime ,timezone
 from app import dependencies
 from pydantic import BaseModel, Field
 from sqlalchemy.orm import Session
@@ -251,7 +251,8 @@ def create_metric_reading(
     metric_value =utity_datatype.parse_stringified_value(newmservicemetric.value,metric_obj.type)
     
     date = newmservicemetric.timestamp or datetime.now()
-    if date > datetime.now():
+    date_aware = date.replace(tzinfo=timezone.utc) 
+    if date_aware > datetime.now(timezone.utc):
         raise HTTPResponseCustomized(status_code=400, detail="Timestamp cannot be in the future")
 
     service_metric = servicemetric.create(
