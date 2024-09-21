@@ -94,8 +94,8 @@ def createScoreCard(scoreCardInput: ScorecardServiceMetricCreate,
         )
         scorecardMetricCrud.create(scorecardmetric)
 
-    for service in serviceListToBeCreated:
-        serviceScorecardCrud.create(service)
+    for servicescorecard in serviceListToBeCreated:
+        serviceScorecardCrud.create(servicescorecard)
 
     return ResponseCustomized("Scorecard created successfully")
 
@@ -125,3 +125,82 @@ def deleteScorecard(scorecardID: int,
     scorecardService.deleteByScorecardId(scorecardID)
     scorecardMetrics.deleteByScorecardId(scorecardID)
     return ResponseCustomized("Scorecard deleted successfully")
+
+@router.put("/{scorecardID}")
+def updateScorecard(scorecardID: int,
+                    update_scorecard: schemas.ScorecardServiceMetricUpdate,
+                    scorecardCrud: crud.CRUDScoreCard,
+                    scorecardServiceCrud: crud.CRUDMicroserviceScoreCard,
+                    scorecardMetricsCrud: crud.CRUDScoreCardMetric,
+                    serviceCrud: crud.CRUDMicroservice,
+                    metricCrud: crud.CRUDMetric
+                    ):
+    saved_scorecard = scorecardCrud.get(scorecardID)
+    if (saved_scorecard is None):
+        return ResponseCustomized("Scorecard not found")
+    
+    out_scorecard = schemas.ScoreCardCreate(
+        name=update_scorecard.name,
+        code=format_code(update_scorecard.name),
+        description=update_scorecard.description
+    )
+    scorecardCrud.update(out_scorecard)
+
+    
+    # METRICS UPDATE
+    metricIDsSet = []
+    for metric in update_scorecard.metrics:    
+        metricIDsSet.append(metric.id)
+    metricIDsSet = list(set(metricIDsSet))
+    metric_data = metricCrud.getByIds(metricIDsSet)
+    if (len(metric_data) != len(metricIDsSet)):
+        raise HTTPResponseCustomized(status_code=404, detail="Metric is not found")
+    
+    metric_type_map = {metric.id:metric.type for metric in metric_data}
+
+    objects = []
+    for metric in update_scorecard.metrics:
+        metric = schemas.MetricTypeScorecard(
+            id=metric.id,
+            weight=metric.weight,
+            desiredValue=metric.desiredValue,
+            criteria=metric.criteria,
+            type=metric_type_map[metric.id]  # Add the type directly from retrieved metric
+        )
+        objects.append(metric)
+
+    check_metric(objects)
+    
+    if (update_scorecard.metrics):
+        # Delete old metrics related to this scorecard
+        scorecardMetricsCrud.deleteByScorecardId(scorecardID)
+        # Create new ones
+        for metric in update_scorecard.metrics:
+            metric.desiredValue = stringify_value(metric.desiredValue)
+            metricUpdated = schemas.MetricListforScorecardGet(
+                id=metric.id,
+                weight=metric.weight,
+                desiredValue=metric.desiredValue,
+                criteria=metric.criteria
+            )
+            scorecardMetricsCrud.create(metricUpdated)
+
+    
+    #SERVICE UPDATE 
+    # if the scorecardids are passed duplicated
+    servicesIDsSet = list(set(update_scorecard.services))
+    # i need to check if the serviceid is found or not
+    services = serviceCrud.getByServiceIds(servicesIDsSet)
+    if (len(services) != len(servicesIDsSet)):
+        raise HTTPResponseCustomized(status_code=400, detail="Service not found")
+    
+    if (update_scorecard.services):
+        # Delete old services related to this scorecard
+        scorecardServiceCrud.deleteByScorecardId(scorecardID)
+        # Create new ones
+        for serviceID in update_scorecard.services:
+            serviceScorecard = schemas.MicroserviceScoreCardCreate(
+                scoreCardId=scorecardID,
+                microserviceId=serviceID
+            )
+            scorecardMetricsCrud.create(serviceScorecard)

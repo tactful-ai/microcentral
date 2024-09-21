@@ -10,13 +10,21 @@ class ScoreCardBase(BaseModel):
     description: Optional[str] = None
     code: Optional[str] = None
 
+class ScoreCardinBase(ScoreCardBase):
+    id: int
+    name: str
+    code: str
+    description: str
+    services: list[microservice.MicroserviceCreate]
+    metrics: list[scoreCardMetrics.ScoreCardMetricsCreate]
+
 # Properties to receive on scorecard creation
-class ScoreCardCreate(ScoreCardBase):
+class ScoreCardCreate(ScoreCardinBase):
     name: str
     description: str
 
 # Properties to receive on scorecard update
-class ScoreCardUpdate(ScoreCardBase):
+class ScoreCardUpdate(ScoreCardinBase):
     pass
 
 # Properties shared by models stored in DB
@@ -29,13 +37,7 @@ class ScoreCardInDBBase(ScoreCardBase):
     class Config:
         orm_mode = True
 
-class ScoreCardinBase(ScoreCardBase):
-    id: int
-    name: str
-    code: str
-    description: str
-    services: list[microservice.MicroserviceCreate]
-    metrics: list[scoreCardMetrics.ScoreCardMetricsCreate]
+
 
 class GetScoreCard(BaseModel):
     id: int
