@@ -1,14 +1,15 @@
 from fastapi import APIRouter, Depends, status
-from app.schemas import MicroserviceInDBBase, MicroserviceCreate, MicroserviceTeamScorecardBase, MicroserviceCreateApi, MicroserviceScoreCardCreate, MicroserviceUpdate,ServiceMetricReading, ServiceMetricCreate 
-from app.crud import CRUDMicroservice, CRUDMicroserviceTeamScorecard, CRUDTeam, CRUDScoreCard, CRUDMicroserviceScoreCard ,CRUDMetric,CRUDServiceMetric
-from typing import List , Optional
-from datetime import datetime ,timezone
+from app.schemas import MicroserviceInDBBase, MicroserviceCreate, MicroserviceTeamScorecardBase, MicroserviceCreateApi, MicroserviceScoreCardCreate, MicroserviceUpdate, ServiceMetricReading, ServiceMetricCreate
+from app.crud import CRUDMicroservice, CRUDMicroserviceTeamScorecard, CRUDTeam, CRUDScoreCard, CRUDMicroserviceScoreCard, CRUDMetric, CRUDServiceMetric
+from typing import List, Optional
+from datetime import datetime, timezone
 from app import dependencies
 from pydantic import BaseModel, Field
 from sqlalchemy.orm import Session
 from .exceptions import HTTPResponseCustomized
-from app.utils.base import format_code 
+from app.utils.base import format_code
 from app.utils import utity_datatype
+
 
 class Value(BaseModel):
     value: int | bool | float | str = Field(
@@ -31,7 +32,8 @@ async def get_one_service(service_id: int, microServices: CRUDMicroservice = Dep
     try:
         service = microServices.get(service_id)
         if service is None:
-            raise HTTPResponseCustomized(status_code=404, detail="error_message")
+            raise HTTPResponseCustomized(
+                status_code=404, detail="error_message")
     except Exception as x:
         error_message = "Service not found"
         raise HTTPResponseCustomized(status_code=404, detail=error_message)
@@ -134,6 +136,8 @@ def create_microservice(newmicroservice: MicroserviceCreateApi,
     return created_microservice
 
     # update operation
+
+
 @router.put("/{servise_id}", response_model=None)
 def update_microservice(microservice_id: int, updatemicroservice: MicroserviceCreateApi,
                         microservice: CRUDMicroservice = Depends(
@@ -215,51 +219,60 @@ def delete_microservice(
             status_code=404, detail="Can't delete Microservice ScoreCard")
 
     return {"message": "Microservice and associated scorecards successfully deleted"}
- 
- 
-@router.get("/{                                                                                                                                                         }/metric_reading", response_model=list[ServiceMetricReading])
-def get_metrics(service_id: int, from_date: Optional[datetime] = None, 
-    to_date: Optional[datetime] = None,  service_metric_crud: CRUDServiceMetric = Depends(dependencies.getServiceMetricsCrud)):
 
-    metrics = service_metric_crud.get_metric_values_by_service(service_id, from_date,to_date)
-    
+
+@router.get("/{                                                                                                                                                         }/metric_reading", response_model=list[ServiceMetricReading])
+def get_metrics(service_id: int, from_date: Optional[datetime] = None,
+                to_date: Optional[datetime] = None,  service_metric_crud: CRUDServiceMetric = Depends(dependencies.getServiceMetricsCrud)):
+
+    metrics = service_metric_crud.get_metric_values_by_service(
+        service_id, from_date, to_date)
+
     if not metrics:
-        raise HTTPResponseCustomized(status_code=404, detail="Metrics not found for this service and metric.")
+        raise HTTPResponseCustomized(
+            status_code=404, detail="Metrics not found for this service and metric.")
 
     return metrics
 
 
 @router.post("/{service_id}/{metric_id}/reading", response_model=None)
 def create_metric_reading(
-                            service_id: int,
-                            metric_id: int,
-                            newmservicemetric: ServiceMetricCreate,
-                            microservice: CRUDMicroservice = Depends(dependencies.getMicroservicesCrud),
-                            servicemetric: CRUDServiceMetric = Depends(dependencies.getServiceMetricsCrud),
-                            metric: CRUDMetric = Depends(dependencies.getMetricsCrud),
-                        ):
-    
+    service_id: int,
+    metric_id: int,
+    newmservicemetric: ServiceMetricCreate,
+    microservice: CRUDMicroservice = Depends(
+        dependencies.getMicroservicesCrud),
+    servicemetric: CRUDServiceMetric = Depends(
+        dependencies.getServiceMetricsCrud),
+    metric: CRUDMetric = Depends(dependencies.getMetricsCrud),
+):
+
     microservice_obj = microservice.get(service_id)
     if not microservice_obj:
-        raise HTTPResponseCustomized(status_code=404, detail="Service not found")
-    
+        raise HTTPResponseCustomized(
+            status_code=404, detail="Service not found")
+
     metric_obj = metric.get(metric_id)
     if not metric_obj:
-        raise HTTPResponseCustomized(status_code=404, detail="Metric not found")
-    
-    if microservice_obj.id != service_id:  
-        raise HTTPResponseCustomized(status_code=400, detail="Microservice ID does not match")
+        raise HTTPResponseCustomized(
+            status_code=404, detail="Metric not found")
 
-    if metric_obj.id != metric_id: 
-        raise HTTPResponseCustomized(status_code=400, detail="Metric ID does not match")
+    if microservice_obj.id != service_id:
+        raise HTTPResponseCustomized(
+            status_code=400, detail="Microservice ID does not match")
 
-    
-    metric_value =utity_datatype.parse_stringified_value(newmservicemetric.value,metric_obj.type)
-    
+    if metric_obj.id != metric_id:
+        raise HTTPResponseCustomized(
+            status_code=400, detail="Metric ID does not match")
+
+    metric_value = utity_datatype.parse_stringified_value(
+        newmservicemetric.value, metric_obj.type)
+
     date = newmservicemetric.timestamp or datetime.now()
-    date_aware = date.replace(tzinfo=timezone.utc) 
+    date_aware = date.replace(tzinfo=timezone.utc)
     if date_aware > datetime.now(timezone.utc):
-        raise HTTPResponseCustomized(status_code=400, detail="Timestamp cannot be in the future")
+        raise HTTPResponseCustomized(
+            status_code=400, detail="Timestamp cannot be in the future")
 
     service_metric = servicemetric.create(
         ServiceMetricCreate(
@@ -271,6 +284,3 @@ def create_metric_reading(
     )
 
     return service_metric
-
-    
-                        
