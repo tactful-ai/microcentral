@@ -257,11 +257,11 @@ def create_metric_reading(
         raise HTTPResponseCustomized(
             status_code=404, detail="Metric not found")
 
-    if microservice_obj.id != service_id:
+    if newmservicemetric.serviceId != service_id:
         raise HTTPResponseCustomized(
             status_code=400, detail="Microservice ID does not match")
 
-    if metric_obj.id != metric_id:
+    if newmservicemetric.metricId != metric_id:
         raise HTTPResponseCustomized(
             status_code=400, detail="Metric ID does not match")
 

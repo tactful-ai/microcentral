@@ -19,8 +19,8 @@ class CRUDMicroservice(CRUDBase[Microservice, MicroserviceCreate, MicroserviceUp
     def getByTeamIdAndCode(self, teamId: str, code: str):
         return self.db_session.query(Microservice).filter(Microservice.teamId == teamId, Microservice.code == code).first()
     
-    def get_service_by_id(self, db_session: Session, service_id: int):
-        return db_session.query(Microservice.id).filter(Microservice.id == service_id).first() is not None
+    def get_service_by_id(self, service_id: int):
+        return self.db_session.query(Microservice.id).filter(Microservice.id == service_id).first() 
 
     
     def getAllServicesWithTeamName(self) -> list[MicroserviceInDBBase]:
