@@ -38,6 +38,7 @@ class CRUDMicroserviceInfo:
                 'id': sc.id,
                 'name': sc.name,
                 'code': sc.code,
+                'description':sc.description,
                 'update_time' : update_time,
                 'score_value' : calculated_scores
             })

@@ -10,6 +10,14 @@ class ScoreCardBase(BaseModel):
     description: Optional[str] = None
     code: Optional[str] = None
 
+
+# Properties to receive on scorecard creation
+class ScoreCardCreate(BaseModel):
+    name: str
+    code: str
+    description: str
+
+    
 class ScoreCardinBase(ScoreCardBase):
     id: int
     name: str
@@ -17,11 +25,6 @@ class ScoreCardinBase(ScoreCardBase):
     description: str
     services: list[microservice.MicroserviceCreate]
     metrics: list[scoreCardMetrics.ScoreCardMetricsCreate]
-
-# Properties to receive on scorecard creation
-class ScoreCardCreate(ScoreCardinBase):
-    name: str
-    description: str
 
 # Properties to receive on scorecard update
 class ScoreCardUpdate(BaseModel):
