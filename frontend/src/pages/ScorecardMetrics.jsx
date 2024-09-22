@@ -1,35 +1,15 @@
 import React, { useState } from 'react';
-import Layout from '../layouts/Layout.jsx';
 import { Container, Row, Col, Form, Card, ListGroup } from 'react-bootstrap';
-import { Line, Bar, Scatter } from 'react-chartjs-2';
-import { metricsData, stringData, lineData, booleanData, scatterData } from '../utils/data.js';
+import Layout from '../layouts/Layout.jsx';
 import DateTimePicker from '../components/DateTimePicker.jsx';
-import {
-    Chart as ChartJS,
-    CategoryScale,
-    LinearScale,
-    PointElement,
-    LineElement,
-    BarElement,
-    Title,
-    Tooltip,
-    Legend,
-  } from 'chart.js';
-import ScatterChart from '../components/common/ScatterChart.jsx';
-  
-  ChartJS.register(
-    CategoryScale,
-    LinearScale,
-    PointElement,
-    LineElement,
-    Title,
-    Tooltip,
-    Legend,
-    BarElement,
-  );
 
+import ScatterChart from '../components/common/charts/ScatterChart.jsx';
+import LineChart from '../components/common/charts/LineChart.jsx';
+import BarChart from '../components/common/charts/BarChart.jsx';
 
-  
+import { metricsData, stringData, lineData, booleanData, scatterData } from '../utils/data.js';
+import { getMetricReadings } from '../api/services/index.js';
+
 const ScorecardMetricRows = ({metricsData, handleDisplay}) => {
     return metricsData.map((metric, index) => (
         <tr key={index}>
@@ -45,7 +25,6 @@ const ScorecardMetricRows = ({metricsData, handleDisplay}) => {
             </th>
         </tr>
     ))
-        
 };
 
 const InfoCard = ({ serviceName, teamName }) => {
@@ -59,120 +38,30 @@ const InfoCard = ({ serviceName, teamName }) => {
     );
 };
 
-const booleanOptions = {
-    responsive: true,
-    scales: {
-      x: {
-        title: {
-          display: true,
-          text: 'Time',
-        },
-      },
-      y: {
-        min: 0,
-        max: 1,
-        ticks: {
-            callback: function(value) {
-            // Show only 0 and 1 on the y-axis
-            if (value === 0 || value === 1) {
-                return value;
-            }
-            return '';
-            }
-        },
-        title: {
-          display: true,
-          text: 'Value', 
-        },
-      },
-    },
-    plugins: {
-      legend: {
-        position: 'top',
-      },
-    },
-  };
-  
-  const stringOptions = (labels=[]) => {
-    return ({
-        scales: {
-            x: {
-                type: 'linear',
-                position: 'bottom',
-                min: 0.00, // Set minimum x value
-                max: 10.00, // Set maximum x value
-                position: 'bottom',
-                ticks: {
-                    stepSize: 1, // Ensure the ticks show in steps of 1
-                },
-            },
-            y: {
-                type: 'category',
-                labels: labels
-            }
-        },
-        plugins: {
-            legend: {
-              labels: {
-                padding: 20, // Add margin or padding to the legend items
-              },
-            },
-        },
-    });
-  }
-
-  const lineOptions = {
-    scales: {
-        x: {
-            title: {
-                display: true,
-                text: "Time"
-            }
-        },
-        y: {
-            title: {
-                display: true,
-                text: "Value"
-            }
-        },
-    },
-    plugins: {
-        legend: {
-          display: true,
-          labels: {
-            text: "metric",
-            padding: 20, // Add margin or padding to the legend items
-          },
-        },
-    },
-  }
-
 const GraphController = ({metricType}) => {
-    let data = [];
     if (metricType == null) return;
     if (metricType == "integer" || metricType == "float"){
-        return <Line data={lineData} options={lineOptions} />;
+        return <LineChart data={lineData} />;
     }
     else if(metricType == "string") {
         return (
-            <div className='h-25'>
-                <ScatterChart points={['A', 'C', 'C', 'A', 'B', 'C']} 
-                categories={['A', 'B', 'C', 'D']} />
-            </div>
+            <ScatterChart points={['A', 'C', 'C', 'A', 'B', 'C']} 
+            categories={['A', 'B', 'C', 'D']} />
         );
     }
     else if(metricType == "boolean") {
-        return <Bar data={booleanData} options={booleanOptions} />;
-        
+        return <BarChart data={booleanData} />;
     }
 }
 
 const ScorecardMetrics = () => {
     const [metricType, setMetricType] = useState(null);
 
-    const handleDisplay = (metric) => {
+    const handleDisplay = async (metric) => {
         console.log(metric);
-        setMetricType(metric.type)
+        setMetricType(metric.type);
+        const data = await getMetricReadings(1, '', '');
+        console.log(data)
     }
       
   return (

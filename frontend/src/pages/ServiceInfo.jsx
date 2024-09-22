@@ -1,9 +1,11 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import Layout from '../layouts/Layout.jsx';
-import { NavLink, useNavigate } from 'react-router-dom';
+import { NavLink, useNavigate, useParams } from 'react-router-dom';
 import { Container, Row, Col, Button, Card, Carousel } from 'react-bootstrap';
 import { Doughnut } from 'react-chartjs-2';
 import { Chart as ChartJS, ArcElement, Tooltip, Legend } from 'chart.js';
+import { getServiceById } from '../api/services/index.js';
+
 import '../styles/pages/ServiceInfo.css';
 
 
@@ -21,9 +23,7 @@ const scorecards = [
 
 
 const TeamMember = ({ image }) => (
-  <div className="team-member m-1">
-    
-  </div>
+  <div className="team-member m-1"></div>
 );
 
 const ScoreCard = ({ name, score, lastUpdate }) => {
@@ -89,15 +89,36 @@ const ScoreCardCarousel = ({scorecards, slideItems}) => {
 }
 
 const ServiceInfo = () => {
+  const navigate = useNavigate();
+  const { service_id } = useParams();
 
+  const [serviceName, setServiceName] = useState('');
+  const [serviceDesc, setServiceDesc] = useState('');
+  const [serviceTeam, setServiceTeam] = useState('');
+  const [serviceScorecards, setServiceScorecards] = useState([]);
+
+  useEffect(() => {
+    const fetchService = async () => {
+        try {
+            const service_data = await getServiceById(service_id, navigate);
+            setServiceName(service_data.name);
+            setServiceTeam(service_data.team_name);
+            setServiceDesc(service_data.description);
+        } catch (error) {
+            console.error("Error fetching metric data:", error);
+        }
+    };
+    fetchService();
+  }, [service_id]);
+  
   return (
     <Layout>
         <Container fluid className="my-5">
         <Row className="mb-3">
           <Col>
-            <h1 className='mb-3'>Visa Auth</h1>
+            <h1 className='mb-3'>{serviceName}</h1>
             <p className='info-desc'>
-            Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages.
+              {serviceDesc}
             </p>
           </Col>
         </Row>
