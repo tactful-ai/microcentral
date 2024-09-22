@@ -23,11 +23,7 @@ class ScoreCardMetricsCreate(ScoreCardMetricsBase):
 # Properties to receive on ScoreCardMetrics update
 
 
-class ScoreCardMetricsUpdate(ScoreCardMetricsBase):
-    pass
-
 # Properties shared by models stored in DB
-
 class ScoreCardMetricsInDBBase(ScoreCardMetricsBase):
     id: int
     scoreCardId: int
@@ -39,6 +35,9 @@ class ScoreCardMetricsInDBBase(ScoreCardMetricsBase):
 
     class Config:
         orm_mode = True
+
+class ScoreCardMetricsUpdate(ScoreCardMetricsInDBBase):
+    pass
 
 
 class MetricListforScorecardGet(BaseModel):

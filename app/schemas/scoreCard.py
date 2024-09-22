@@ -24,8 +24,12 @@ class ScoreCardCreate(ScoreCardinBase):
     description: str
 
 # Properties to receive on scorecard update
-class ScoreCardUpdate(ScoreCardinBase):
-    pass
+class ScoreCardUpdate(BaseModel):
+    name: Optional[str] = None
+    code: Optional[str] = None
+    description: Optional[str] = None
+    services: Optional[list[microservice.MicroserviceCreate]] = []
+    metrics: Optional[list[scoreCardMetrics.ScoreCardMetricsCreate]] = []
 
 # Properties shared by models stored in DB
 class ScoreCardInDBBase(ScoreCardBase):
