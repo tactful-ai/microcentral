@@ -11,8 +11,9 @@ class ScoreCardBase(BaseModel):
     code: Optional[str] = None
 
 # Properties to receive on scorecard creation
-class ScoreCardCreate(ScoreCardBase):
+class ScoreCardCreate(BaseModel):
     name: str
+    code : str
     description: str
 
 # Properties to receive on scorecard update
