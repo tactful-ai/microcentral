@@ -8,7 +8,8 @@ on:
 jobs:
   build-backend:
     runs-on: ubuntu-latest
-    # if: github.ref_name == 'norhan-updates'
+    if: startsWith(github.ref_name, 'v')
+    # github.ref_name == 'norhan-updates'
 
     steps:
       - name: Checkout Initial Branch
@@ -47,7 +48,8 @@ jobs:
 
   build-frontend:
     runs-on: ubuntu-latest
-    # if: github.ref_name == 'CI-CD-pipline'
+    if: startsWith(github.ref_name, 'v')
+    #if:github.ref_name == 'CI-CD-pipline'
     
     steps:
       - name: Checkout Initial Branch
