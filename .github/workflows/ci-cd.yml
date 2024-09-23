@@ -80,6 +80,17 @@ jobs:
           context: ./frontend
           file: ./frontend/Dockerfile
 
+  run-docker-compose:        
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Build and run with Docker Compose
+        run: |
+          docker-compose --profile prod up
+
+
+
+
 
 
 # branches:
