@@ -87,6 +87,10 @@ jobs:
       - build-frontend
 
     steps:
+      - name: Install Docker Compose
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y docker-compose
       - name: Build and run with Docker Compose
         run: |
           docker-compose up --build
