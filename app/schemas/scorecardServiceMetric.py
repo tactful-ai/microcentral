@@ -25,5 +25,10 @@ class ScorecardServiceMetricCreate(ScorecardServiceMetric):
 
 
 # Properties to receive on microserviceScoreCard update
-class ScorecardServiceMetricUpdate(ScorecardServiceMetric):
-    pass
+class ScorecardServiceMetricUpdate(BaseModel):
+    name: Optional[str] = None
+    description: Optional[str] = None
+    # Here i will get the name of the services then search by code
+    # to get the id of the service and update the microservicescorecard table
+    services: Optional[list[int]] = []
+    metrics: Optional[list[scoreCardMetrics.MetricCreateScorecard]] = []
