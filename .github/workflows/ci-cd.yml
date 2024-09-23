@@ -85,11 +85,11 @@ jobs:
     needs:
       - build-backend
       - build-frontend
-      
+
     steps:
       - name: Build and run with Docker Compose
         run: |
-          docker-compose --profile prod up
+          docker-compose up --build
 
 
 
