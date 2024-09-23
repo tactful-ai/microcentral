@@ -87,13 +87,17 @@ jobs:
       - build-frontend
 
     steps:
+
+      - name: Checkout code
+        uses: actions/checkout@v4
+        
       - name: Set up environment variables
         run: |
           TAG=$(git describe --tags --abbrev=0)
           echo "TAG=$TAG" > .env
 
 
-          
+
 
   #     - name: Checkout code
   #       uses: actions/checkout@v4
