@@ -18,3 +18,6 @@ class CRUDScoreCard(CRUDBase[Scorecard, ScoreCardCreate, ScoreCardUpdate]):
     
     def getByScoreCardCode(self, code: str):
         return self.db_session.query(Scorecard).filter(Scorecard.code == code).all()
+    
+    def getScorecardName(self, ScoreCardId: int):
+        return self.db_session.query(Scorecard.name).filter(Scorecard.id == ScoreCardId).first() 

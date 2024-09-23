@@ -45,6 +45,7 @@ async def get_one_service(service_id: int, microServices: CRUDMicroservice = Dep
         name=service.name,
         description=service.description,
         code=service.code,
+        teamId= service.teamId,
         team_name=teamobj.name if teamobj else None,
     )
 
