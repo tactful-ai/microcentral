@@ -14,7 +14,7 @@ services:
     backend:
         profiles:   # will start only if `docker-compose --profile prod up` is used
             - prod
-        image: noraali/backend:${TAG}
+        image: noraali/backend:${env.TAG}
         command: alembic upgrade head && poetry run uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload
         volumes:
             - .:/usr/src/app
@@ -39,7 +39,7 @@ services:
             - ADMINER_DEFAULT_SERVER=database
     
     frontend:
-        image: noraali/frontend:${TAG}
+        image: noraali/frontend:${env.TAG}
         depends_on:
             - backend
             - database
