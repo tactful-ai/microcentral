@@ -122,6 +122,7 @@ def create_microservice(newmicroservice: MicroserviceCreateApi,
                                                                   code=formatted_code))
     if newmicroservice.scorecardids is not None:
         for scorecard_obj in scorecard_objs:
+           
             try:
                 servicescorecard.create(MicroserviceScoreCardCreate(
                     microserviceId=created_microservice.id,

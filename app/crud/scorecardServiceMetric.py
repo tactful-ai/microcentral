@@ -30,11 +30,9 @@ class CRUDScoreCardServiceMetric(CRUDBase[ScorecardServiceMetric, ScorecardServi
 
         metrics = self.metric.getByIds(metric_ids)
         metrics_types_map = {metric.id : metric.type for metric in metrics}
-        metricList = self.scoreCardMetric.getByMetricIdsandScorecardId(
-            metric_ids, scorecardID)
+        metricList = self.scoreCardMetric.getByMetricIdsandScorecardId(metric_ids, scorecardID)
         for metric in metricList:
             metrictype = metrics_types_map[metric.metricId]
-            print(metrictype)
             metric.desiredValue = parse_stringified_value(metric.desiredValue, metrictype)
             metricOBJs.append({
                 'id': metric.metricId,
@@ -84,7 +82,12 @@ class CRUDScoreCardServiceMetric(CRUDBase[ScorecardServiceMetric, ScorecardServi
             for metric in metricList:
                 metrictype = metrics_types_map[metric.metricId]
                 metric.desiredValue = parse_stringified_value(metric.desiredValue, metrictype)
-                metricOBJs.append(MetricListforScorecardGet(**vars(metric)))
+                metricOBJs.append(MetricListforScorecardGet(
+                    id= metric.metricId,
+                    criteria= metric.criteria,
+                    desiredValue= metric.desiredValue,
+                    weight= metric.weight
+                ))
 
             serviceList = self.microService.getByServiceIds(service_ids)
             serviceOBJs = [Microserviceforscorecard(**vars(service)) for service in serviceList]
