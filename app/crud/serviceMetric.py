@@ -40,14 +40,14 @@ class CRUDServiceMetric(CRUDBase[ServiceMetric, ServiceMetricCreate, ServiceMetr
         return metrics
 
     def get_last_metrics(self, scorecard_id: int, service_id: int) -> list[ServiceMetric]:
+        metrics=self.scorecardMetrics.getMetricByScoreCradId(scorecard_id)
         subquery = self.db_session.query(
             ServiceMetric.metricId,
             ServiceMetric.value,
             ServiceMetric.timestamp
         ).filter(
             ServiceMetric.serviceId == service_id,
-            ServiceMetric.metricId.in_(
-                self.scorecardMetrics.getMetricByScoreCradId(scorecard_id))
+            ServiceMetric.metricId.in_(metrics)
         ).order_by(ServiceMetric.metricId, ServiceMetric.timestamp.desc()).distinct(ServiceMetric.metricId).all()
         return subquery
 

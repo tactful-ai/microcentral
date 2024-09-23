@@ -29,25 +29,27 @@ class CRUDMicroserviceInfo:
 
         scorecardIds = self.scoreCardService.getByServiceId(microservice.id)
         scorecard_ids = [sc_id.scoreCardId for sc_id in scorecardIds]
-        scorecards = self.scoreCard.getByScoreCradIds(scorecard_ids)
+        scorecards = self.scoreCard.getByScoreCardIds(scorecard_ids)
         
         service_scorecards = []
         for sc in scorecards:
-           (calculated_scores, update_time) = self.serviceMetric.get_calculated_value(service_id, sc.id)
-           service_scorecards.append({
-             'id': sc.id,
-             'name': sc.name,
-             'code': sc.code,
-             'update_time' : update_time,
-            'score_value' : calculated_scores
-        })
-           
+            (calculated_scores, update_time) = self.serviceMetric.get_calculated_value(service_id, sc.id)
+            service_scorecards.append({
+                'id': sc.id,
+                'name': sc.name,
+                'code': sc.code,
+                'description':sc.description,
+                'update_time' : update_time,
+                'score_value' : calculated_scores
+            })
+
         service = MicroserviceInfoBase(
             id=microservice.id,
             name=microservice.name,
-            description=microservice.description,
             code=microservice.code,
+            description=microservice.description,
             team_name=microservice.team.name,
             scorecards=service_scorecards
-)
+        )
+        print(service)
         return service

@@ -17,8 +17,7 @@ router = APIRouter()
 
 @router.get("/{service_id}", response_model=MicroserviceInfoBase)
 async def getmicroservice_info(service_id: int, microServiceinfo: CRUDMicroserviceInfo = Depends(dependencies.getMicroserviceInfoCrud)):
-    service = microServiceinfo.getServiceInfo(
-        service_id)
+    service = microServiceinfo.getServiceInfo(service_id)
     if service is None:
         raise HTTPResponseCustomized(status_code=404, detail="Service not found")
     return service

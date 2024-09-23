@@ -8,3 +8,4 @@ from .team import *
 from .microserviceTeamScorecard import *
 from .microseviceInfo import *
 from .metric_info import *
+from .scorecardServiceMetric import *
