@@ -13,9 +13,9 @@ class ServiceMetricBase(BaseModel):
 
 
 # Properties to receive on microservice creation
-class ServiceMetricCreate(ServiceMetricBase):
-    serviceId: int
-    metricId: int
+class ServiceMetricCreate(BaseModel):
+    serviceId: Optional[int] = None
+    metricId: Optional[int] = None
     value: Union[float, int, str, bool]
     timestamp: Optional[datetime]
 

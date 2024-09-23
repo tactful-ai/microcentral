@@ -221,7 +221,7 @@ def delete_microservice(
     return {"message": "Microservice and associated scorecards successfully deleted"}
 
 
-@router.get("/{                                                                                                                                                         }/metric_reading", response_model=list[ServiceMetricReading])
+@router.get("/{service_id}/metric_reading", response_model=list[ServiceMetricReading])
 def get_metrics(service_id: int, from_date: Optional[datetime] = None,
                 to_date: Optional[datetime] = None,  service_metric_crud: CRUDServiceMetric = Depends(dependencies.getServiceMetricsCrud)):
 
@@ -257,27 +257,20 @@ def create_metric_reading(
         raise HTTPResponseCustomized(
             status_code=404, detail="Metric not found")
 
-    if newmservicemetric.serviceId != service_id:
-        raise HTTPResponseCustomized(
-            status_code=400, detail="Microservice ID does not match")
-
-    if newmservicemetric.metricId != metric_id:
-        raise HTTPResponseCustomized(
-            status_code=400, detail="Metric ID does not match")
 
     metric_value = utity_datatype.parse_stringified_value(
         newmservicemetric.value, metric_obj.type)
-
+   
     date = newmservicemetric.timestamp or datetime.now()
-    date_aware = date.replace(tzinfo=timezone.utc)
-    if date_aware > datetime.now(timezone.utc):
+    date_utc = date.astimezone(timezone.utc)
+    if date_utc > datetime.now(timezone.utc):
         raise HTTPResponseCustomized(
             status_code=400, detail="Timestamp cannot be in the future")
 
     service_metric = servicemetric.create(
         ServiceMetricCreate(
-            serviceId=service_id,
-            metricId=metric_id,
+            serviceId= service_id,
+            metricId= metric_id,
             value=metric_value,
             timestamp=date,
         )
