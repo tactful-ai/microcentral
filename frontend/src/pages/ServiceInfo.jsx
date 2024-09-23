@@ -4,15 +4,15 @@ import { NavLink, useNavigate, useParams } from 'react-router-dom';
 import { Container, Row, Col, Button, Card, Carousel } from 'react-bootstrap';
 import { Doughnut } from 'react-chartjs-2';
 import { Chart as ChartJS, ArcElement, Tooltip, Legend } from 'chart.js';
-import { getServiceById } from '../api/services/index.js';
+import { getServiceInfoById } from '../api/services/index.js';
 
 import '../styles/pages/ServiceInfo.css';
 
 
 ChartJS.register(ArcElement, Tooltip, Legend);
 
-
-const scorecards = [
+// dummy data for scorecards testing
+const scorecards_test = [
   { name: 'Scorecard 1', score: 75.3, lastUpdate: '2024-09-09' },
   { name: 'Scorecard 2', score: 22, lastUpdate: '2024-09-08' },
   { name: 'Scorecard 3', score: 50.9, lastUpdate: '2024-09-07' },
@@ -21,12 +21,7 @@ const scorecards = [
   { name: 'Scorecard 4', score: 60, lastUpdate: '2024-09-06' },
 ];
 
-
-const TeamMember = ({ image }) => (
-  <div className="team-member m-1"></div>
-);
-
-const ScoreCard = ({ name, score, lastUpdate }) => {
+const ScoreCard = ({ serviceId, id, name, score, lastUpdate }) => {
   const navigate = useNavigate();
   
   const doughnutData = {
@@ -47,7 +42,7 @@ const ScoreCard = ({ name, score, lastUpdate }) => {
 
   return (
     <Card className="score-card"
-    onClick={()=>navigate('/dashboard/services/1/10')}
+    onClick={()=>navigate(`/dashboard/services/${serviceId}/${id}`)}
     >
       <Card.Body>
         <Card.Title>{name}</Card.Title>
@@ -58,7 +53,7 @@ const ScoreCard = ({ name, score, lastUpdate }) => {
   );
 };
 
-const ScoreCardCarousel = ({scorecards, slideItems}) => {
+const ScoreCardCarousel = ({serviceId, scorecards, slideItems}) => {
 
   const slides = [];
   for (let i = 0; i < scorecards.length; i += slideItems) {
@@ -72,11 +67,13 @@ const ScoreCardCarousel = ({scorecards, slideItems}) => {
         <Container>
           <Row className="justify-content-center">
             {slide.map((card, idx) => (
-              <Col key={idx} xs={12} sm={6} md={4} className="mb-4">
+              <Col key={card.id} xs={12} sm={6} md={4} className="mb-4">
                 <ScoreCard
+                  serviceId={serviceId}
+                  id={card.id}
                   name={card.name}
-                  score={card.score}
-                  lastUpdate={card.lastUpdate}
+                  score={card.score_value}
+                  lastUpdate={card.update_time}
                 />
               </Col>
             ))}
@@ -99,14 +96,11 @@ const ServiceInfo = () => {
 
   useEffect(() => {
     const fetchService = async () => {
-        try {
-            const service_data = await getServiceById(service_id, navigate);
-            setServiceName(service_data.name);
-            setServiceTeam(service_data.team_name);
-            setServiceDesc(service_data.description);
-        } catch (error) {
-            console.error("Error fetching metric data:", error);
-        }
+      const service_data = await getServiceInfoById(service_id, navigate);
+      setServiceName(service_data.name);
+      setServiceTeam(service_data.team_name);
+      setServiceDesc(service_data.description);
+      setServiceScorecards(service_data.scorecards);
     };
     fetchService();
   }, [service_id]);
@@ -125,21 +119,13 @@ const ServiceInfo = () => {
 
         <Row className="my-1">
           <Col>
-            <h2>Team Members</h2>
-            <div className="d-flex">
-                <TeamMember image="../assets/member1.jpg" />
-                <TeamMember image="../assets/member1.jpg" />
-                <TeamMember image="../assets/member1.jpg" />
-                <Button variant="secondary" className="member-more m-1">
-                    <i class="bi bi-three-dots"></i>
-                </Button>
-            </div>
+            <h4>Team Name: {serviceTeam}</h4>
           </Col>
         </Row>
 
         <Row className="mt-5 mb-4">
           <Col xs={9}>
-            <h2>Scorecards List</h2>
+            <h3>Scorecards List</h3>
           </Col>
           <Col xs={3} className="text-end">
             <NavLink to="/dashboard/services/create" 
@@ -151,7 +137,8 @@ const ServiceInfo = () => {
           </Col>
         </Row>
         <Row>
-          <ScoreCardCarousel scorecards={scorecards} slideItems={3} />
+          <ScoreCardCarousel serviceId={service_id}
+          scorecards={serviceScorecards} slideItems={3} />
         </Row>
         </Container>
     </Layout>

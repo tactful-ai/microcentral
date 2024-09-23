@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Container, Row, Col, Form, Card, ListGroup } from 'react-bootstrap';
 import Layout from '../layouts/Layout.jsx';
 import DateTimePicker from '../components/DateTimePicker.jsx';
@@ -8,14 +8,19 @@ import LineChart from '../components/common/charts/LineChart.jsx';
 import BarChart from '../components/common/charts/BarChart.jsx';
 
 import { metricsData, stringData, lineData, booleanData, scatterData } from '../utils/data.js';
-import { getMetricReadings } from '../api/services/index.js';
+import { getMetricById, getMetricReadings, getScorecardById } from '../api/services/index.js';
+import { useParams } from 'react-router-dom';
 
 const ScorecardMetricRows = ({metricsData, handleDisplay}) => {
+    console.log(metricsData)
     return metricsData.map((metric, index) => (
         <tr key={index}>
-            <th scope="row">{index + 1}</th>
+            <th scope="row">{metric.id}</th>
             <td>{metric.name}</td>
-            <td>{metric.value}</td>
+            <td>{
+                metric.desiredValue == true ? '1':
+                metric.desiredValue == false ? '0': metric.desiredValue
+            }</td>
             <td>{metric.weight}</td>
             <td>{metric.lastUpdate}</td>
             <th>
@@ -55,14 +60,36 @@ const GraphController = ({metricType}) => {
 }
 
 const ScorecardMetrics = () => {
+    const {scorecard_id} = useParams();
     const [metricType, setMetricType] = useState(null);
+    
+    const [scorecardName, setScorecardName] = useState('');
+    const [scorecardDesc, setScorecardDesc] = useState('');
+    const [scorecardMetrics, setScorecardMetrics] = useState([]);
+    const [scorecardTeam, setScorecardTeam] = useState('');
 
     const handleDisplay = async (metric) => {
         console.log(metric);
         setMetricType(metric.type);
-        const data = await getMetricReadings(1, '', '');
-        console.log(data)
+        // const data = await getMetricReadings(1, '', '');
+        // console.log(data)
     }
+    
+  useEffect(() => {
+    const fetchScorecardInfo = async () => {
+        const scorecard_data = await getScorecardById(scorecard_id);
+        // scorecard_data.metrics.map(async(metric)=>{
+        //     const true_metric = await getMetricById(metric.id);
+        //     metric.name = true_metric.name;
+        //     metric.type = true_metric.type;
+        // })
+        setScorecardName(scorecard_data.name);
+        setScorecardDesc(scorecard_data.description);
+        setScorecardMetrics(scorecard_data.metrics);
+        setScorecardTeam(scorecard_data.team_name);
+    };
+    fetchScorecardInfo();
+  }, [scorecard_id]);
       
   return (
     <Layout>
@@ -70,14 +97,14 @@ const ScorecardMetrics = () => {
             <Row className='mt-5 '>
                 <Row className="mb-4">
                     <Col xs={7}>
-                        <h1 className='mb-3'>Performance</h1>
+                        <h1 className='mb-3'>{scorecardName}</h1>
                         <p className='info-desc w-100'>
-                        Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s. when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries.
+                            {scorecardDesc}
                         </p>
                     </Col>
                     
                     <Col xs={5} className='text-center px-5'>
-                        <InfoCard serviceName={'Visa Auth'} teamName={'Team 1'} />
+                        <InfoCard serviceName={'Visa Auth'} teamName={scorecardTeam} />
                     </Col>
                 </Row>
                 <Row>
@@ -94,7 +121,7 @@ const ScorecardMetrics = () => {
                                 </tr>
                             </thead>
                             <tbody>
-                                <ScorecardMetricRows metricsData={metricsData} 
+                                <ScorecardMetricRows metricsData={scorecardMetrics} 
                                 handleDisplay={handleDisplay} />
                             </tbody>
                         </table>

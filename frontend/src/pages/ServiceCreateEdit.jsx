@@ -43,34 +43,33 @@ const ServiceCreateEdit = (props) => {
     }
     const handleDescChange = (e) => {
         setServiceDesc(e.target.value);
-        setCharLimit(serviceDesc.length);
+        setCharLimit(e.target.value.length);
     }
     const handleScorecardsChange = (e) => {
         setServiceScorecards(e.target.value);
     }
     
     useEffect(() => {
-        const fetchTeams = async() => {
+        const fetchFeildsData = async() => {
             try{
                 const teams_data = await getAllTeams();
                 const teams_names = teams_data.map(team => team.name);
                 setTeams(teams_names);
 
                 // Getting all scorecards names for select menu
-                // const scoreards_data = await getAllScorecrds();
-                // const scorecards_names = scoreards_data.map(scorecard => scorecard.name);
-                // setScorecards(scorecards_names);
+                const scoreards_data = await getAllScorecrds();
+                const scorecards_names = scoreards_data.map(scorecard => scorecard.name);
+                setScorecards(scorecards_names);
             } catch (error) {
                 console.log("error fetching service teams: ", error)
             }
         }
-        fetchTeams();
+        fetchFeildsData();
         if (props.mode === 'edit') {
             const fetchService = async () => {
                 try {
                     const service_data = await getServiceById(service_id, navigate);
-
-
+                    setCharLimit(service_data.description.length)
                     setServiceName(service_data.name);
                     setServiceTeam(service_data.team_name);
                     setServiceDesc(service_data.description);
@@ -119,22 +118,13 @@ const ServiceCreateEdit = (props) => {
                                 <span className="error-msg text-danger d-none">error</span>
                             </div>
                             
-                            {/* <div className="col-12">
+                            <div className="col-12">
                                 <label for="service-scorecards" className="form-label">Service Scorecards</label>
                                 <select  value={serviceScorecards} onChange={(e) => handleScorecardsChange(e)}
                                 className="form-select" name="" id="service-scorecards">
                                     {scorecards.map((scorecard) => (
                                         <option key={scorecard} value={scorecard}>{scorecard}</option>
                                     ))}
-                                </select>
-                                <span className="error-msg text-danger d-none">error</span>
-                            </div> */}
-                            <div className="col-12">
-                                <label for="service-type" className="form-label">Service Scorecards</label>
-                                <select className="form-select" name="" id="service-metrics">
-                                    <option selected>Choose one of the scorecards</option>
-                                    <option>scorecard 1</option>
-                                    <option>scorecard 2</option>
                                 </select>
                                 <span className="error-msg text-danger d-none">error</span>
                             </div>

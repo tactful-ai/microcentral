@@ -11,22 +11,16 @@ function DateTimeRangePicker() {
   const [formattedStrDate, setFormattedStrDate] = useState('');
   const [formattedEndDate, setFormattedEndDate] = useState('');
 
-  const formatDate = (date) => {
-    return date ? format(date, 'MM/dd/yyyy, h:mm a') : '';
-  };
-  
   const handleStartDate = (date) => {
+    const dateIsoFormat = new Date(date).toISOString();
     setStartDate(date);
-    setFormattedStrDate(formatDate(date));
+    setFormattedStrDate(dateIsoFormat);
   };
   const handleEndDate = (date) => {
+    const dateIsoFormat = new Date(date).toISOString();
     setEndDate(date);
-    setFormattedEndDate(formatDate(date));
+    setFormattedEndDate(dateIsoFormat);
   };
-  
-  const handleTest = () => {
-    console.log(formattedStrDate, formattedEndDate)
-  }
 
   return (
     <Form className='my-5'>

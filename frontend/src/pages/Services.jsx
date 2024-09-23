@@ -24,8 +24,9 @@ const ServicesRows = ({servicesData, setServicesData}) => {
                         <i className="fa-solid fa-pen-to-square"></i>
                     </button>
                 </NavLink>
-                <button className="action-btn mx-1" onClick={()=>{
-                    const updatedServices = handleDelete(service.id);
+                <button className="action-btn mx-1" onClick={async()=>{
+                    handleDelete(service.id);
+                    const updatedServices = await getAllServices();
                     setServicesData(updatedServices);
                 }}>
                     <i className="fa-solid fa-trash"></i>

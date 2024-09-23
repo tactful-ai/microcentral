@@ -1,12 +1,13 @@
 """DataBase
 
 Revision ID: bb6d2911e2c9
-Revises: 
+Revises: 9f86ca3b5c60
 Create Date: 2024-09-22 12:32:54.600508
 
 """
 from alembic import op
 import sqlalchemy as sa
+from sqlalchemy.dialects.postgresql import UUID
 
 
 # revision identifiers, used by Alembic.
@@ -67,7 +68,7 @@ def upgrade() -> None:
     )
     op.create_index(op.f('ix_servicemetric_id'), 'servicemetric', ['id'], unique=False)
     op.create_table('team',
-    sa.Column('id', sa.UUID(), nullable=False),
+    sa.Column('id', UUID(as_uuid=True), nullable=False),
     sa.Column('name', sa.String(), nullable=False),
     sa.Column('token', sa.String(), nullable=False),
     sa.PrimaryKeyConstraint('id')
@@ -78,7 +79,7 @@ def upgrade() -> None:
     sa.Column('name', sa.String(), nullable=False),
     sa.Column('code', sa.String(), nullable=False),
     sa.Column('description', sa.String(), nullable=True),
-    sa.Column('teamId', sa.UUID(), nullable=False),
+    sa.Column('teamId', UUID(as_uuid=True), nullable=False),
     sa.ForeignKeyConstraint(['teamId'], ['team.id'], ),
     sa.PrimaryKeyConstraint('id')
     )
