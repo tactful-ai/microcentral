@@ -97,12 +97,13 @@ jobs:
           sudo apt-get install -y docker-compose
           
       - name: Get the latest Git tag
-        id: get_tag
-        run: echo "TAG=$(git describe --tags --abbrev=0)" >> $GITHUB_ENV
+        run: |
+          TAG=$(git describe --tags --abbrev=0)
+          echo "TAG=$TAG" > .env
 
       - name: Build and run with Docker Compose
         run: |
-          docker-compose -f ./docker-compose.yml  --profile prod up
+          docker-compose  --env-file .env -f ./docker-compose.yml  --profile prod up
 
 
 
