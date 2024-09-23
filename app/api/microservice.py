@@ -257,10 +257,14 @@ def create_metric_reading(
         raise HTTPResponseCustomized(
             status_code=404, detail="Metric not found")
 
-
-    metric_value = utity_datatype.parse_stringified_value(
-        newmservicemetric.value, metric_obj.type)
-   
+    try:
+      metric_value = utity_datatype.parse_stringified_value(newmservicemetric.value, metric_obj.type)
+    except ValueError as e:
+      raise HTTPResponseCustomized(
+        status_code=400,
+         detail=f"Invalid value for metric '{metric_obj.name}': {str(e)}. Expected type: {metric_obj.type}"
+    )
+  
     date = newmservicemetric.timestamp or datetime.now()
     date_utc = date.astimezone(timezone.utc)
     if date_utc > datetime.now(timezone.utc):
