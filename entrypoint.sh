@@ -20,6 +20,6 @@ poetry run alembic upgrade head
 echo "Migrations complete"
 
 # Seed the database
-poetry run python /app/app/initial_data.py
+poetry run python /app/initial_data.py
 
 exec "$@"
