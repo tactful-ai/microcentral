@@ -1,4 +1,4 @@
-version: "3.9"
+version: "3"
 services:
     database:
         image: postgres
@@ -11,11 +11,10 @@ services:
         ports:
             - "5432:5432"
 
-    app:
+    backend:
         profiles:   # will start only if `docker-compose --profile prod up` is used
             - prod
-        # build: .
-        image: noraali/back_end_project:latest
+        image: noraali/backend:v1.2.1 #${TAG}
         command: poetry run uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload
         volumes:
             - .:/usr/src/app
@@ -38,6 +37,16 @@ services:
             - database
         environment:
             - ADMINER_DEFAULT_SERVER=database
+    
+    frontend:
+        image: noraali/frontend:v1.2.1 #${TAG}
+        depends_on:
+            - backend
+            - database
+        env_file: .env
+        ports:
+            - "3000:3000" 
+
 
 networks:
     backend:
