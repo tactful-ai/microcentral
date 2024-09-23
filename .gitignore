@@ -133,5 +133,5 @@ dmypy.json
 poetry.lock
 
 # alembic
-app/migrations/versions/*
+# app/migrations/versions/*
 frontend/node_modules
