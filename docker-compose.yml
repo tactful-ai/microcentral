@@ -17,8 +17,8 @@ services:
         # - OAUTH2_PROXY_COOKIE_DOMAIN="http://localhost:4180"
         - OAUTH2_PROXY_LOG_LEVEL=debug    # Enable debug logging for more information
         # - OAUTH2_PROXY_COOKIE_REFRESH= 0s  # cookie refresh
-        - OAUTH2_PROXY_SET_AUTHORIZATION_HEADER=true         # Set Authorization header
-        - OAUTH2_PROXY_SET_XAUTHREQUEST=true                 # Set X-Auth-Request headers
+        # - OAUTH2_PROXY_SET_AUTHORIZATION_HEADER=true         # Set Authorization header
+        # - OAUTH2_PROXY_SET_XAUTHREQUEST=true                 # Set X-Auth-Request headers
         
         ports:
         - "4180:4180"
@@ -41,7 +41,7 @@ services:
     backend:
         profiles:   # will start only if `docker-compose --profile prod up` is used
             - prod
-        image: noraali/backend:${TAG}
+        image: noraali/backend:v1.5.1
         command: poetry run uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload
         volumes:
             - .:/usr/src/app
@@ -67,7 +67,7 @@ services:
             - ADMINER_DEFAULT_SERVER=database
     
     frontend:
-        image: noraali/frontend:${TAG}
+        image: noraali/frontend:v1.5.1
         depends_on:
             - backend
             - database
