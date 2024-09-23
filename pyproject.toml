@@ -6,16 +6,16 @@ authors = ["Ahmed Eltaher <ahmedheltaher@gmail.com>"]
 
 [tool.poetry.dependencies]
 python = "^3.10"
-fastapi = "^0.111.1"
-uvicorn = "^0.18.2"
-SQLAlchemy = "^1.4.40"
+fastapi = "^0.114.2"
+uvicorn = "^0.30.6"
+SQLAlchemy = "^2.0.34"
 pydantic = "^2.8.2"
 Jinja2 = "^3.1.2"
-psycopg2 = "^2.9.3"
-alembic = "^1.8.1"
-pyyaml = "^6.0"
+psycopg2 = "^2.9.9"
+alembic = "^1.13.2"
+pyyaml = "^6.0.2"
 pyjwt = "^2.5.0"
-pydantic-settings = "^2.4.0"
+pydantic-settings = "^2.5.2"
 
 [tool.poetry.dev-dependencies]
 
