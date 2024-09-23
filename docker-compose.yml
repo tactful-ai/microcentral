@@ -4,21 +4,21 @@ services:
         image: quay.io/oauth2-proxy/oauth2-proxy:v7.2.1
         environment:
         - OAUTH2_PROXY_PROVIDER=github
-        - OAUTH2_PROXY_CLIENT_ID=Ov23liM9QOo7QdsQ2Rv1
-        - OAUTH2_PROXY_CLIENT_SECRET=89f4fd65e115ad3af4a6ba5bd592b35f46067e28
+        - OAUTH2_PROXY_CLIENT_ID=Ov23liMXhvKZLUvSgRaL
+        - OAUTH2_PROXY_CLIENT_SECRET=2de1a16e3ffd65224ea01691ccb0c5b2ac76d12d
         - OAUTH2_PROXY_COOKIE_SECRET=mY1hDibXMr0fvi9KdXFbKMAWd2ojgfLn
         - OAUTH2_PROXY_COOKIE_SECURE=false
         - OAUTH2_PROXY_EMAIL_DOMAINS=*
         - OAUTH2_PROXY_REDIRECT_URL=http://localhost:4180/oauth2/callback  
         - OAUTH2_PROXY_HTTP_ADDRESS=0.0.0.0:4180
-        - OAUTH2_PROXY_UPSTREAMS=http://localhost:3000/dashboard/metrics
+        - OAUTH2_PROXY_UPSTREAMS=http://localhost:3000/
         - OAUTH2_PROXY_PASS_ACCESS_TOKEN=true        # Pass access token to upstream
-        - OAUTH2_PROXY_COOKIE_EXPIRE=10s   # Set to 0 to create a session cookie
+        - OAUTH2_PROXY_COOKIE_EXPIRE=20s   # Set to 0 to create a session cookie
         # - OAUTH2_PROXY_COOKIE_DOMAIN="http://localhost:4180"
-
+        - OAUTH2_PROXY_LOG_LEVEL=debug    # Enable debug logging for more information
         # - OAUTH2_PROXY_COOKIE_REFRESH= 0s  # cookie refresh
-        # - OAUTH2_PROXY_SET_AUTHORIZATION_HEADER=true         # Set Authorization header
-        # - OAUTH2_PROXY_SET_XAUTHREQUEST=true                 # Set X-Auth-Request headers
+        - OAUTH2_PROXY_SET_AUTHORIZATION_HEADER=true         # Set Authorization header
+        - OAUTH2_PROXY_SET_XAUTHREQUEST=true                 # Set X-Auth-Request headers
         
         ports:
         - "4180:4180"
@@ -41,7 +41,7 @@ services:
     backend:
         profiles:   # will start only if `docker-compose --profile prod up` is used
             - prod
-        image: noraali/backend:v1.4.6
+        image: noraali/backend:v1.4.7
         command: poetry run uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload
         volumes:
             - .:/usr/src/app
@@ -67,7 +67,7 @@ services:
             - ADMINER_DEFAULT_SERVER=database
     
     frontend:
-        image: noraali/frontend:v1.4.6
+        image: noraali/frontend:v1.4.7
         depends_on:
             - backend
             - database
