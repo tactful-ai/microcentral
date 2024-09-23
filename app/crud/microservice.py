@@ -17,13 +17,13 @@ class CRUDMicroservice(CRUDBase[Microservice, MicroserviceCreate, MicroserviceUp
 
     def getByTeamIdAndCode(self, teamId: str, code: str):
         return self.db_session.query(Microservice).filter(Microservice.teamId == teamId, Microservice.code == code).first()
-
     
     def getByServiceId(self, serviceID: int) -> Microservice:
         return self.db_session.query(Microservice).filter(Microservice.id == serviceID).first()
     
     def getByServiceIds(self, serviceID: list[int]) -> list[Microservice]:
         return self.db_session.query(Microservice).filter(Microservice.id.in_(serviceID)).all()
+
     
     def getAllServicesWithTeamName(self) -> list[MicroserviceInDBBase]:
         

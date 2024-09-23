@@ -31,4 +31,8 @@ class CRUDMetric(CRUDBase[Metric, MetricCreate, MetricUpdate]):
         metrics = self.db_session.query(Metric).filter(
             Metric.id.in_(metric_ids)).all()
         return metrics
+    
+    def getByName(self, name: str):
+        return self.db_session.query(Metric).filter(Metric.name == name).first()
+
 
