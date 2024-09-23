@@ -21,6 +21,7 @@ class CRUDServiceMetric(CRUDBase[ServiceMetric, ServiceMetricCreate, ServiceMetr
 
     def getByServiceId(self, serviceId: int) -> list[ServiceMetric]:
         return self.db_session.query(ServiceMetric).filter(ServiceMetric.serviceId == serviceId).all()
+    
 
     def get_metric_values_by_service(self, service_id: int, from_date: Optional[datetime], to_date: Optional[datetime]) -> list[ServiceMetricReading]:
 
@@ -39,14 +40,14 @@ class CRUDServiceMetric(CRUDBase[ServiceMetric, ServiceMetricCreate, ServiceMetr
         return metrics
 
     def get_last_metrics(self, scorecard_id: int, service_id: int) -> list[ServiceMetric]:
+        metrics=self.scorecardMetrics.getMetricByScoreCradId(scorecard_id)
         subquery = self.db_session.query(
             ServiceMetric.metricId,
             ServiceMetric.value,
             ServiceMetric.timestamp
         ).filter(
             ServiceMetric.serviceId == service_id,
-            ServiceMetric.metricId.in_(
-                self.scorecardMetrics.getMetricByScoreCradId(scorecard_id))
+            ServiceMetric.metricId.in_(metrics)
         ).order_by(ServiceMetric.metricId, ServiceMetric.timestamp.desc()).distinct(ServiceMetric.metricId).all()
         return subquery
 

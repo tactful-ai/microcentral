@@ -14,7 +14,7 @@ class ScoreCardBase(BaseModel):
 # Properties to receive on scorecard creation
 class ScoreCardCreate(BaseModel):
     name: str
-    code: str
+    code : str
     description: str
 
     
