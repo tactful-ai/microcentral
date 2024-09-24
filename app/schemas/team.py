@@ -9,7 +9,7 @@ from .microservice import Microservice
 # Shared properties
 class TeamBase(BaseModel):
     name: Optional[str] = None
-    token: Optional[str] = ""
+    id: Optional[uuid.UUID] = None
     microservices: Optional[List[Microservice]] = []
 
 
