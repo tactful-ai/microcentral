@@ -37,7 +37,7 @@ class CRUDMicroserviceTeamScorecard:
             description=microservice.description,
             code=microservice.code,
             team=team.TeamBase(
-                id=teamobject.id, name=teamobject.name) if team else None,
+                id=teamobject.id, name=teamobject.name),
             scorecards=[scoreCard.ScoreCardInDBBase(
                 id=sc.id, name=sc.name, description=sc.description) for sc in scorecards]
         )
