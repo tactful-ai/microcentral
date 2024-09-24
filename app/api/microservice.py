@@ -134,7 +134,7 @@ def create_microservice(newmicroservice: MicroserviceCreateApi,
     return created_microservice
 
     # update operation
-@router.put("/{servise_id}", response_model=None)
+@router.put("/{microservise_id}", response_model=None)
 def update_microservice(microservice_id: int, updatemicroservice: MicroserviceCreateApi,
                         microservice: CRUDMicroservice = Depends(
                             dependencies.getMicroservicesCrud),
