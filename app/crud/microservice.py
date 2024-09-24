@@ -39,7 +39,7 @@ class CRUDMicroservice(CRUDBase[Microservice, MicroserviceCreate, MicroserviceUp
             .all()
             )
             scorecard_names = [name for (name,) in scorecard_names]
-
+            
             service = MicroserviceInDBBase(
                 id=microservice.id,
                 name=microservice.name,
