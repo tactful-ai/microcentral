@@ -21,9 +21,9 @@ class MicroserviceCreate(MicroserviceBase):
 #new
 class MicroserviceCreateApi(MicroserviceBase):
     name: str
-    description: str
+    description: Optional[str] = None
     teamId:Optional[uuid.UUID] = None
-    scorecardids: Optional [list[int]] = None
+    scorecardids: Optional [list[int]] = []
     
     
     class Config:
@@ -53,6 +53,7 @@ class MicroserviceInDBBase(MicroserviceBase):
     name: str
     code: str
     description: str
+    teamId:uuid.UUID 
     team_name: Optional[str] =None
     scorecard_names: Optional[list] = None
 

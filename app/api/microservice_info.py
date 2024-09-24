@@ -4,7 +4,7 @@ from app.crud import CRUDMicroserviceInfo
 from typing import List
 from app import dependencies
 from pydantic import BaseModel, Field
-from .exceptions import HTTPResponseCustomized
+from app.api.exceptions import HTTPResponseCustomized
 
 
 class Value(BaseModel):

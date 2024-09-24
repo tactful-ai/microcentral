@@ -46,6 +46,7 @@ async def get_one_service(service_id: int, microServices: CRUDMicroservice = Dep
         name=service.name,
         description=service.description,
         code=service.code,
+        teamId= service.teamId,
         team_name=teamobj.name if teamobj else None,
     )
 
@@ -136,9 +137,7 @@ def create_microservice(newmicroservice: MicroserviceCreateApi,
     return created_microservice
 
     # update operation
-
-
-@router.put("/{servise_id}", response_model=None)
+@router.put("/{microservise_id}", response_model=None)
 def update_microservice(microservice_id: int, updatemicroservice: MicroserviceCreateApi,
                         microservice: CRUDMicroservice = Depends(
                             dependencies.getMicroservicesCrud),
@@ -147,10 +146,16 @@ def update_microservice(microservice_id: int, updatemicroservice: MicroserviceCr
                         servicescorecard: CRUDMicroserviceScoreCard = Depends(
                             dependencies.getMicroserviceScoreCardsCrud),
                         scorecard: CRUDScoreCard = Depends(dependencies.getScoreCardsCrud)):
+    
+    existing_microservice = microservice.get(microservice_id)
+    if not existing_microservice:
+        raise HTTPResponseCustomized(status_code=404, detail="Microservice not found")
 
     if not updatemicroservice.name:
-        raise HTTPResponseCustomized(
-            status_code=400, detail="Name cannot be empty")
+        updatemicroservice.name = existing_microservice.name
+
+    description = updatemicroservice.description or existing_microservice.description
+    teamId = updatemicroservice.teamId or existing_microservice.teamId
 
     if len(updatemicroservice.name) < 3:
         raise HTTPResponseCustomized(
@@ -164,15 +169,6 @@ def update_microservice(microservice_id: int, updatemicroservice: MicroserviceCr
         raise HTTPResponseCustomized(
             status_code=400, detail="Description cannot exceed 500 characters")
 
-    try:
-        teamobj = teamservice.get(updatemicroservice.teamId)
-        if teamobj is None:
-            raise HTTPResponseCustomized(
-                status_code=404, detail="Not Found")
-    except Exception as x:
-        error_message = 'Team Id was not found'
-        raise HTTPResponseCustomized(status_code=404, detail=error_message)
-
     scorecard_objs = []
     if updatemicroservice.scorecardids:
         scorecard_objs = scorecard.getByScoreCardIds(
@@ -183,11 +179,16 @@ def update_microservice(microservice_id: int, updatemicroservice: MicroserviceCr
             raise HTTPResponseCustomized(
                 status_code=404, detail=f"ScoreCard(s) with ID(s): {missing_ids} were not found")
 
+    else:
+        existing_scorecards = servicescorecard.getByServiceId(microservice_id)
+        updatemicroservice.scorecardids = [sc.scoreCardId for sc in existing_scorecards]
+
+
     formatted_code = format_code(updatemicroservice.name)
     updated_microservice = microservice.update(microservice_id, MicroserviceUpdate(
         name=updatemicroservice.name,
-        description=updatemicroservice.description,
-        teamId=updatemicroservice.teamId,
+        description=description,
+        teamId=teamId,
         code=formatted_code
     ))
     servicescorecard.deleteByServiceId(microservice_id)
@@ -221,7 +222,7 @@ def delete_microservice(
     return {"message": "Microservice and associated scorecards successfully deleted"}
 
 
-@router.get("/{service_id}/metric_reading", response_model=list[ServiceMetricReading])
+@router.post("/{service_id}/metric_reading", response_model=list[ServiceMetricReading])
 def get_metrics(service_id: int, from_date: Optional[datetime] = None,
                 to_date: Optional[datetime] = None,  service_metric_crud: CRUDServiceMetric = Depends(dependencies.getServiceMetricsCrud)):
 
