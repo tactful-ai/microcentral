@@ -39,6 +39,6 @@ class CRUDMicroserviceTeamScorecard:
             team=team.TeamBase(
                 id=teamobject.id, name=teamobject.name),
             scorecards=[scoreCard.ScoreCardInDBBase(
-                id=sc.id, name=sc.name, description=sc.description) for sc in scorecards]
+                id=sc.id, name=sc.name, description=sc.description , code= sc.code) for sc in scorecards]
         )
         return service
