@@ -49,3 +49,6 @@ class CRUDScoreCardMetric(CRUDBase[ScoreCardMetrics, ScoreCardMetricsCreate, Sco
     def deleteByScorecardId(self, scorecardID:int):
         self.db_session.query(ScoreCardMetrics).filter(ScoreCardMetrics.scoreCardId == scorecardID).delete()
         self.db_session.commit()
+
+    def getIdByScorecardID(self, scorecardID: int) -> list[int]:
+        return self.db_session.query(ScoreCardMetrics.id).filter(ScoreCardMetrics.scoreCardId == scorecardID).all()
