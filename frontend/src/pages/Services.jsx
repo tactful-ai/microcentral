@@ -12,7 +12,7 @@ const ServicesRows = ({servicesData, setServicesData}) => {
             <td>{service.name}</td>
             <td>{service.description}</td>
             <td>{service.team_name}</td>
-            <td>{service.scorecard_names}</td>
+            <td>{service.scorecard_names.join(', ')}</td>
             <th>
                 <NavLink to={`/dashboard/services/${service.id}`}>
                     <button className="action-btn mx-1">

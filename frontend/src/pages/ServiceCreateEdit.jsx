@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import { useNavigate, useParams } from 'react-router-dom';
 import Layout from '../layouts/Layout'
-import { editService, getAllScorecrds, getAllTeams, getServiceById, postService } from '../api/services';
+import { editService, getAllScorecrds, getAllTeams, getServiceById, getServiceDetailsById, postService } from '../api/services';
 
 const ServiceCreateEdit = (props) => {
     const navigate = useNavigate();
@@ -12,8 +12,12 @@ const ServiceCreateEdit = (props) => {
     
     const [serviceName, setServiceName] = useState('');
     const [serviceDesc, setServiceDesc] = useState('');
-    const [serviceTeam, setServiceTeam] = useState('');
+    const [serviceTeamName, setServiceTeamName] = useState('');
+    const [serviceTeamId, setServiceTeamId] = useState('');
+
     const [serviceScorecards, setServiceScorecards] = useState([]);
+    const [serviceScorecardId, setServiceScorecardId] = useState('');
+    const [scorecardIds, setScorecardIds] = useState([]);
 
     const [teams, setTeams] = useState([]);
     const [scorecards, setScorecards] = useState([]);
@@ -23,43 +27,47 @@ const ServiceCreateEdit = (props) => {
         const service = {
             name: serviceName,
             description: serviceDesc,
-            team_name: serviceTeam,
-            scorecards: serviceScorecards
+            teamId: serviceTeamId,
+            scorecardids: scorecardIds
         }
+        console.log(service);
         if (props.mode == "create"){
             await postService(service_id, service);
         }
         else if (props.mode == "edit"){
             await editService(service_id, service);
         }
-        navigate('/dashboard/metrics', {state: { forceRender: true }});
+        navigate('/dashboard/services', {state: { forceRender: true }});
     }
 
     const handleNameChange = (e) => {
         setServiceName(e.target.value);
     }
     const handleTeamChange = (e) => {
-        setServiceTeam(e.target.value);
+        setServiceTeamId(e.target.value);
+        setServiceTeamName(e.target.value);
+        console.log(serviceTeamId)
     }
     const handleDescChange = (e) => {
         setServiceDesc(e.target.value);
         setCharLimit(e.target.value.length);
     }
     const handleScorecardsChange = (e) => {
+        setServiceScorecardId(e.target.value);
         setServiceScorecards(e.target.value);
+        console.log(serviceScorecardId)
     }
     
     useEffect(() => {
         const fetchFeildsData = async() => {
             try{
+                // Getting all teams names for select menu
                 const teams_data = await getAllTeams();
-                const teams_names = teams_data.map(team => team.name);
-                setTeams(teams_names);
+                setTeams(teams_data);
 
                 // Getting all scorecards names for select menu
-                const scoreards_data = await getAllScorecrds();
-                const scorecards_names = scoreards_data.map(scorecard => scorecard.name);
-                setScorecards(scorecards_names);
+                const scorecards_data = await getAllScorecrds();
+                setScorecards(scorecards_data);
             } catch (error) {
                 console.log("error fetching service teams: ", error)
             }
@@ -68,11 +76,16 @@ const ServiceCreateEdit = (props) => {
         if (props.mode === 'edit') {
             const fetchService = async () => {
                 try {
-                    const service_data = await getServiceById(service_id, navigate);
+                    const service_data = await getServiceDetailsById(service_id, navigate);
                     setCharLimit(service_data.description.length)
                     setServiceName(service_data.name);
-                    setServiceTeam(service_data.team_name);
+                    setServiceTeamName(service_data.team.name);
+                    setServiceTeamId(service_data.teamId);
                     setServiceDesc(service_data.description);
+
+                    service_data.scorecards.map((scorecard)=> {
+                        setScorecardIds((prev) => [...prev, scorecard.id])
+                    })
                 } catch (error) {
                     console.error("Error fetching service data:", error);
                 }
@@ -100,10 +113,10 @@ const ServiceCreateEdit = (props) => {
                             </div>
                             <div className="col-12">
                                 <label for="service-team" className="form-label">Service Team</label>
-                                <select  value={serviceTeam} onChange={(e) => handleTeamChange(e)}
+                                <select  value={serviceTeamName} onChange={(e) => handleTeamChange(e)}
                                 className="form-select" name="" id="service-team">
                                     {teams.map((team) => (
-                                        <option key={team} value={team}>{team}</option>
+                                        <option key={team.name} value={team.id}>{team.name}</option>
                                     ))}
                                 </select>
                                 <span className="error-msg text-danger d-none">error</span>
@@ -120,10 +133,10 @@ const ServiceCreateEdit = (props) => {
                             
                             <div className="col-12">
                                 <label for="service-scorecards" className="form-label">Service Scorecards</label>
-                                <select  value={serviceScorecards} onChange={(e) => handleScorecardsChange(e)}
+                                <select value={serviceScorecards} onChange={(e) => handleScorecardsChange(e)}
                                 className="form-select" name="" id="service-scorecards">
                                     {scorecards.map((scorecard) => (
-                                        <option key={scorecard} value={scorecard}>{scorecard}</option>
+                                        <option key={scorecard.name} value={scorecard.id}>{scorecard.name}</option>
                                     ))}
                                 </select>
                                 <span className="error-msg text-danger d-none">error</span>

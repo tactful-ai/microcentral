@@ -25,7 +25,7 @@ class CRUDServiceMetric(CRUDBase[ServiceMetric, ServiceMetricCreate, ServiceMetr
 
     def get_metric_values_by_service(self, service_id: int, from_date: Optional[datetime], to_date: Optional[datetime]) -> list[ServiceMetricReading]:
 
-        query = self.db_session.query(ServiceMetric.metricId, ServiceMetric.value, ServiceMetric.timestamp).filter(
+        query = self.db_session.query(ServiceMetric.serviceId, ServiceMetric.metricId, ServiceMetric.value, ServiceMetric.timestamp).filter(
             ServiceMetric.serviceId == service_id)
         if from_date and to_date:
             query = query.filter(ServiceMetric.timestamp >=

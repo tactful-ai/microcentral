@@ -13,7 +13,7 @@ ChartJS.register(
     BarElement,
 );
 
-const BarChart = ({data}) => {
+const BarChart = ({title, labels, points}) => {
     
 const booleanOptions = {
     responsive: true,
@@ -49,8 +49,20 @@ const booleanOptions = {
     },
   };
 
+  const booleanData = {
+    labels: labels, 
+    datasets: [
+      {
+        label: title,
+        data: points.map((point)=>point == 'true' ? 1 : 0), 
+        backgroundColor: 'rgba(54, 162, 235, 0.6)',
+        barThickness: 1
+      },
+    ],
+  };
+
   return (
-    <Bar data={data} options={booleanOptions} />
+    <Bar data={booleanData} options={booleanOptions} />
   )
 }
 

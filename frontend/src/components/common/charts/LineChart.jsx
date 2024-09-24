@@ -1,11 +1,12 @@
 import React from 'react';
+import 'chartjs-adapter-date-fns'; 
 
 import { Line } from 'react-chartjs-2';
 import { 
-    Chart as ChartJS, CategoryScale, LinearScale, PointElement, Title, Tooltip, Legend, LineElement 
+    Chart as ChartJS, TimeScale, LinearScale, PointElement, Title, Tooltip, Legend, LineElement 
 } from 'chart.js';
 ChartJS.register(
-    CategoryScale,
+  TimeScale,
     LinearScale,
     PointElement,
     LineElement,
@@ -15,35 +16,56 @@ ChartJS.register(
 );
 
 
-const LineChart = ({data}) => {
-    
+const LineChart = ({title, labels, points}) => {
   const lineOptions = {
     scales: {
-        x: {
-            title: {
-                display: true,
-                text: "Time"
-            }
+      x: {
+        type: 'time',
+        time: {
+          unit: 'month',   // Adjust the unit to match your data granularity
+          tooltipFormat: 'yyyy-MM-dd HH:mm',  // Format for tooltips
+          displayFormats: {
+            month: 'MMM yyyy',  // Display format for X-axis labels (e.g., 'Sep 2024')
+            day: 'MMM dd',      // Display format for daily data
+          }
         },
-        y: {
-            title: {
-                display: true,
-                text: "Value"
-            }
-        },
+        title: {
+          display: true,
+          text: "Time"
+        }
+      },
+      y: {
+        title: {
+          display: true,
+          text: "Value"
+        }
+      },
     },
     plugins: {
         legend: {
           display: true,
           labels: {
             text: "metric",
-            padding: 20, // Add margin or padding to the legend items
+            padding: 20,
           },
         },
     },
   }
+  const lineData = {
+    labels: labels,
+    datasets: [
+      {
+        label: title,
+        data: points,
+        fill: true,
+        backgroundColor: "rgba(75,192,192,0.2)",
+        borderColor: "rgba(75,192,192,1)"
+      }
+    ]
+  }
+
   return (
-    <Line data={data} options={lineOptions} />
+    <Line data={lineData} options={lineOptions} />
   )
 }
 

@@ -8,28 +8,33 @@ import LineChart from '../components/common/charts/LineChart.jsx';
 import BarChart from '../components/common/charts/BarChart.jsx';
 
 import { metricsData, stringData, lineData, booleanData, scatterData } from '../utils/data.js';
-import { getMetricById, getMetricReadings, getScorecardById } from '../api/services/index.js';
+import { getMetricById, getMetricReadings, getScorecardById, getServiceById, getServiceMetricInfo } from '../api/services/index.js';
 import { useParams } from 'react-router-dom';
 
 const ScorecardMetricRows = ({metricsData, handleDisplay}) => {
-    console.log(metricsData)
-    return metricsData.map((metric, index) => (
-        <tr key={index}>
-            <th scope="row">{metric.id}</th>
-            <td>{metric.name}</td>
-            <td>{
-                metric.desiredValue == true ? '1':
-                metric.desiredValue == false ? '0': metric.desiredValue
-            }</td>
-            <td>{metric.weight}</td>
-            <td>{metric.lastUpdate}</td>
-            <th>
-                <button className="action-btn mx-1" onClick={()=>handleDisplay(metric)}>
-                    <i className="fa-solid fa-eye"></i>
-                </button>
-            </th>
-        </tr>
-    ))
+    return (
+        <>
+            {metricsData && metricsData.length > 0 && metricsData.map((metric, index) => (
+                <tr key={index}>
+                    <th scope="row">{metric.metricId}</th>
+                    <td>{metric.metricName}</td>
+                    <td>
+                        {
+                            metric.value === true ? '1' :
+                            metric.value === false ? '0' : metric.value
+                        }
+                    </td>
+                    <td>{metric.weight}</td>
+                    <td>{metric.timestamp}</td>
+                    <th>
+                        <button className="action-btn mx-1" onClick={() => handleDisplay(metric)}>
+                            <i className="fa-solid fa-eye"></i>
+                        </button>
+                    </th>
+                </tr>
+            ))}
+        </>
+    );
 };
 
 const InfoCard = ({ serviceName, teamName }) => {
@@ -43,54 +48,82 @@ const InfoCard = ({ serviceName, teamName }) => {
     );
 };
 
-const GraphController = ({metricType}) => {
+const ChartController = ({title, metricType, labels, points}) => {
     if (metricType == null) return;
     if (metricType == "integer" || metricType == "float"){
-        return <LineChart data={lineData} />;
+        return <LineChart title={title} labels={labels} points={points} />;
     }
     else if(metricType == "string") {
         return (
-            <ScatterChart points={['A', 'C', 'C', 'A', 'B', 'C']} 
-            categories={['A', 'B', 'C', 'D']} />
+            <ScatterChart title={title} labels={labels} points={points} categories={points} />
         );
     }
     else if(metricType == "boolean") {
-        return <BarChart data={booleanData} />;
+        return <BarChart title={title} labels={labels} points={points} />;
     }
 }
 
 const ScorecardMetrics = () => {
-    const {scorecard_id} = useParams();
+    const {service_id, scorecard_id} = useParams();
     const [metricType, setMetricType] = useState(null);
     
+    const [serviceTeam, setServiceTeam] = useState()
+    const [serviceName, setServiceName] = useState('');
+    const [serviceMetrics, setServiceMetrics] = useState([]);
     const [scorecardName, setScorecardName] = useState('');
     const [scorecardDesc, setScorecardDesc] = useState('');
-    const [scorecardMetrics, setScorecardMetrics] = useState([]);
-    const [scorecardTeam, setScorecardTeam] = useState('');
+
+    const [startDate, setStartDate] = useState('');
+    const [endDate, setEndDate] = useState('');
+
+    const [labels, setLabels] = useState([]);
+    const [points, setPoints] = useState([]);
 
     const handleDisplay = async (metric) => {
-        console.log(metric);
-        setMetricType(metric.type);
-        // const data = await getMetricReadings(1, '', '');
-        // console.log(data)
+        const metric_data = await getMetricById(metric.metricId);
+        const metric_readings = await getMetricReadings(service_id, startDate, endDate);
+        const selected_readings = metric_readings.filter(
+            reading => reading.metricId == metric.metricId
+        );
+        setLabels([])
+        setPoints([])
+        selected_readings.map((reading)=>{
+            setLabels(prevLabels => [...prevLabels, reading.timestamp]);
+            setPoints(prevPoints => [...prevPoints, reading.value]);
+        })
+
+        setMetricType(metric_data.type);
+        console.log("metric readings: ", selected_readings);
+        console.log('start date: ', startDate, ', end date: ', endDate)
+        console.log('labels: ', labels, ', points: ', points)
     }
     
   useEffect(() => {
     const fetchScorecardInfo = async () => {
         const scorecard_data = await getScorecardById(scorecard_id);
-        // scorecard_data.metrics.map(async(metric)=>{
-        //     const true_metric = await getMetricById(metric.id);
-        //     metric.name = true_metric.name;
-        //     metric.type = true_metric.type;
-        // })
+        const service = await getServiceById(service_id);
+        const service_metrics = await getServiceMetricInfo(service_id, scorecard_id);
+
+        // testing
+        // console.log("service: ", service)
+        // console.log("service metrics: ", service_metrics)
+        // console.log("serviceId: ", service_id, ", scorecardId: ", scorecard_id)
+
+        setServiceName(service.name)
+        setServiceTeam(service.team_name)
+        setServiceMetrics(service_metrics);
+
         setScorecardName(scorecard_data.name);
         setScorecardDesc(scorecard_data.description);
-        setScorecardMetrics(scorecard_data.metrics);
-        setScorecardTeam(scorecard_data.team_name);
     };
     fetchScorecardInfo();
   }, [scorecard_id]);
-      
+
+  // testing
+//   useEffect(()=>{
+//     console.log('start date: ', startDate, ', end date: ', endDate)
+//   }, [startDate, endDate]);
+
   return (
     <Layout>
         <Container style={{ color: '#303030 !important' }}>
@@ -104,7 +137,7 @@ const ScorecardMetrics = () => {
                     </Col>
                     
                     <Col xs={5} className='text-center px-5'>
-                        <InfoCard serviceName={'Visa Auth'} teamName={scorecardTeam} />
+                        <InfoCard serviceName={serviceName} teamName={serviceTeam} />
                     </Col>
                 </Row>
                 <Row>
@@ -121,7 +154,7 @@ const ScorecardMetrics = () => {
                                 </tr>
                             </thead>
                             <tbody>
-                                <ScorecardMetricRows metricsData={scorecardMetrics} 
+                                <ScorecardMetricRows metricsData={serviceMetrics} 
                                 handleDisplay={handleDisplay} />
                             </tbody>
                         </table>
@@ -131,10 +164,13 @@ const ScorecardMetrics = () => {
                     <Col xs={12}>
                         <div className='mx-auto w-50'>
                             <h4>Select data time interval</h4>
-                            <DateTimePicker/>
+                            <DateTimePicker onStartDateChange={setStartDate} 
+                            onEndDateChange={setEndDate}/>
                         </div>
                         <div className='mb-5'>
-                            <GraphController metricType={metricType}/>
+                            <ChartController metricType={metricType}
+                            title={metricType} labels={labels} 
+                            points={points} />
                         </div>
                     </Col>
                 </Row>

@@ -3,32 +3,39 @@ import { Form, Button, Col, Row } from 'react-bootstrap';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import { format } from 'date-fns';
-import { data } from '../utils/data';
 
-function DateTimeRangePicker() {
+function DateTimeRangePicker({ onStartDateChange, onEndDateChange }) {
   const [startDate, setStartDate] = useState(null);
   const [endDate, setEndDate] = useState(null);
   const [formattedStrDate, setFormattedStrDate] = useState('');
   const [formattedEndDate, setFormattedEndDate] = useState('');
 
+  const isoFormat = date => {
+    const inputDate = new Date(date);
+
+    inputDate.setUTCDate(inputDate.getUTCDate());
+    console.log(inputDate.toISOString());
+    return inputDate.toISOString();
+};
+
   const handleStartDate = (date) => {
-    const dateIsoFormat = new Date(date).toISOString();
     setStartDate(date);
-    setFormattedStrDate(dateIsoFormat);
+    onStartDateChange(isoFormat(date));
+    console.log(startDate)
   };
   const handleEndDate = (date) => {
-    const dateIsoFormat = new Date(date).toISOString();
     setEndDate(date);
-    setFormattedEndDate(dateIsoFormat);
+    onEndDateChange(isoFormat(date));
+    console.log(endDate)
   };
 
   return (
-    <Form className='my-5'>
+    <Form className='mt-3 mb-5'>
       <Form.Group as={Row} controlId="formDateRange" className='mb-2'>
-        <Form.Label column sm={2}>
-          From
+        <Col sm={6}>
+        <Form.Label sm={2}>
+          From Date
         </Form.Label>
-        <Col sm={10}>
           <DatePicker
             selected={startDate}
             onChange={handleStartDate}
@@ -38,13 +45,10 @@ function DateTimeRangePicker() {
             className="form-control"
           />
         </Col>
-      </Form.Group>
-
-      <Form.Group as={Row} controlId="formDateRange" className='mb-5'>
-        <Form.Label column sm={2}>
-          To
+        <Col sm={6}>
+        <Form.Label sm={2}>
+          To Date
         </Form.Label>
-        <Col sm={10}>
           <DatePicker
             selected={endDate}
             onChange={handleEndDate}
@@ -55,7 +59,6 @@ function DateTimeRangePicker() {
           />
         </Col>
       </Form.Group>
-        {/* <Button onClick={()=>handleTest()}>test</Button> */}
     </Form>
   );
 }

@@ -12,26 +12,27 @@ ChartJS.register(
     Legend,
 );
 
-const ScatterChart = ({ categories, points }) => {
+const ScatterChart = ({ title, labels, categories, points }) => {
   // Chart.js options
   const stringOptions = {
     scales: {
       x: {
-        type: 'linear', // Keep linear for numerical values, or 'time' if using time data
+        // type: 'linear', 
         position: 'bottom',
-        min: 0.00,
-        max: 10.00,
-        ticks: {
-          stepSize: 1,
-        },
+        // min: 0.00,
+        // max: 10.00,
+        labels: labels, 
+        // ticks: {
+        //   stepSize: 1,
+        // },
         title: {
           display: true,
           text: 'Time',
         },
       },
       y: {
-        type: 'category', // Using category for categorical data
-        labels: categories, // Your list of categories
+        type: 'category',
+        labels: categories, 
         title: {
           display: true,
           text: 'Label',
@@ -63,9 +64,10 @@ const ScatterChart = ({ categories, points }) => {
 
   // Dataset for the scatter chart
   const scatterData = {
+    labels: labels, 
     datasets: [
       {
-        label: 'Scatter Dataset',
+        label: title,
         data: mapPoints(),
         backgroundColor: points.map(point => {
           const categoryIndex = categories.indexOf(point);

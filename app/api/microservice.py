@@ -139,7 +139,7 @@ def create_microservice(newmicroservice: MicroserviceCreateApi,
     # update operation
 
 
-@router.put("/{servise_id}", response_model=None)
+@router.put("/{microservice_id}", response_model=None)
 def update_microservice(microservice_id: int, updatemicroservice: MicroserviceCreateApi,
                         microservice: CRUDMicroservice = Depends(
                             dependencies.getMicroservicesCrud),
@@ -222,7 +222,7 @@ def delete_microservice(
     return {"message": "Microservice and associated scorecards successfully deleted"}
 
 
-@router.get("/{service_id}/metric_reading", response_model=list[ServiceMetricReading])
+@router.post("/{service_id}/metric_reading", response_model=list[ServiceMetricReading])
 def get_metrics(service_id: int, from_date: Optional[datetime] = None,
                 to_date: Optional[datetime] = None,  service_metric_crud: CRUDServiceMetric = Depends(dependencies.getServiceMetricsCrud)):
 

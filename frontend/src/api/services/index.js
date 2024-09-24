@@ -16,6 +16,7 @@ export const handleDelete = async (service_id) => {
 
 export const postService = async (service_id, service) => {
     const request = {
+        microservice_id: service_id,
         name: service.name,
         description: service.description,
         team_name: service.team_name,
@@ -42,7 +43,7 @@ export const editService = async (service_id, service) => {
         name: service.name,
         description: service.description,
         teamId: service.teamId,
-        scorecards: service.scorecards
+        scorecardids: service.scorecardids
     }
 
     var data = await fetch(`${BASE_URL}/${API_URL}/services/${service_id}`, {
@@ -84,6 +85,7 @@ export const getAllScorecrds = async() => {
     try {
         const response = await fetch(`${BASE_URL}/${API_URL}/scorecard/`);
         const data = await response.json();
+        console.log(data)
         return data;
     } catch (error) {
         console.error('Error fetching scorecards:', error);
@@ -92,25 +94,22 @@ export const getAllScorecrds = async() => {
 
 export const getMetricReadings = async (service_id, from_date, to_date) => {
     let request = {
-        service_id: service_id,
         from_date: from_date,
         to_date: to_date
-    }
+    };
 
-    var data = await fetch(`${BASE_URL}/${API_URL}/services/${service_id}/metric_readings`, {
+    const response = await fetch(`${BASE_URL}/${API_URL}/services/${service_id}/metric_reading`, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
         },
         body: JSON.stringify(request),
     })
-    .then((response) => response.json())
-    var responseData = {
-        message: data.message,
-        object: data.object
-    }
-    console.log(responseData);
-}
+    const data = await response.json();
+
+    return data;
+};
+
 
 export const getServiceById = async (service_id, navigate) => {
     try{
@@ -177,6 +176,18 @@ export const getScorecardById = async(scorecard_id) => {
     }
 }
 
+export const getServiceMetricInfo = async(service_id, scorecard_id) => {
+    try {
+        const response = await fetch(
+            `${BASE_URL}/${API_URL}/metricinfo/${service_id}/${scorecard_id}`
+        );
+        const data = await response.json();
+        return data;
+    } catch (error) {
+        console.log(`error while fetching service ${service_id} metric : ${error}`)
+    }
+}
+
 export const getMetricById = async(metric_id) => {
     try {
         const response = await fetch(`${BASE_URL}/${API_URL}/metrics/${metric_id}`);
@@ -186,5 +197,3 @@ export const getMetricById = async(metric_id) => {
         console.log(`error while fetching scorecard metric ${metric_id}: ${error}`)
     }
 }
-
-
