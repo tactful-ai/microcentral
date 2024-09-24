@@ -1,5 +1,5 @@
 from typing import Any, List
-from app import crud, models, schemas
+from app import crud, schemas
 from app import dependencies
 from fastapi import APIRouter, Depends
 

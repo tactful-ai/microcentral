@@ -1,4 +1,5 @@
 from typing import Optional
+from . import microservice, scoreCardMetrics, microservice
 from pydantic import BaseModel
 from datetime import datetime
 
@@ -7,27 +8,60 @@ from datetime import datetime
 class ScoreCardBase(BaseModel):
     name: Optional[str] = None
     description: Optional[str] = None
+    code: Optional[str] = None
+
 
 # Properties to receive on scorecard creation
-class ScoreCardCreate(ScoreCardBase):
+class ScoreCardCreate(BaseModel):
     name: str
+    code : str
     description: str
 
+    
+class ScoreCardinBase(ScoreCardBase):
+    id: int
+    name: str
+    code: str
+    description: str
+    services: list[microservice.MicroserviceCreate]
+    metrics: list[scoreCardMetrics.ScoreCardMetricsCreate]
+
 # Properties to receive on scorecard update
-class ScoreCardUpdate(ScoreCardBase):
-    pass
+class ScoreCardUpdate(BaseModel):
+    name: Optional[str] = None
+    code: Optional[str] = None
+    description: Optional[str] = None
+    services: Optional[list[microservice.MicroserviceCreate]] = []
+    metrics: Optional[list[scoreCardMetrics.ScoreCardMetricsCreate]] = []
 
 # Properties shared by models stored in DB
 class ScoreCardInDBBase(ScoreCardBase):
     id: int
     name: str
     code: str
-    description: Optional[str]= None
+    description: str
 
     class Config:
         orm_mode = True
 
-# Properties shared serviceinfo
+
+
+class GetScoreCard(BaseModel):
+    id: int
+    name: str
+    code: str
+    description: str
+    services: list[microservice.MicroserviceBase]
+
+class listScoreCard(BaseModel):
+    id: int
+    name: str
+    code: str
+    description: str
+    services: list[microservice.Microserviceforscorecard]
+    metrics: list[scoreCardMetrics.MetricListforScorecardGet]
+
+# Properties to return to client
 class ScoreCard(ScoreCardInDBBase):
     id: int
     name: str
@@ -37,7 +71,7 @@ class ScoreCard(ScoreCardInDBBase):
 
     class Config:
         orm_mode = True
- 
+
 
 # Properties properties stored in DB
 class ScoreCardInDB(ScoreCardInDBBase):

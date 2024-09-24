@@ -4,22 +4,27 @@ from typing import Optional, Union
 from pydantic import BaseModel
 
 
-
 # Shared properties
 class ServiceMetricBase(BaseModel):
     serviceId: Optional[int] = None
     metricId: Optional[int] = None
     value: Optional[Union[float, int, str, bool]] = None
-    date: Optional[datetime] = None
+    timestamp: Optional[datetime] = None
 
 
 # Properties to receive on microservice creation
-class ServiceMetricCreate(ServiceMetricBase):
+class ServiceMetricCreate(BaseModel):
+    serviceId: Optional[int] = None
+    metricId: Optional[int] = None
+    value: Union[float, int, str, bool]
+    timestamp: Optional[datetime]
+
+
+class ServiceMetricReading(ServiceMetricBase):
     serviceId: int
     metricId: int
     value: Union[float, int, str, bool]
-    date: datetime
-
+    timestamp: datetime
 
 # Properties to receive on microservice update
 class ServiceMetricUpdate(ServiceMetricBase):
@@ -32,22 +37,11 @@ class ServiceMetricInDBBase(ServiceMetricBase):
     serviceId: int
     metricId: int
     value: Union[float, int, str, bool]
-    date: datetime
+    timestamp: datetime
 
     class Config:
         orm_mode = True
 
-
-# Properties to return to client
-class ServiceMetric(ServiceMetricInDBBase):
-    metricId: int
-    metric_name: str
-    value: Union[float, int, str, bool]
-    date: datetime
-    weight: int
-   
-    class Config:
-        orm_mode = True
 
 # Properties properties stored in DB
 class ServiceMetricInDB(ServiceMetricInDBBase):

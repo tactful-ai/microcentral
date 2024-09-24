@@ -20,7 +20,7 @@ class CRUDBase(Generic[ModelType, CreateSchemaType, UpdateSchemaType]):
     def get(self, id: Any) -> Optional[ModelType]:
         obj: Optional[ModelType] = self.db_session.query(self.model).get(id)
         if obj is None:
-            raise HTTPResponseCustomized(status_code=404, detail="Not Found")
+            raise HTTPResponseCustomized(status_code=404, detail=f"{ModelType} Not Found")
         return obj
 
     def list(self, skip: int = 0, limit: int = 100) -> List[ModelType]:

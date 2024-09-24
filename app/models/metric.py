@@ -10,6 +10,7 @@ class Metric(Base):
     area = Column(String, nullable=False)
     description = Column(String, nullable=False)
     type = Column(Enum(*typeStates, name="type", create_type=False), nullable=False)
+    
 
     def __repr__(self):
         return f"{self.name} ({self.area})"
