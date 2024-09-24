@@ -222,7 +222,7 @@ def delete_microservice(
     return {"message": "Microservice and associated scorecards successfully deleted"}
 
 
-@router.get("/{service_id}/metric_reading", response_model=list[ServiceMetricReading])
+@router.post("/{service_id}/metric_reading", response_model=list[ServiceMetricReading])
 def get_metrics(service_id: int, from_date: Optional[datetime] = None,
                 to_date: Optional[datetime] = None,  service_metric_crud: CRUDServiceMetric = Depends(dependencies.getServiceMetricsCrud)):
 
