@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import { useNavigate, useParams } from 'react-router-dom';
 import Layout from '../layouts/Layout'
-import TagsList from '../components/common/TagsList.jsx';
+import TagsObj from '../components/common/TagsObj.jsx';
 import { 
     editService, getAllScorecrds, getAllTeams, 
     getServiceById, getServiceDetailsById, postService 
@@ -186,7 +186,7 @@ const ServiceCreateEdit = (props) => {
                                     ))}
                                 </select>
                                 <span className="error-msg text-danger d-none">error</span>
-                                <TagsList tags={tags} setTags={setTags} serviceIds={serviceIds} />
+                                <TagsObj tags={tags} setTags={setTags} serviceIds={serviceIds} />
                             </div>
                             <div className="col-12">
                                 <button type="submit" className="btn btn-primary col-12"

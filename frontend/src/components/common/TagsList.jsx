@@ -1,16 +1,9 @@
 import React from 'react'
 
-const TagsList = ({ tags, setTags, serviceIds }) => {
+const TagsList = ({ tags, setTags }) => {
 
-  const removeTag = (tagId) => {
-    // setTags((tags) => tags.filter(tag => tag.id != tagId));
-    setTags((prevTags) => {
-      const updatedTags = tags.filter(tag => tag.id != tagId);
-      serviceIds(updatedTags);
-      console.log('Updated service tags: ', updatedTags);
-      return updatedTags; 
-    });
-    console.log('tag removed: id: ', tagId)
+  const removeTag = (target) => {
+    setTags((tags) => tags.filter(tag => tag != target));
     console.log('tags: ', tags)
   };
 
@@ -19,17 +12,6 @@ const TagsList = ({ tags, setTags, serviceIds }) => {
       {tags?.map((tag, index) => (
         <li key={index}>
           {tag} <button type="button" className="tag-cancel" onClick={() => removeTag(tag)}>
-            <i className="fas fa-times"></i></button>
-        </li>
-      ))}
-    </ul>
-  );
-  return (
-    <ul id="metric-area">
-      {tags?.map((tag) => (
-        <li key={tag.id}>
-          {tag.name} 
-          <button type="button" className="tag-cancel" onClick={() => removeTag(tag.id)}>
             <i className="fas fa-times"></i></button>
         </li>
       ))}

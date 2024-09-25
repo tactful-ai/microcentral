@@ -3,7 +3,6 @@ import TagsList from '../components/common/TagsList.jsx'
 import '../styles/components/TagsList.css'
 
 const TagsBox = (props) => {
-  // const inputRef = useRef(null);
   const [inputValue, setInputValue] = useState('');
 
   const addTag = (e) => {
@@ -14,16 +13,10 @@ const TagsBox = (props) => {
   };
 
   const createTags = () => {
-    // const inputElem = inputRef.current;
-    // if (inputElem == null) { console.log('tagsBox not found'); return; }
-    // const tagsString = inputElem.value?.replace(/\s+/g, ' ') ?? "";
-    // const tagsList = tagsString.split(',');
-
     const tagsString = inputValue?.replace(/\s+/g, ' ') ?? "";
     const tagsList = tagsString.split(',');
     
     props.setTags((prevTags) => Array.from(new Set([...prevTags, ...tagsList])))
-    // inputElem.value = '';
   }
   const handleInputChange = (e) => {
     setInputValue(e.target.value)
