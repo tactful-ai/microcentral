@@ -76,6 +76,10 @@ background-color: #6482AD;
     color: #a1a1a1
 }
 
+#main-navbar #welcome-msg #user-name {
+    color: #a1a1a1
+}
+
 #main-navbar #user-tools #user-pic {
     width: 40px;
     height: 40px;
