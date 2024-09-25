@@ -4,12 +4,13 @@ on:
   push:
     tags:
       - v*
+      - latest
 
 jobs:
   build-backend:
     runs-on: ubuntu-latest
-    if: startsWith(github.ref_name, 'v')
-    # github.ref_name == 'norhan-updates'
+    # if:startsWith(github.ref_name, 'v')
+    
 
     steps:
       - name: Checkout Initial Branch
@@ -41,15 +42,15 @@ jobs:
         uses: docker/build-push-action@v6
         with:
           push: true
-          tags: tactful/microcentral-backend:${{ env.TAG }}
+          tags: tactful/microcentral-backend:latest
           context: . 
           file: ./Dockerfile 
           
 
   build-frontend:
     runs-on: ubuntu-latest
-    if: startsWith(github.ref_name, 'v')
-    #if:github.ref_name == 'CI-CD-pipline'
+    # if:startsWith(github.ref_name, 'v')
+    
     
     steps:
       - name: Checkout Initial Branch
@@ -76,7 +77,8 @@ jobs:
         uses: docker/build-push-action@v6
         with:
           push: true
-          tags: tactful/microcentral-frontend:${{ env.TAG }}
+          tags: tactful/microcentral-frontend:latest
+            #${{env.TAG}}
           context: ./frontend
           file: ./frontend/Dockerfile
 
