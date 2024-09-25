@@ -6,7 +6,7 @@ import {
     editService, getAllScorecrds, getAllTeams, 
     getServiceById, getServiceDetailsById, postService 
 } from '../api/services';
-import '../styles/components/TagsList.css'
+import '../styles/components/TagsBox.css'
 
 
 const ServiceCreateEdit = (props) => {
