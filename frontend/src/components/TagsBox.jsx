@@ -1,6 +1,6 @@
 import React, { useRef } from 'react'
 import TagsList from '../components/common/TagsList.jsx'
-import '../styles/components/TagsBox.css'
+import '../styles/components/TagsList.css'
 
 const TagsBox = (props) => {
   const inputRef = useRef(null);

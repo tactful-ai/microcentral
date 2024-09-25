@@ -3,10 +3,12 @@ import 'chartjs-adapter-date-fns';
 
 import { Line } from 'react-chartjs-2';
 import { 
-    Chart as ChartJS, TimeScale, LinearScale, PointElement, Title, Tooltip, Legend, LineElement 
+    Chart as ChartJS, TimeScale, CategoryScale, LinearScale, PointElement, Title, Tooltip, Legend, LineElement 
 } from 'chart.js';
+
 ChartJS.register(
-  TimeScale,
+    TimeScale,
+    CategoryScale,
     LinearScale,
     PointElement,
     LineElement,
@@ -15,58 +17,69 @@ ChartJS.register(
     Legend,
 );
 
+const LineChart = ({ title, points }) => {
+    // Prepare labels and data from points
+    const labels = points.map(point => point.time); // Extract time for labels
+    const dataValues = points.map(point => point.value); // Extract values for the y-axis
 
-const LineChart = ({title, labels, points}) => {
-  const lineOptions = {
-    scales: {
-      x: {
-        type: 'time',
-        time: {
-          unit: 'month',   // Adjust the unit to match your data granularity
-          tooltipFormat: 'yyyy-MM-dd HH:mm',  // Format for tooltips
-          displayFormats: {
-            month: 'MMM yyyy',  // Display format for X-axis labels (e.g., 'Sep 2024')
-            day: 'MMM dd',      // Display format for daily data
-          }
+    const lineOptions = {
+        scales: {
+            x: {
+                type: 'time',
+                time: {
+                    tooltipFormat: 'yyyy MMM dd hh:mm a',
+                    displayFormats: {
+                        month: 'MMM yyyy',
+                        day: 'MMM dd',
+                    }
+                },
+                ticks: {
+                    autoSkip: true,
+                    maxTicksLimit: 10,
+                },
+                grid: {
+                    display: true,
+                },
+                title: {
+                    display: true,
+                    text: "Time"
+                }
+            },
+            y: {
+                min: 0,
+                title: {
+                    display: true,
+                    text: "Value"
+                }
+            },
         },
-        title: {
-          display: true,
-          text: "Time"
-        }
-      },
-      y: {
-        title: {
-          display: true,
-          text: "Value"
-        }
-      },
-    },
-    plugins: {
-        legend: {
-          display: true,
-          labels: {
-            text: "metric",
-            padding: 20,
-          },
+        plugins: {
+            legend: {
+                display: true,
+                labels: {
+                    text: "metric",
+                    padding: 20,
+                },
+            },
         },
-    },
-  }
-  const lineData = {
-    labels: labels,
-    datasets: [
-      {
-        label: title,
-        data: points,
-        fill: true,
-        backgroundColor: "rgba(75,192,192,0.2)",
-        borderColor: "rgba(75,192,192,1)"
-      }
-    ]
-  }
+    };
 
-  return (
-    <Line data={lineData} options={lineOptions} />
-  )
+    const lineData = {
+        labels: labels,
+        datasets: [
+            {
+                label: title,
+                data: dataValues, // Use extracted data values
+                fill: true,
+                backgroundColor: "rgba(75,192,192,0.2)",
+                borderColor: "rgba(75,192,192,1)"
+            }
+        ]
+    };
+
+    return (
+        <Line data={lineData} options={lineOptions} />
+    );
 }
 
-export default LineChart
+export default LineChart;

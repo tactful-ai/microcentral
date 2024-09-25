@@ -128,7 +128,7 @@ const ServiceInfo = () => {
             <h3>Scorecards List</h3>
           </Col>
           <Col xs={3} className="text-end">
-            <NavLink to="/dashboard/services/create" 
+            <NavLink to={`/dashboard/services/edit/${service_id}`} 
               className={( (navData) => navData.isActive? 'active': '')}>
               <Button className="assign-btn">
                 Assign New

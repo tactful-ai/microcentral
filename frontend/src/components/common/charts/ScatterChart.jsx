@@ -12,83 +12,85 @@ ChartJS.register(
     Legend,
 );
 
-const ScatterChart = ({ title, labels, categories, points }) => {
+const ScatterChart = ({ title, points }) => {
+  // Extract unique categories from the points
+  const categories = [...new Set(points.map(point => point.value))].sort();
+
   // Chart.js options
-  const stringOptions = {
+  const scatterOptions = {
+    responsive: true,
     scales: {
-      x: {
-        // type: 'linear', 
-        position: 'bottom',
-        // min: 0.00,
-        // max: 10.00,
-        labels: labels, 
-        // ticks: {
-        //   stepSize: 1,
-        // },
-        title: {
-          display: true,
-          text: 'Time',
+        x: {
+            type: 'time',
+            time: {
+                tooltipFormat: 'yyyy MMM dd hh:mm a', // Tooltip format with AM/PM
+                displayFormats: {
+                  hour: 'MMM dd, hh a', // Display format for hour
+                    day: 'MMM dd',
+                },
+            },
+            ticks: {
+                maxTicksLimit: 10, // Limit the number of ticks on the x-axis
+            },
+            title: {
+              display: true,
+              text: 'Time',
+            },
         },
-      },
-      y: {
-        type: 'category',
-        labels: categories, 
-        title: {
-          display: true,
-          text: 'Label',
+        y: {
+            type: 'category',
+            title: {
+              display: true,
+              text: 'Categories',
+            },
+            labels: categories, // Display the unique categories on the y-axis
         },
-      },
     },
     plugins: {
-      legend: {
-        display: false,
-        labels: {
-          padding: 20,
+        legend: {
+          position: 'top',
         },
-      },
     },
-  };
+};
 
-  // Helper function to get points
+  // Helper function to get mapped points
   const mapPoints = () => {
-    let mappedPoints = [];
-    points.map((point, index) => {
-      const yValue = categories.indexOf(point.category);
-      mappedPoints.push({
-        x: index + 1, 
-        y: point
+      return points.map(point => {
+          const categoryIndex = categories.indexOf(point.value);
+          return {
+              x: new Date(point.time), // Use ISO time for x value
+              y: categoryIndex !== -1 ? categories[categoryIndex] : 'Unknown', // Map to category
+          };
       });
-    });
-    return mappedPoints;
   };
 
   // Dataset for the scatter chart
   const scatterData = {
-    labels: labels, 
-    datasets: [
-      {
-        label: title,
-        data: mapPoints(),
-        backgroundColor: points.map(point => {
-          const categoryIndex = categories.indexOf(point);
-          const colors = [
-            'rgba(255, 99, 132, 0.6)',
-            'rgba(54, 162, 235, 0.6)',
-            'rgba(255, 206, 86, 0.6)',
-            'rgba(75, 192, 192, 0.6)',
-            'rgba(153, 102, 255, 0.6)',
-            'rgba(255, 159, 64, 0.6)',
-            'rgba(201, 203, 207, 0.6)',
-          ];
-          return categoryIndex === -1 ? 'rgba(0, 0, 0, 0.1)' : colors[categoryIndex % colors.length];
-        }),
-        pointStyle: 'rect',
-        pointRadius: 10,
-      },
-    ],
+      datasets: [
+          {
+              label: title,
+              data: mapPoints(), // Map points to x,y format
+              backgroundColor: points.map(point => {
+                  const categoryIndex = categories.indexOf(point.value);
+                  const colors = [
+                      'rgba(255, 99, 132, 0.6)',
+                      'rgba(54, 162, 235, 0.6)',
+                      'rgba(255, 206, 86, 0.6)',
+                      'rgba(75, 192, 192, 0.6)',
+                      'rgba(153, 102, 255, 0.6)',
+                      'rgba(255, 159, 64, 0.6)',
+                      'rgba(201, 203, 207, 0.6)',
+                  ];
+                  return categoryIndex === -1 ? 'rgba(0, 0, 0, 0.1)' : 
+                  colors[categoryIndex % colors.length];
+              }),
+              pointStyle: 'rect',
+              pointRadius: 10,
+          },
+      ],
   };
 
-  return <Scatter data={scatterData} options={stringOptions} />;
+  return <Scatter data={scatterData} options={scatterOptions} />;
 };
 
 export default ScatterChart;

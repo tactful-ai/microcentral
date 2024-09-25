@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useParams } from 'react-router-dom';
 import { Container, Row, Col, Form, Card, ListGroup } from 'react-bootstrap';
 import Layout from '../layouts/Layout.jsx';
 import DateTimePicker from '../components/DateTimePicker.jsx';
@@ -7,9 +8,7 @@ import ScatterChart from '../components/common/charts/ScatterChart.jsx';
 import LineChart from '../components/common/charts/LineChart.jsx';
 import BarChart from '../components/common/charts/BarChart.jsx';
 
-import { metricsData, stringData, lineData, booleanData, scatterData } from '../utils/data.js';
 import { getMetricById, getMetricReadings, getScorecardById, getServiceById, getServiceMetricInfo } from '../api/services/index.js';
-import { useParams } from 'react-router-dom';
 
 const ScorecardMetricRows = ({metricsData, handleDisplay}) => {
     return (
@@ -55,7 +54,7 @@ const ChartController = ({title, metricType, labels, points}) => {
     }
     else if(metricType == "string") {
         return (
-            <ScatterChart title={title} labels={labels} points={points} categories={points} />
+            <ScatterChart title={title} points={points} />
         );
     }
     else if(metricType == "boolean") {
@@ -85,12 +84,17 @@ const ScorecardMetrics = () => {
         const selected_readings = metric_readings.filter(
             reading => reading.metricId == metric.metricId
         );
-        setLabels([])
-        setPoints([])
-        selected_readings.map((reading)=>{
-            setLabels(prevLabels => [...prevLabels, reading.timestamp]);
-            setPoints(prevPoints => [...prevPoints, reading.value]);
-        })
+        setLabels([]); 
+        setPoints([]); 
+
+        const newLabels = selected_readings.map(reading => reading.timestamp);
+        const newPoints = selected_readings.map(reading => 
+            ({ time: reading.timestamp, value: reading.value })
+        );
+
+        setLabels(newLabels);
+        setPoints(newPoints);
+
 
         setMetricType(metric_data.type);
         console.log("metric readings: ", selected_readings);
@@ -104,11 +108,6 @@ const ScorecardMetrics = () => {
         const service = await getServiceById(service_id);
         const service_metrics = await getServiceMetricInfo(service_id, scorecard_id);
 
-        // testing
-        // console.log("service: ", service)
-        // console.log("service metrics: ", service_metrics)
-        // console.log("serviceId: ", service_id, ", scorecardId: ", scorecard_id)
-
         setServiceName(service.name)
         setServiceTeam(service.team_name)
         setServiceMetrics(service_metrics);
@@ -119,14 +118,10 @@ const ScorecardMetrics = () => {
     fetchScorecardInfo();
   }, [scorecard_id]);
 
-  // testing
-//   useEffect(()=>{
-//     console.log('start date: ', startDate, ', end date: ', endDate)
-//   }, [startDate, endDate]);
 
   return (
     <Layout>
-        <Container style={{ color: '#303030 !important' }}>
+        <Container>
             <Row className='mt-5 '>
                 <Row className="mb-4">
                     <Col xs={7}>

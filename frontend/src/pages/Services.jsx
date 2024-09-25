@@ -25,9 +25,13 @@ const ServicesRows = ({servicesData, setServicesData}) => {
                     </button>
                 </NavLink>
                 <button className="action-btn mx-1" onClick={async()=>{
-                    handleDelete(service.id);
-                    const updatedServices = await getAllServices();
-                    setServicesData(updatedServices);
+                    try {
+                        await handleDelete(service.id);  // Wait for delete to complete
+                        const updatedServices = await getAllServices();  // Then fetch the updated list
+                        setServicesData(updatedServices);  // Update the state with the new list
+                    } catch (error) {
+                        console.error("Error deleting service: ", error);
+                    }
                 }}>
                     <i className="fa-solid fa-trash"></i>
                 </button>

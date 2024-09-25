@@ -201,7 +201,7 @@ def update_microservice(microservice_id: int, updatemicroservice: MicroserviceCr
     return updated_microservice
 
 
-@router.delete("/{service_id}")
+@router.delete("/{microservice_id}")
 def delete_microservice(
         microservice_id: int,
         microservice: CRUDMicroservice = Depends(

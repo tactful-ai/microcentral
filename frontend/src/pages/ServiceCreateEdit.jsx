@@ -1,7 +1,13 @@
 import React, { useState, useEffect } from 'react'
 import { useNavigate, useParams } from 'react-router-dom';
 import Layout from '../layouts/Layout'
-import { editService, getAllScorecrds, getAllTeams, getServiceById, getServiceDetailsById, postService } from '../api/services';
+import TagsList from '../components/common/TagsList.jsx';
+import { 
+    editService, getAllScorecrds, getAllTeams, 
+    getServiceById, getServiceDetailsById, postService 
+} from '../api/services';
+import '../styles/components/TagsList.css'
+
 
 const ServiceCreateEdit = (props) => {
     const navigate = useNavigate();
@@ -22,8 +28,11 @@ const ServiceCreateEdit = (props) => {
     const [teams, setTeams] = useState([]);
     const [scorecards, setScorecards] = useState([]);
 
+
     const handleFormSubmit = async (e) => {
         e.preventDefault();
+        console.log('tags: ', tags)
+        console.log('scorecardsids: ', scorecardIds)
         const service = {
             name: serviceName,
             description: serviceDesc,
@@ -32,7 +41,7 @@ const ServiceCreateEdit = (props) => {
         }
         console.log(service);
         if (props.mode == "create"){
-            await postService(service_id, service);
+            await postService(service);
         }
         else if (props.mode == "edit"){
             await editService(service_id, service);
@@ -46,17 +55,47 @@ const ServiceCreateEdit = (props) => {
     const handleTeamChange = (e) => {
         setServiceTeamId(e.target.value);
         setServiceTeamName(e.target.value);
-        console.log(serviceTeamId)
+        console.log('serviceTeamId: ', serviceTeamId)
     }
     const handleDescChange = (e) => {
         setServiceDesc(e.target.value);
         setCharLimit(e.target.value.length);
     }
     const handleScorecardsChange = (e) => {
-        setServiceScorecardId(e.target.value);
-        setServiceScorecards(e.target.value);
-        console.log(serviceScorecardId)
-    }
+        const selectedId = e.target.value;
+        const selectedName = e.target.options[e.target.selectedIndex].text; 
+    
+        setServiceScorecardId(parseInt(selectedId));
+        setServiceScorecards(parseInt(selectedId));
+        addScorecardTag(parseInt(selectedId), selectedName); 
+    };
+
+
+    const addScorecardTag = (newId, newTag) => {
+        const newTagObj = {
+            id: newId,
+            name: newTag,
+        };
+    
+        const exists = tags.some((tag) => tag.id === newTagObj.id);
+    
+        if (!exists) {
+            setTags((prevTags) => {
+                const updatedTags = [...prevTags, newTagObj];
+                serviceIds(updatedTags);
+                console.log('Updated service tags: ', updatedTags);
+                return updatedTags; 
+            });
+        } else {
+            console.log('Service tag with this ID already exists');
+        }
+    };
+    
+    const serviceIds = (updatedTags) => {
+        const uniqueIds = [...new Set(updatedTags.map((tag) => tag.id))];
+        setScorecardIds(uniqueIds);
+        console.log('Updated scorecardIds: ', uniqueIds);
+    };
     
     useEffect(() => {
         const fetchFeildsData = async() => {
@@ -77,14 +116,16 @@ const ServiceCreateEdit = (props) => {
             const fetchService = async () => {
                 try {
                     const service_data = await getServiceDetailsById(service_id, navigate);
+                    console.log("service details: ", service_data)
                     setCharLimit(service_data.description.length)
                     setServiceName(service_data.name);
                     setServiceTeamName(service_data.team.name);
-                    setServiceTeamId(service_data.teamId);
+                    setServiceTeamId(service_data.team.id);
                     setServiceDesc(service_data.description);
-
+                    
+                    setTags([]);
                     service_data.scorecards.map((scorecard)=> {
-                        setScorecardIds((prev) => [...prev, scorecard.id])
+                        addScorecardTag(scorecard.id, scorecard.name)
                     })
                 } catch (error) {
                     console.error("Error fetching service data:", error);
@@ -108,7 +149,7 @@ const ServiceCreateEdit = (props) => {
                             <div className="col-12">
                                 <label for="service-name" className="form-label">Service Name</label>
                                 <input type="text" value={serviceName} onChange={(e) => handleNameChange(e)}
-                                className="form-control" placeholder="" id="service-name" />
+                                className="form-control" placeholder="Enter Service Name" id="service-name" />
                                 <span className="error-msg text-danger d-none">error</span>
                             </div>
                             <div className="col-12">
@@ -130,16 +171,22 @@ const ServiceCreateEdit = (props) => {
                                 <div className="float-end"><span className="counter">{charLimit}</span>/100</div>
                                 <span className="error-msg text-danger d-none">error</span>
                             </div>
-                            
                             <div className="col-12">
                                 <label for="service-scorecards" className="form-label">Service Scorecards</label>
-                                <select value={serviceScorecards} onChange={(e) => handleScorecardsChange(e)}
-                                className="form-select" name="" id="service-scorecards">
+                                <select
+                                    value={serviceScorecards}
+                                    onChange={(e) => handleScorecardsChange(e)}
+                                    className="form-select"
+                                    id="service-scorecards"
+                                >
                                     {scorecards.map((scorecard) => (
-                                        <option key={scorecard.name} value={scorecard.id}>{scorecard.name}</option>
+                                        <option key={scorecard.id} value={scorecard.id}>
+                                            {scorecard.name}
+                                        </option>
                                     ))}
                                 </select>
                                 <span className="error-msg text-danger d-none">error</span>
+                                <TagsList tags={tags} setTags={setTags} serviceIds={serviceIds} />
                             </div>
                             <div className="col-12">
                                 <button type="submit" className="btn btn-primary col-12"

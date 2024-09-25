@@ -14,16 +14,15 @@ export const handleDelete = async (service_id) => {
     }
 };
 
-export const postService = async (service_id, service) => {
+export const postService = async (service) => {
     const request = {
-        microservice_id: service_id,
         name: service.name,
         description: service.description,
-        team_name: service.team_name,
-        scorecards: service.scorecards
+        teamId: service.teamId,
+        scorecardids: service.scorecardids
     }
 
-    var data = await fetch(`${BASE_URL}/${API_URL}/services/${service_id}`, {
+    var data = await fetch(`${BASE_URL}/${API_URL}/services/`, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
@@ -140,7 +139,6 @@ export const getServiceDetailsById = async (service_id, navigate) => {
             navigate('/404');
         }
 
-        console.log(data);
         return data; // Return the data array
 
     } catch (error) {
