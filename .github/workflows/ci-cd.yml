@@ -41,7 +41,7 @@ jobs:
         uses: docker/build-push-action@v6
         with:
           push: true
-          tags: noraali/backend:${{ env.TAG }}
+          tags: tactful/microcentral-backend:${{ env.TAG }}
           context: . 
           file: ./Dockerfile 
           
@@ -76,7 +76,7 @@ jobs:
         uses: docker/build-push-action@v6
         with:
           push: true
-          tags: noraali/frontend:${{ env.TAG }}
+          tags: tactful/microcentral-frontend:${{ env.TAG }}
           context: ./frontend
           file: ./frontend/Dockerfile
 
@@ -96,7 +96,7 @@ jobs:
   #         TAG=$(git describe --tags --abbrev=0)
   #         echo "$TAG"
   #       env:
-  #         TAG:${{ env.TAG }}
+  #         TAG:${{env.TAG}}
 
 
 

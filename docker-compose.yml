@@ -41,7 +41,7 @@ services:
     backend:
         profiles:   # will start only if `docker-compose --profile prod up` is used
             - prod
-        image: noraali/backend:v1.5.1
+        image: tactful/microcentral-backend:v1.5.1
         command: poetry run uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload
         volumes:
             - .:/usr/src/app
@@ -49,7 +49,7 @@ services:
             - backend
         depends_on:
             - database
-            - oauth2-proxy
+            # - oauth2-proxy
         env_file: .env
         ports:
             - "8000:8000"
@@ -67,11 +67,11 @@ services:
             - ADMINER_DEFAULT_SERVER=database
     
     frontend:
-        image: noraali/frontend:v1.5.1
+        image: tactful/microcentral-frontend:v1.5.1
         depends_on:
             - backend
             - database
-            - oauth2-proxy
+            # - oauth2-proxy
         env_file: .env
         ports:
             - "3000:3000" 
