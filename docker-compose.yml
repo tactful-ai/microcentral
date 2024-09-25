@@ -41,7 +41,7 @@ services:
     backend:
         profiles:   # will start only if `docker-compose --profile prod up` is used
             - prod
-        image: tactful/microcentral-backend:v1.5.6
+        image: tactful/microcentral-backend:v1.5.7
         command: poetry run uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload
         volumes:
             - .:/usr/src/app
@@ -67,7 +67,7 @@ services:
             - ADMINER_DEFAULT_SERVER=database
     
     frontend:
-        image: tactful/microcentral-frontend:v1.5.6
+        image: tactful/microcentral-frontend:v1.5.7
         depends_on:
             - backend
             - database
