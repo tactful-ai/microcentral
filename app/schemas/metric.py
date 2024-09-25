@@ -10,9 +10,7 @@ class MetricBase(BaseModel):
     code:  Optional[str] = None
     area:  Optional[List[str]] = None
     description: Optional[str] = None
-    type: Optional[str] = None
-
-    
+    type: Optional[str] = None    
 
 # Properties to receive on metric creation
 class MetricCreate(MetricBase):

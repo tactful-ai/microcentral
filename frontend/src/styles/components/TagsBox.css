@@ -7,18 +7,31 @@ form .box {
 	border: 1px solid #d3d3d3;
 	border-radius: 6px;
 }
+
+form .box input {
+	width: 150px;
+	outline: none;
+	border: none;
+	margin-left: 10px;
+	margin-bottom: 10px;
+} 
+
 form .input-note {
 	color: #919191
 } 
+form :where(ul, li, li i){
+	display: flex;
+	align-items: center;
+}
 
-form .box ul {
+form ul {
 	display: flex;
 	flex-wrap: wrap;
 	list-style-type: none;
 	padding: 10px;
 	margin: 0
 } 
-form .box ul li {
+form ul li {
 	margin: 0 5px 5px 0;
 	padding: 2px 7px;
 	background-color: #eee;
@@ -29,13 +42,13 @@ form .box ul li {
 	z-index: 1000;
 } 
 
-form .box ul li button {
+form ul li button {
 	background-color: none;
 	border: none;
 	outline: none;
 } 
 
-form .box ul li i {
+form ul li i {
 	color: #757575;
 	width: 15px;
 	height: 15px;
@@ -46,10 +59,3 @@ form .box ul li i {
 	cursor: pointer;
 } 
 
-form .box input {
-	width: 150px;
-	outline: none;
-	border: none;
-	margin-left: 10px;
-	margin-bottom: 10px;
-} 

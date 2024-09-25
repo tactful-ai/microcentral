@@ -12,7 +12,7 @@ class Settings(BaseSettings):
     PROJECT_DESCRIPTION: Optional[str] = ""
     PROJECT_VERSION: Optional[str] = "1.0.0"
 
-    BACKEND_CORS_ORIGINS: List[AnyHttpUrl] = ['http://localhost:3000']
+    BACKEND_CORS_ORIGINS: List[AnyHttpUrl] = ["http://localhost:3000"]
 
     @field_validator("BACKEND_CORS_ORIGINS")
     def assemble_cors_origins(cls, v: Union[str, List[str]]) -> Union[List[str], str]:

@@ -5,7 +5,7 @@ import Layout from '../layouts/Layout';
 import TagsBox from '../components/TagsBox';
 import { getMetricById, editMetric, postMetric } from '../api/metrics';
 import '../styles/pages/Metrics.css';
-
+import '../styles/components/TagsBox.css';
 
 const MetricCreateEdit = (props) => {
   const navigate = useNavigate();

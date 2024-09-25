@@ -2,8 +2,9 @@ import React from 'react'
 
 const TagsList = ({ tags, setTags }) => {
 
-  const removeTag = (tagName) => {
-    setTags((tags) => tags.filter(tag => tag != tagName));
+  const removeTag = (target) => {
+    setTags((tags) => tags.filter(tag => tag != target));
+    console.log('tags: ', tags)
   };
 
   return (

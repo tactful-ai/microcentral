@@ -13,8 +13,7 @@ class CRUDMetricInfo:
 
     def get_latest_metric_readings(self, service_id: int, scorecard_id: int) -> list[MetricInfoBase]:
         scoremetricobjects = self.scorecardmetric.get_metrics(scorecard_id)
-        metriclist = self.servicemetric.get_last_metrics(
-            service_id, scorecard_id)
+        metriclist = self.servicemetric.get_last_metrics( scorecard_id ,service_id)
         metric_data = {
             metric.metricId: metric.weight for metric in scoremetricobjects}
         metric_ids = [metric.metricId for metric in metriclist]
