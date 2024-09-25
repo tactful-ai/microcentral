@@ -1,6 +1,4 @@
-
 from sqlalchemy.orm import Session
-
 from ..models import ScoreCardMetrics
 from ..schemas import ScoreCardMetricsCreate, ScoreCardMetricsUpdate
 from .base import CRUDBase
@@ -30,3 +28,27 @@ class CRUDScoreCardMetric(CRUDBase[ScoreCardMetrics, ScoreCardMetricsCreate, Sco
         ).all()
 
         return metrics
+
+    
+    def getbyscorecardID(self, scorecardID: int) -> ScoreCardMetrics:
+        return self.db_session.query(ScoreCardMetrics).filter(ScoreCardMetrics.scoreCardId == scorecardID).all()
+
+    def getbymetricIDandScorecardID(self, metricID: int, scorecardID: int):
+        return (
+            self.db_session.query(ScoreCardMetrics)
+            .filter(ScoreCardMetrics.metricId == metricID, ScoreCardMetrics.scoreCardId == scorecardID)
+            .first()
+        )
+    
+    def getByMetricIdsandScorecardId(self , metricIds: list[int], scorecardId: int):
+        return (self.db_session.query(ScoreCardMetrics)
+                .filter(ScoreCardMetrics.metricId.in_(metricIds), 
+                        ScoreCardMetrics.scoreCardId == scorecardId)).all()
+
+    
+    def deleteByScorecardId(self, scorecardID:int):
+        self.db_session.query(ScoreCardMetrics).filter(ScoreCardMetrics.scoreCardId == scorecardID).delete()
+        self.db_session.commit()
+
+    def getIdByScorecardID(self, scorecardID: int) -> list[int]:
+        return self.db_session.query(ScoreCardMetrics.id).filter(ScoreCardMetrics.scoreCardId == scorecardID).all()

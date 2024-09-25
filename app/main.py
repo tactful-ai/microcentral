@@ -7,14 +7,15 @@ from fastapi.exceptions import RequestValidationError
 from fastapi.encoders import jsonable_encoder
 from app.api.exceptions import HTTPResponseCustomized
 from app.api.handling_exception import my_exception_handler, validation_exception_handler
-
+from app.api.responses import CustomResponse
 from app.api.api import apiRouter
 from app.core.config import settings
 from app.views.dashboard import router as dashboard_router
+from app.api.responses import ResponseCustomized
 
 
 def create_app() -> FastAPI:
-    _app = FastAPI(title=settings.PROJECT_NAME, description=settings.PROJECT_DESCRIPTION, version=settings.PROJECT_VERSION)
+    _app = FastAPI(title=settings.PROJECT_NAME, description=settings.PROJECT_DESCRIPTION, version=settings.PROJECT_VERSION, default_response_class=ResponseCustomized)
 
     _app.add_middleware(
         CORSMiddleware,
@@ -42,6 +43,5 @@ def create_app() -> FastAPI:
     _app.include_router(apiRouter, prefix=settings.API_V1_STR)
 
     return _app
-
 
 app = create_app()

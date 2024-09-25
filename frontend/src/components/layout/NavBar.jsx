@@ -1,11 +1,14 @@
-import React from 'react'
+import React from 'react';
+import '../../styles/layouts/Layout.css';
 
 const NavBar = () => {
   return (
     <nav id="main-navbar">
       <div className="row">
           <div className="col-sm-6">
-              <h5 className="mt-2" id="welcome-msg">Welcome, <span id="user-name" style={{ color: '#a1a1a1' }}>John</span></h5>
+              <h5 className="mt-2" id="welcome-msg">
+                Welcome, <span id="user-name">John</span>
+              </h5>
           </div>
           <div className="col-sm-6">
               <div className="float-end" id="user-tools">

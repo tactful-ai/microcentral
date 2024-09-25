@@ -45,3 +45,8 @@ sudo docker-compose run --rm app poetry run alembic revision --autogenerate -m "
 sudo docker-compose run --rm app poetry run alembic upgrade head
 # and you are good to go
 ```
+
+
+# to solve the error of ':5432 fetal error: auth failed'
+netstat -aon | findstr :5432
+taskkill /PID 15732 /F
