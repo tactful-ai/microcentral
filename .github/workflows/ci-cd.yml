@@ -42,7 +42,7 @@ jobs:
         uses: docker/build-push-action@v6
         with:
           push: true
-          tags: tactful/microcentral-backend:${{ env.TAG}}
+          tags: tactful/microcentral-backend:${{ env.TAG }}
           context: . 
           file: ./Dockerfile 
           
@@ -70,8 +70,8 @@ jobs:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_ACCESS_TOKEN}}
 
-      # - name: Extract the latest Git tag
-      #   run: echo "TAG=$(git describe --tags --abbrev=0)" >> $GITHUB_ENV
+      - name: Extract the latest Git tag
+        run: echo "TAG=$(git describe --tags --abbrev=0)" >> $GITHUB_ENV
 
       - name: Build and Push frontend Image
         uses: docker/build-push-action@v6
