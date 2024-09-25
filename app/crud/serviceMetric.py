@@ -7,7 +7,7 @@ from .base import CRUDBase
 from . import CRUDScoreCardMetric, CRUDMetric
 from app.utils.utility_functions import main_calculate_error, calculate_score
 from typing import Optional
-from datetime import datetime
+from datetime import datetime, timezone
 
 
 class CRUDServiceMetric(CRUDBase[ServiceMetric, ServiceMetricCreate, ServiceMetricUpdate]):
@@ -27,13 +27,23 @@ class CRUDServiceMetric(CRUDBase[ServiceMetric, ServiceMetricCreate, ServiceMetr
 
         query = self.db_session.query(ServiceMetric.serviceId, ServiceMetric.metricId, ServiceMetric.value, ServiceMetric.timestamp).filter(
             ServiceMetric.serviceId == service_id)
-        if from_date and to_date:
+        if from_date:
+          from_date_utc = from_date.astimezone(timezone.utc)
+        else:
+          from_date_utc = None
+
+        if to_date:
+          to_date_utc = to_date.astimezone(timezone.utc)
+        else:
+          to_date_utc = None
+          
+        if from_date_utc and to_date_utc:
             query = query.filter(ServiceMetric.timestamp >=
-                                 from_date, ServiceMetric.timestamp <= to_date)
-        elif from_date:
-            query = query.filter(ServiceMetric.timestamp >= from_date)
-        elif to_date:
-            query = query.filter(ServiceMetric.timestamp <= to_date)
+                                 from_date, ServiceMetric.timestamp <= to_date_utc)
+        elif from_date_utc:
+            query = query.filter(ServiceMetric.timestamp >= from_date_utc)
+        elif to_date_utc:
+            query = query.filter(ServiceMetric.timestamp <= to_date_utc)
 
         query = query.order_by(ServiceMetric.timestamp.desc())
         metrics = query.all()

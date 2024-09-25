@@ -24,7 +24,7 @@ class CRUDMicroserviceTeamScorecard:
 
         teamobject = self.teamService.get(microservice.teamId)
         scorecardIds = self.scoreCardService.getByServiceId(microservice.id)
-        scorecards = [] 
+        scorecards = []
         scorecard_ids = [sc_id.scoreCardId for sc_id in scorecardIds]
         scorecards = self.scoreCard.getByScoreCardIds(scorecard_ids)
 
@@ -34,8 +34,8 @@ class CRUDMicroserviceTeamScorecard:
             description=microservice.description,
             code=microservice.code,
             team=team.TeamBase(
-                id=teamobject.id, name=teamobject.name) if team else None,
+                id=teamobject.id, name=teamobject.name),
             scorecards=[scoreCard.ScoreCardInDBBase(
-                id=sc.id, name=sc.name, description=sc.description, code= sc.code) for sc in scorecards]
+                id=sc.id, name=sc.name, description=sc.description, code=sc.code) for sc in scorecards]
         )
         return service
