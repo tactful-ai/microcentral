@@ -27,10 +27,14 @@ const LineChart = ({ title, points }) => {
             x: {
                 type: 'time',
                 time: {
+                    minUnit: 'minute',
                     tooltipFormat: 'yyyy MMM dd hh:mm a',
                     displayFormats: {
-                        month: 'MMM yyyy',
+                        month: 'yyyy MMM',
                         day: 'MMM dd',
+                        hour: 'hh a',
+                        minute: 'hh:mm a',
+                        second: 'mm:ss'
                     }
                 },
                 ticks: {

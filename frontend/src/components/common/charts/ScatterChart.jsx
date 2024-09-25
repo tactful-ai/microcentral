@@ -23,11 +23,15 @@ const ScatterChart = ({ title, points }) => {
         x: {
             type: 'time',
             time: {
-                tooltipFormat: 'yyyy MMM dd hh:mm a', // Tooltip format with AM/PM
+                minUnit: 'minute',
+                tooltipFormat: 'yyyy MMM dd hh:mm a',
                 displayFormats: {
-                  hour: 'MMM dd, hh a', // Display format for hour
+                    month: 'yyyy MMM',
                     day: 'MMM dd',
-                },
+                    hour: 'hh a',
+                    minute: 'hh:mm a',
+                    second: 'mm:ss'
+                }
             },
             ticks: {
                 maxTicksLimit: 10, // Limit the number of ticks on the x-axis
